@@ -1,0 +1,83 @@
+{
+  "_comment": "Example Claude Code hooks configuration for your ~/.claude/settings.json",
+  "_instructions": "Copy the hooks object below into your ~/.claude/settings.json file",
+
+  "hooks": {
+    "PreToolUse": [
+      {
+        "_description": "Git branch protection - prevents commits/pushes to main",
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/check-branch.sh"
+          }
+        ]
+      },
+      {
+        "_description": "Test requirement enforcement - ensures TDD compliance",
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/require-tests.sh"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "_description": "Auto-lint after code changes",
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/auto-lint.sh"
+          }
+        ]
+      },
+      {
+        "_description": "Suggest journaling for architectural changes",
+        "matcher": "Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/document-changes.sh"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "_description": "Inject CLAUDE.md rule reminders",
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/inject-rules.sh"
+          }
+        ]
+      },
+      {
+        "_description": "Remind about TodoWrite for complex tasks",
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/check-todos.sh"
+          }
+        ]
+      },
+      {
+        "_description": "Handle /compact slash command with context injection",
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/handle-compact.sh"
+          }
+        ]
+      }
+    ]
+  }
+}
