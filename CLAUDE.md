@@ -28,7 +28,7 @@ Rule #1: If you want exception to ANY rule, YOU MUST STOP and get explicit permi
 - YOU MUST make the SMALLEST reasonable changes to achieve the desired outcome.
 - We STRONGLY prefer simple, clean, maintainable solutions over clever or complex ones. Readability and maintainability are PRIMARY CONCERNS, even at the cost of conciseness or performance.
 - YOU MUST NEVER make code changes unrelated to your current task. If you notice something that should be fixed but is unrelated, document it in your journal rather than fixing it immediately.
-- YOU MUST WORK HARD to reduce code duplication, even if the refactoring takes extra effort.
+- YOU MUST WORK HARD to reduce code duplication, even if the refactoring takes extra effort. Follow the DRY principle with the rule of three: refactor duplication in code you're already touching for the current task. If duplication exists elsewhere, document it in your journal.
 - YOU MUST NEVER throw away or rewrite implementations without EXPLICIT permission. If you're considering this, YOU MUST STOP and ask first.
 - YOU MUST get Ori's explicit approval before implementing ANY backward compatibility.
 - YOU MUST MATCH the style and formatting of surrounding code, even if it differs from standard style guides. Consistency within a file trumps external standards.
@@ -40,7 +40,7 @@ Rule #1: If you want exception to ANY rule, YOU MUST STOP and get explicit permi
 
 - If the project isn't in a git repo, ask permission to initialize one
 - Track all non-trivial changes in git
-- Commit frequently throughout the development process, even if your high-level tasks are not yet done
+- Commit frequently throughout the development process, even if your high-level tasks are not yet done. Each commit should be one logical unit of work — coherent and reviewable on its own.
 - NEVER commit directly to main, master, or dev branches
 - ALWAYS create a feature branch for your work
 - If you mistakenly try to commit on main/master/dev, STOP and create a feature branch first
@@ -49,7 +49,7 @@ Rule #1: If you want exception to ANY rule, YOU MUST STOP and get explicit permi
 
 - Tests must comprehensively cover all functionality
 - All projects require unit tests, integration tests, AND end-to-end tests
-- Follow TDD: write failing tests first, then implement
+- Follow TDD: write failing tests first, then implement. Tests are part of the implementation, not extra scope — TDD applies even under the minimal-changes rule.
 - Never implement mocks in end-to-end tests - use real data and real APIs
 - Never ignore system or test output - logs contain critical information
 - Test output must be pristine to pass - capture and test expected errors
@@ -58,6 +58,13 @@ Rule #1: If you want exception to ANY rule, YOU MUST STOP and get explicit permi
 
 - Use TodoWrite tool for task management
 - Never discard tasks without explicit approval
+
+## Agent Delegation
+
+- The main conversation acts as coordinator; spawned agents handle bounded support tasks
+- Prefer spawning agents for: parallel research, batch operations, verbose output (logs, test suites)
+- Keep in the main conversation: implementation, iterative work, decisions requiring context
+- Agents don't share context with each other — route information through the main conversation
 
 ## Systematic Debugging Process
 
@@ -81,7 +88,7 @@ YOU MUST follow this debugging framework for ANY technical issue:
 
 ### Phase 3: Hypothesis and Testing
 
-1. **Form Single Hypothesis**: What do you think is the root cause? State it clearly
+1. **Form Single Hypothesis**: What do you think is the root cause? State it clearly. Example: "The API returns 401 because the auth token is expired, not because the endpoint is wrong" — then test only the token, not the endpoint.
 2. **Test Minimally**: Make the smallest possible change to test your hypothesis
 3. **Verify Before Continuing**: Did your test work? If not, form new hypothesis - don't add more fixes
 4. **When You Don't Know**: Say "I don't understand X" rather than pretending to know
