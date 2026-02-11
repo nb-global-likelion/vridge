@@ -103,12 +103,12 @@ model Org {
 
 model AppUser {
   id        String   @id @db.Uuid // BetterAuth user id
-  orgId     String   @map("org_id") @db.Uuid
+  orgId     String?  @map("org_id") @db.Uuid
   role      AppRole  @default(candidate)
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
 
-  org Org @relation(fields: [orgId], references: [id], onDelete: Restrict)
+  org Org? @relation(fields: [orgId], references: [id], onDelete: Restrict)
 
   profilePublic  ProfilesPublic?
   profilePrivate ProfilesPrivate?
@@ -324,7 +324,7 @@ model ProfileSkill {
 
 model JobDescription {
   id                 String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  orgId              String           @map("org_id") @db.Uuid
+  orgId              String?          @map("org_id") @db.Uuid
   jobId              String           @map("job_id") @db.Text
   title              String
   employmentType     EmploymentType   @map("employment_type")
@@ -343,7 +343,7 @@ model JobDescription {
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
 
-  org Org @relation(fields: [orgId], references: [id], onDelete: Restrict)
+  org Org? @relation(fields: [orgId], references: [id], onDelete: Restrict)
   job Job @relation(fields: [jobId], references: [id], onDelete: Restrict)
 
   skills  JobDescriptionSkill[]
