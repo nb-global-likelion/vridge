@@ -102,7 +102,7 @@ middleware.ts
 | --- | --------------------------- | ----------------- | ------------------------------ | ---- |
 | 1   | Jest + Prisma Client + Env  | Foundation        | 테스트 러너, DB 싱글턴         | ✅   |
 | 2   | BetterAuth Schema + Seed    | Foundation        | DB 테이블, 카탈로그 데이터     | 🔶   |
-| 3   | BetterAuth Server + API     | Auth              | 인증 인스턴스, API 엔드포인트  | ⬜   |
+| 3   | BetterAuth Server + API     | Auth              | 인증 인스턴스, API 엔드포인트  | ✅   |
 | 4   | Auth Client + Session       | Auth              | 클라이언트 SDK, getCurrentUser | ⬜   |
 | 5   | Middleware + Signup Hooks   | Auth              | 라우트 보호, 유저 프로비저닝   | ⬜   |
 | 6   | Zod Schemas                 | Validation        | 전체 도메인 입력 검증          | ⬜   |
@@ -287,6 +287,22 @@ Task 3: __tests__/lib/infrastructure/auth.test.ts 테스트.
 
 검증: pnpm test 통과, tsc --noEmit 통과.
 ```
+
+#### Prompt 3 결과
+
+**상태**: ✅ 완료
+
+완료 항목:
+
+- `lib/infrastructure/auth.ts`: `betterAuth` 서버 인스턴스. `prismaAdapter(prisma, { provider: 'postgresql' })`, `emailAndPassword: { enabled: true }`, `nextCookies()` 플러그인.
+- `app/api/auth/[...all]/route.ts`: `toNextJsHandler(auth)`로 GET/POST 핸들러 export.
+- `__tests__/lib/infrastructure/auth.test.ts`: `better-auth`, `better-auth/adapters/prisma`, `better-auth/next-js` 모킹 (ESM 배포 문제 우회). `betterAuth` mock 호출 config로 `emailAndPassword.enabled` 검증.
+
+계획 대비 변경 사항:
+
+- `socialProviders` 추가 (계획에 없었음): Google (`GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`)과 Facebook (`FACEBOOK_CLIENT_ID`, `FACEBOOK_CLIENT_SECRET`). `.env.example`에 해당 변수 추가 필요.
+- `nextCookies()` 플러그인 추가 (계획에 없었음) — Next.js App Router 서버 액션 쿠키 처리 필수.
+- 테스트에서 `better-auth` 모듈을 직접 mock — ESM 배포 패키지를 Jest jsdom 환경에서 변환 불가.
 
 ---
 
