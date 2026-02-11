@@ -497,4 +497,135 @@ with check (public.is_admin());
 
 ---
 
+## (MVP) 프로필 공개 링크 (기본 공개, 옵트아웃)
+
+- `profiles_public.is_public boolean default true` / `public_slug text unique not null` (슬러그는 생성 후 변경 불가).
+- 공개를 끄려면 `is_public=false`. 슬러그로 접근하는 `/profile/{public_slug}` 페이지에서 `profiles_public`만 노출.
+
+### 슬러그 생성 함수 + 불변 트리거
+```sql
+-- 단어 배열은 필요에 따라 확장 가능
+create or replace function public.generate_profile_slug()
+returns text
+language plpgsql
+stable
+as $$
+declare
+  adj text[] := array['bright','calm','clear','eager','fair','grand','kind','lucky','quick','steady'];
+  noun text[] := array['river','mountain','forest','ocean','breeze','field','stone','bridge','path','garden'];
+  slug text;
+begin
+  loop
+    slug := adj[1 + floor(random()*array_length(adj,1))::int]
+         || '-' ||
+           noun[1 + floor(random()*array_length(noun,1))::int]
+         || '-' ||
+           lpad((floor(random()*10000))::int::text, 4, '0');
+    exit when not exists (select 1 from public.profiles_public where public_slug = slug);
+  end loop;
+  return slug;
+end;
+$$;
+
+create or replace function public.profiles_public_slug_immutable()
+returns trigger
+language plpgsql
+as $$
+begin
+  if new.public_slug <> old.public_slug then
+    raise exception 'public_slug is immutable';
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists profiles_public_slug_immutable on public.profiles_public;
+create trigger profiles_public_slug_immutable
+before update on public.profiles_public
+for each row
+execute procedure public.profiles_public_slug_immutable();
+```
+
+### 공개 읽기 정책 (profiles_public만)
+```sql
+drop policy if exists "profiles_public: public view" on public.profiles_public;
+create policy "profiles_public: public view"
+on public.profiles_public
+for select
+using (is_public = true);
+```
+
+> 다른 테이블은 비공개 유지. 슬러그는 기본 자동 생성되며 바뀌지 않는다. 공개 해제는 `is_public=false`로 처리.
+
+---
+
 If you want, paste your final table DDL into the same Supabase SQL editor session and I can tighten these policies to match exact column names, plus add a minimal `updated_at` trigger pattern (so timestamps update automatically).
+
+---
+
+## (Post-MVP) 조직 단위 RLS 스코프 초안
+
+> 현재 MVP는 “지원서가 있으면 모두 조회 가능” 정책이다. 조직별 JD가 활성화되는 시점에 아래로 교체하면 리크루터의 후보 열람을 같은 조직 JD 지원자에 한정할 수 있다. org_id가 null인 글로벌 JD는 기본적으로 **차단**한다. 모두가 볼 수 있게 하려면 `coalesce` 줄의 주석을 해제해 사용한다.
+
+```sql
+-- 0) Helper
+create or replace function public.current_user_org()
+returns uuid
+language sql
+stable
+as $$
+  select org_id from public.app_users where id = auth.uid();
+$$;
+
+create or replace function public.can_view_candidate(candidate_id uuid)
+returns boolean
+language sql
+stable
+as $$
+  select exists (
+    select 1
+    from public.apply a
+    join public.job_description jd on jd.id = a.jd_id
+    where a.user_id = candidate_id
+      and jd.org_id = public.current_user_org()  -- 같은 조직 JD에 지원했는지 확인
+      -- 글로벌 JD도 허용하려면 위 줄 대신:
+      -- and coalesce(jd.org_id, public.current_user_org()) = public.current_user_org()
+  );
+$$;
+
+-- 1) 프로필/이력 테이블 (read 정책 교체)
+-- 예시: profiles_public
+drop policy if exists "profiles_public: recruiter read applicants" on public.profiles_public;
+create policy "profiles_public: recruiter read applicants (org scoped)"
+on public.profiles_public
+for select
+using (public.is_recruiter() and public.can_view_candidate(user_id));
+
+-- 동일 패턴을 profiles_private, profile_language, profile_career,
+-- profile_education, profile_skill, profile_url, profile_attachment에 적용
+
+-- 2) applications 테이블
+drop policy if exists "apply: recruiter read all" on public.apply;
+create policy "apply: recruiter read own org"
+on public.apply
+for select
+using (
+  public.is_recruiter()
+  and exists (
+    select 1
+    from public.job_description jd
+    where jd.id = apply.jd_id
+      and jd.org_id = public.current_user_org()  -- 같은 조직 JD만 허용
+      -- 글로벌 JD 허용 시:
+      -- and coalesce(jd.org_id, public.current_user_org()) = public.current_user_org()
+  )
+);
+```
+
+### 적용/테스트 체크리스트
+- 실행 권한: `postgres` 또는 `service_role` 세션에서 수행.
+- org_id가 null인 JD의 기대 동작을 결정하고 `coalesce` 줄을 맞게 선택.
+- 검증 시나리오:
+  - org A 리크루터는 org B JD 지원자 열람이 차단되어야 함.
+  - org A 리크루터는 org A JD 지원자는 열람 가능해야 함.
+  - org_id null JD 지원자에 대한 동작이 선택한 정책과 일치하는지 확인.
