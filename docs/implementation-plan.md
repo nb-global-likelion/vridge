@@ -152,7 +152,8 @@ Task 2: lib/infrastructure/db.ts 생성 — Prisma 클라이언트 싱글턴.
 - `prisma`로 export.
 
 Task 3: .env.example 생성:
-  DATABASE_URL=postgresql://...
+  DATABASE_URL=postgresql://...          # Supabase pooler 연결
+  DIRECT_URL=postgresql://...            # Supabase 직접 연결 (마이그레이션용)
   BETTER_AUTH_SECRET=your-secret-here
   BETTER_AUTH_URL=http://localhost:3000
   NEXT_PUBLIC_APP_URL=http://localhost:3000
@@ -778,8 +779,8 @@ Task 7: 테스트.
 이전: 모든 기능 존재. 이 프롬프트는 파일 업로드, 마감, E2E 검증을 추가.
 
 Task 1: lib/infrastructure/s3.ts 생성.
-- 환경 변수에서 S3 클라이언트 (S3_BUCKET, S3_REGION, S3_ACCESS_KEY_ID, S3_SECRET_ACCESS_KEY,
-  S3_ENDPOINT non-AWS용 optional).
+- 환경 변수에서 S3 클라이언트 (AWS_S3_BUCKET, AWS_REGION, AWS_ACCESS_KEY_ID,
+  AWS_SECRET_ACCESS_KEY, S3_ENDPOINT non-AWS용 optional).
 - generateUploadKey(userId, ext): "users/{userId}/attachments/{uuid}.{ext}".
 - getSignedUploadUrl(key, contentType, maxSize).
 - getSignedDownloadUrl(key).
@@ -810,6 +811,22 @@ Task 4: __tests__/e2e/smoke.test.ts 통합 스모크 테스트.
 
 검증: pnpm test 통과, pnpm build 성공, pnpm lint 통과.
 ```
+
+---
+
+## 인프라 자격 증명 체크리스트
+
+구현 중 필요한 외부 서비스 접근 정보. Ori가 확보 시 `.env`에 설정.
+
+| 서비스                        | 환경 변수                                                                   | 필요 시점                   | 상태 |
+| ----------------------------- | --------------------------------------------------------------------------- | --------------------------- | ---- |
+| Supabase PostgreSQL           | `DATABASE_URL`, `DIRECT_URL`                                                | Prompt 1 (DB 싱글턴)        | ⬜   |
+| BetterAuth                    | `BETTER_AUTH_SECRET`                                                        | Prompt 3 (Auth 서버)        | ⬜   |
+| Google Analytics              | `NEXT_PUBLIC_GA_MEASUREMENT_ID`                                             | 기존 layout.tsx             | ⬜   |
+| AWS S3                        | `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_REGION`, `AWS_S3_BUCKET` | Prompt 17 (파일 업로드)     | ⬜   |
+| S3 호환 엔드포인트 (optional) | `S3_ENDPOINT`                                                               | Prompt 17 (non-AWS 사용 시) | ⬜   |
+
+> **참고**: `BETTER_AUTH_URL`과 `NEXT_PUBLIC_APP_URL`은 로컬 개발 시 `http://localhost:3000`으로 설정 가능 — 외부 자격 증명 불필요.
 
 ---
 
