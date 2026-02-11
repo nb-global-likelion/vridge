@@ -100,8 +100,8 @@ middleware.ts
 
 | #   | 프롬프트                    | 레이어            | 산출물                         | 상태 |
 | --- | --------------------------- | ----------------- | ------------------------------ | ---- |
-| 1   | Jest + Prisma Client + Env  | Foundation        | 테스트 러너, DB 싱글턴         | ⬜   |
-| 2   | BetterAuth Schema + Seed    | Foundation        | DB 테이블, 카탈로그 데이터     | ⬜   |
+| 1   | Jest + Prisma Client + Env  | Foundation        | 테스트 러너, DB 싱글턴         | ✅   |
+| 2   | BetterAuth Schema + Seed    | Foundation        | DB 테이블, 카탈로그 데이터     | 🔶   |
 | 3   | BetterAuth Server + API     | Auth              | 인증 인스턴스, API 엔드포인트  | ⬜   |
 | 4   | Auth Client + Session       | Auth              | 클라이언트 SDK, getCurrentUser | ⬜   |
 | 5   | Middleware + Signup Hooks   | Auth              | 라우트 보호, 유저 프로비저닝   | ⬜   |
@@ -117,6 +117,8 @@ middleware.ts
 | 15  | Job Browse + Apply          | UI/Feature+Entity | 채용공고 탐색, 지원            | ⬜   |
 | 16  | Recruiter Dashboard         | UI/Feature        | 지원자 조회, 후보자 프로필     | ⬜   |
 | 17  | Uploads + Polish + E2E      | Infra/Polish      | S3, 에러 처리, 스모크 테스트   | ⬜   |
+
+> **범례**: ✅ 완료 / 🔶 부분 완료 (DB 자격 증명 대기) / ⬜ 미착수
 
 ---
 
@@ -166,6 +168,25 @@ Task 4: __tests__/smoke.test.ts 스모크 테스트.
 검증: pnpm test 실행, 스모크 테스트 통과.
 ```
 
+#### Prompt 1 결과
+
+**상태**: ✅ 완료 (커밋: `0c2c692`)
+
+완료 항목:
+
+- `jest.config.js`: `next/jest` 기반으로 재작성. SWC 변환 + `@/*` 경로 별칭 (`moduleNameMapper` 수동 설정) 동작 확인.
+- `lib/infrastructure/db.ts`: `PrismaPg({ connectionString })` 사용 (Pool 인스턴스 불필요 — Prisma 내부 풀 관리). `globalThis` 캐시로 HMR 생존.
+- `.env.example`: `DATABASE_URL`, `DIRECT_URL`, `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`, `NEXT_PUBLIC_APP_URL`, `NEXT_PUBLIC_GA_MEASUREMENT_ID`.
+- `__tests__/smoke.test.ts`: `cn('a', 'b')` 검증 — Jest + SWC + 경로 별칭 통합 확인.
+- `prisma.config.ts`: `DIRECT_URL` 우선 사용으로 수정 (앱은 pooler URL, 마이그레이션은 direct URL).
+- `package.json`: `"postinstall": "prisma generate"` 추가, `dotenv` devDependency 추가.
+- `.gitignore`: `!.env.example` 추가 (`.env*` 패턴 예외).
+
+계획 대비 변경 사항:
+
+- 계획에는 `pg.Pool` 인스턴스 생성 후 `PrismaPg`에 전달하는 방식이었으나, `PrismaPg({ connectionString })` 단축 API 사용. Prisma가 내부 풀을 관리하므로 별도 Pool 불필요.
+- `next/jest`가 tsconfig 경로 별칭을 자동 처리하지 않아 `moduleNameMapper` 수동 추가.
+
 ---
 
 ### Prompt 2: BetterAuth Schema + Migration + Catalog Seed Script
@@ -204,6 +225,33 @@ Task 3: 카탈로그 시드 스크립트 생성.
 
 Task 4: 시드 실행: pnpm prisma db seed. 멱등성 확인 (두 번 실행).
 ```
+
+#### Prompt 2 결과
+
+**상태**: 🔶 부분 완료 — DB 자격 증명 대기
+
+완료 항목:
+
+- `prisma/schema.prisma`: BetterAuth 핵심 4 모델 추가 (User, Session, Account, Verification). `@@map()`으로 snake_case, `@db.Uuid`로 UUID 타입, `@default(dbgenerated("gen_random_uuid()"))`. AppUser에 `authUser User @relation(...)` 추가.
+- `prisma/seed-data/job-families.json`: 5 families (engineering, design, product, marketing, operations) + 20 jobs. en/ko/vi 3개 언어 display name.
+- `prisma/seed-data/skills.json`: 30 skills + aliases. 기술 스킬 (javascript, typescript, react 등) + 소프트 스킬 (communication, leadership 등) 혼합.
+- `prisma/seed.ts`: `tsx` 러너 사용, 상대 경로 import (`@/` 별칭은 Next.js 외부에서 미작동). upsert 기반 멱등 시드. PrismaPg 어댑터 직접 생성.
+- `package.json`: `"prisma": { "seed": "tsx prisma/seed.ts" }` 추가.
+- Prisma client 재생성 + 스모크 테스트 통과 확인.
+
+미완료 항목 (DB 자격 증명 필요):
+
+- `prisma migrate dev --create-only --name init` → 마이그레이션 SQL 생성
+- 생성된 `migration.sql`에 커스텀 SQL 삽입: `generate_profile_slug()` 함수 (앞), `profiles_public_slug_immutable()` 트리거 (뒤)
+- `prisma migrate dev` → 마이그레이션 적용
+- `prisma db seed` → 시드 실행 + 멱등성 검증
+- 커밋
+
+계획 대비 변경 사항:
+
+- 계획에 있던 "기본 org 생성" 제외 — orgId는 MVP에서 null 허용 결정.
+- seed.ts에서 `@/lib/infrastructure/db`의 prisma 싱글턴 대신 자체 PrismaPg 어댑터 생성. tsx 런타임에서 Next.js 경로 별칭 미지원 때문.
+- RLS 정책은 init 마이그레이션에 포함하지 않음 — 별도 마이그레이션에서 처리 예정.
 
 ---
 

@@ -1,0 +1,67 @@
+[
+  {
+    "id": "engineering",
+    "displayNameEn": "Engineering",
+    "displayNameKo": "엔지니어링",
+    "displayNameVi": "Kỹ thuật",
+    "sortOrder": 1,
+    "jobs": [
+      { "id": "frontend-engineer", "displayNameEn": "Frontend Engineer", "displayNameKo": "프론트엔드 엔지니어", "displayNameVi": "Kỹ sư Frontend", "sortOrder": 1 },
+      { "id": "backend-engineer", "displayNameEn": "Backend Engineer", "displayNameKo": "백엔드 엔지니어", "displayNameVi": "Kỹ sư Backend", "sortOrder": 2 },
+      { "id": "fullstack-engineer", "displayNameEn": "Fullstack Engineer", "displayNameKo": "풀스택 엔지니어", "displayNameVi": "Kỹ sư Fullstack", "sortOrder": 3 },
+      { "id": "devops-engineer", "displayNameEn": "DevOps Engineer", "displayNameKo": "데브옵스 엔지니어", "displayNameVi": "Kỹ sư DevOps", "sortOrder": 4 }
+    ]
+  },
+  {
+    "id": "design",
+    "displayNameEn": "Design",
+    "displayNameKo": "디자인",
+    "displayNameVi": "Thiết kế",
+    "sortOrder": 2,
+    "jobs": [
+      { "id": "ui-designer", "displayNameEn": "UI Designer", "displayNameKo": "UI 디자이너", "displayNameVi": "Nhà thiết kế UI", "sortOrder": 1 },
+      { "id": "ux-designer", "displayNameEn": "UX Designer", "displayNameKo": "UX 디자이너", "displayNameVi": "Nhà thiết kế UX", "sortOrder": 2 },
+      { "id": "product-designer", "displayNameEn": "Product Designer", "displayNameKo": "프로덕트 디자이너", "displayNameVi": "Nhà thiết kế sản phẩm", "sortOrder": 3 },
+      { "id": "graphic-designer", "displayNameEn": "Graphic Designer", "displayNameKo": "그래픽 디자이너", "displayNameVi": "Nhà thiết kế đồ họa", "sortOrder": 4 }
+    ]
+  },
+  {
+    "id": "product",
+    "displayNameEn": "Product",
+    "displayNameKo": "프로덕트",
+    "displayNameVi": "Sản phẩm",
+    "sortOrder": 3,
+    "jobs": [
+      { "id": "product-manager", "displayNameEn": "Product Manager", "displayNameKo": "프로덕트 매니저", "displayNameVi": "Quản lý sản phẩm", "sortOrder": 1 },
+      { "id": "product-analyst", "displayNameEn": "Product Analyst", "displayNameKo": "프로덕트 분석가", "displayNameVi": "Phân tích sản phẩm", "sortOrder": 2 },
+      { "id": "scrum-master", "displayNameEn": "Scrum Master", "displayNameKo": "스크럼 마스터", "displayNameVi": "Scrum Master", "sortOrder": 3 },
+      { "id": "business-analyst", "displayNameEn": "Business Analyst", "displayNameKo": "비즈니스 분석가", "displayNameVi": "Phân tích kinh doanh", "sortOrder": 4 }
+    ]
+  },
+  {
+    "id": "marketing",
+    "displayNameEn": "Marketing",
+    "displayNameKo": "마케팅",
+    "displayNameVi": "Tiếp thị",
+    "sortOrder": 4,
+    "jobs": [
+      { "id": "digital-marketer", "displayNameEn": "Digital Marketer", "displayNameKo": "디지털 마케터", "displayNameVi": "Tiếp thị số", "sortOrder": 1 },
+      { "id": "content-marketer", "displayNameEn": "Content Marketer", "displayNameKo": "콘텐츠 마케터", "displayNameVi": "Tiếp thị nội dung", "sortOrder": 2 },
+      { "id": "growth-marketer", "displayNameEn": "Growth Marketer", "displayNameKo": "그로스 마케터", "displayNameVi": "Tiếp thị tăng trưởng", "sortOrder": 3 },
+      { "id": "seo-specialist", "displayNameEn": "SEO Specialist", "displayNameKo": "SEO 전문가", "displayNameVi": "Chuyên gia SEO", "sortOrder": 4 }
+    ]
+  },
+  {
+    "id": "operations",
+    "displayNameEn": "Operations",
+    "displayNameKo": "운영",
+    "displayNameVi": "Vận hành",
+    "sortOrder": 5,
+    "jobs": [
+      { "id": "hr-manager", "displayNameEn": "HR Manager", "displayNameKo": "HR 매니저", "displayNameVi": "Quản lý nhân sự", "sortOrder": 1 },
+      { "id": "finance-manager", "displayNameEn": "Finance Manager", "displayNameKo": "재무 매니저", "displayNameVi": "Quản lý tài chính", "sortOrder": 2 },
+      { "id": "office-manager", "displayNameEn": "Office Manager", "displayNameKo": "오피스 매니저", "displayNameVi": "Quản lý văn phòng", "sortOrder": 3 },
+      { "id": "customer-support", "displayNameEn": "Customer Support", "displayNameKo": "고객 지원", "displayNameVi": "Hỗ trợ khách hàng", "sortOrder": 4 }
+    ]
+  }
+]
