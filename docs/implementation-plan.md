@@ -103,9 +103,9 @@ middleware.ts
 | 1   | Jest + Prisma Client + Env  | Foundation        | 테스트 러너, DB 싱글턴         | ✅   |
 | 2   | BetterAuth Schema + Seed    | Foundation        | DB 테이블, 카탈로그 데이터     | 🔶   |
 | 3   | BetterAuth Server + API     | Auth              | 인증 인스턴스, API 엔드포인트  | ✅   |
-| 4   | Auth Client + Session       | Auth              | 클라이언트 SDK, getCurrentUser | ⬜   |
-| 5   | Middleware + Signup Hooks   | Auth              | 라우트 보호, 유저 프로비저닝   | ⬜   |
-| 6   | Zod Schemas                 | Validation        | 전체 도메인 입력 검증          | ⬜   |
+| 4   | Auth Client + Session       | Auth              | 클라이언트 SDK, getCurrentUser | ✅   |
+| 5   | Middleware + Signup Hooks   | Auth              | 라우트 보호, 유저 프로비저닝   | ✅   |
+| 6   | Zod Schemas                 | Validation        | 전체 도메인 입력 검증          | ✅   |
 | 7   | Authorization + Errors      | Domain            | 접근 제어, 도메인 에러         | ⬜   |
 | 8   | Profile Use-Cases + Actions | Data              | 프로필 CRUD (15+ 액션)         | ⬜   |
 | 9   | Catalog + JD Queries        | Data              | 카탈로그/채용공고 조회         | ⬜   |
@@ -404,6 +404,22 @@ Task 4: 각 파일에 대한 테스트 작성.
 
 검증: pnpm test 통과. 모든 스키마가 유효하지 않은 데이터를 명확히 거부.
 ```
+
+#### Prompt 6 결과
+
+**상태**: ✅ 완료 (커밋: `70606cd`)
+
+완료 항목:
+
+- `lib/validations/profile.ts`: 7개 스키마 (profilePublic/Private/Language/Career/Education/Url/Skill). Career/Education에 날짜 순서 정제 (`.refine()`).
+- `lib/validations/application.ts`: `applySchema` — UUID 검증.
+- `lib/validations/job-description.ts`: `jobDescriptionFilterSchema` — page/pageSize 기본값, enum 필터.
+- `__tests__/lib/validations/*.test.ts`: 32개 테스트 전체 통과.
+
+계획 대비 변경 사항:
+
+- `z.string().url()`이 ftp URI를 허용함 — `.refine(val => val.startsWith('http://') || val.startsWith('https://'))`로 추가 제한.
+- `z.nativeEnum(PrismaEnum)` 대신 `z.enum([...])` 사용 — gitignored 생성 디렉터리 의존 회피.
 
 ---
 
