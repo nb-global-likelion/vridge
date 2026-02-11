@@ -103,7 +103,7 @@ middleware.ts
 | 1   | Jest + Prisma Client + Env  | Foundation        | 테스트 러너, DB 싱글턴         | ✅   |
 | 2   | BetterAuth Schema + Seed    | Foundation        | DB 테이블, 카탈로그 데이터     | 🔶   |
 | 3   | BetterAuth Server + API     | Auth              | 인증 인스턴스, API 엔드포인트  | ✅   |
-| 4   | Auth Client + Session       | Auth              | 클라이언트 SDK, getCurrentUser | ⬜   |
+| 4   | Auth Client + Session       | Auth              | 클라이언트 SDK, getCurrentUser | ✅   |
 | 5   | Middleware + Signup Hooks   | Auth              | 라우트 보호, 유저 프로비저닝   | ⬜   |
 | 6   | Zod Schemas                 | Validation        | 전체 도메인 입력 검증          | ⬜   |
 | 7   | Authorization + Errors      | Domain            | 접근 제어, 도메인 에러         | ⬜   |
@@ -334,6 +334,21 @@ Task 3: __tests__/lib/infrastructure/auth-utils.test.ts 테스트.
 
 검증: pnpm test 통과.
 ```
+
+#### Prompt 4 결과
+
+**상태**: ✅ 완료 (커밋: `561eb12`)
+
+완료 항목:
+
+- `lib/infrastructure/auth-client.ts`: `createAuthClient` from `better-auth/react`. `useSession`, `signIn`, `signUp`, `signOut` export.
+- `lib/infrastructure/auth-utils.ts`: `getCurrentUser` (세션 없음/appUser 없음 시 null), `requireUser` (미인증 시 throw), `requireRole` (역할 불일치 시 throw). `UserContext` 타입 export.
+- `__tests__/lib/infrastructure/auth-utils.test.ts`: 7개 테스트 모두 통과.
+
+계획 대비 변경 사항:
+
+- `AppRole` import: 계획에서 `@/lib/generated/prisma`로 명시했으나 실제 출력 구조상 `@/lib/generated/prisma/enums`에서 import. Prisma 7 생성기는 index 없이 개별 파일로 분리 출력.
+- 테스트 mock 캐스팅: `as jest.Mock` → `as unknown as jest.Mock`. TypeScript가 BetterAuth의 `getSession` 타입과 `jest.Mock` 간 오버랩 부족으로 직접 캐스팅 불허.
 
 ---
 
