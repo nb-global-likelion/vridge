@@ -120,7 +120,7 @@ middleware.ts
 | 10  | Application Management      | Data              | 지원, 철회, 채용담당자 조회    | ✅   |
 | 11  | Layout + Providers + Nav    | UI/Widget         | 프로바이더, 네비게이션 쉘      | ✅   |
 | 12  | Auth Modals                 | UI/Feature        | 로그인, 회원가입 모달          | ✅   |
-| 13  | Profile Display             | UI/Entity         | 재사용 프로필 섹션 컴포넌트    | ⬜   |
+| 13  | Profile Display             | UI/Entity         | 재사용 프로필 섹션 컴포넌트    | ✅   |
 | 14  | Profile Edit                | UI/Feature        | 편집 폼 + 뮤테이션             | ⬜   |
 | 15  | Job Browse + Apply          | UI/Feature+Entity | 채용공고 탐색, 지원            | ⬜   |
 | 16  | Recruiter Dashboard         | UI/Feature        | 지원자 조회, 후보자 프로필     | ⬜   |
@@ -864,6 +864,26 @@ Task 4: career-list, skill-badges, profile-header 테스트.
 
 검증: pnpm test 통과.
 ```
+
+#### Prompt 13 결과
+
+- shadcn 컴포넌트 설치: `badge`, `card`
+- `entities/profile/ui/_utils.ts`: `formatDate` (UTC 기반), EMPLOYMENT_TYPE/PROFICIENCY/EDUCATION_TYPE 레이블 맵
+- `entities/profile/ui/profile-header.tsx`: 이름 + aboutMe
+- `entities/profile/ui/career-list.tsx`: 경력 목록 (Badge, 날짜 범위, 빈 상태)
+- `entities/profile/ui/education-list.tsx`: 학력 목록 (유형 Badge, 졸업여부 Badge)
+- `entities/profile/ui/language-list.tsx`: 언어 + 숙련도 Badge
+- `entities/profile/ui/skill-badges.tsx`: 스킬 뱃지 목록
+- `entities/profile/ui/url-list.tsx`: 외부 링크 목록
+- `entities/profile/ui/contact-info.tsx`: 연락처/이메일 (`미제공` 처리)
+- `app/(dashboard)/candidate/profile/page.tsx`: async Server Component, getMyProfile() + requireUser()로 데이터 조합, Card 섹션 구조
+- 단위 테스트: profile-header(3), career-list(7), skill-badges(2) — 12개 추가
+- 전체 테스트: 173개 통과, tsc --noEmit 클린
+
+계획 대비 변경 사항:
+
+- `QueryResult` 타입 좁히기: `!result.success`가 아닌 `'error' in result`로 분기 — 에러 브랜치에 `success` 프로퍼티 없음
+- 엔티티 컴포넌트 props에 Prisma 타입 미사용 — 로컬 타입 정의로 entity 레이어 독립성 유지
 
 ---
 
