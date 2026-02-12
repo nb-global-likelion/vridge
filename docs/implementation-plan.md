@@ -121,7 +121,7 @@ middleware.ts
 | 11  | Layout + Providers + Nav    | UI/Widget         | 프로바이더, 네비게이션 쉘      | ✅   |
 | 12  | Auth Modals                 | UI/Feature        | 로그인, 회원가입 모달          | ✅   |
 | 13  | Profile Display             | UI/Entity         | 재사용 프로필 섹션 컴포넌트    | ✅   |
-| 14  | Profile Edit                | UI/Feature        | 편집 폼 + 뮤테이션             | ⬜   |
+| 14  | Profile Edit                | UI/Feature        | 편집 폼 + 뮤테이션             | ✅   |
 | 15  | Job Browse + Apply          | UI/Feature+Entity | 채용공고 탐색, 지원            | ⬜   |
 | 16  | Recruiter Dashboard         | UI/Feature        | 지원자 조회, 후보자 프로필     | ⬜   |
 | 17  | Uploads + Polish + E2E      | Infra/Polish      | S3, 에러 처리, 스모크 테스트   | ⬜   |
@@ -931,6 +931,28 @@ Task 5: career-form, skill-picker 테스트.
 
 검증: pnpm test 통과.
 ```
+
+#### Prompt 14 결과
+
+- **생성 파일**: 11개 파일
+  - `features/profile-edit/model/use-profile-mutations.ts` — 16개 뮤테이션 훅
+  - `features/profile-edit/ui/profile-public-form.tsx` — 기본 정보 편집
+  - `features/profile-edit/ui/contact-form.tsx` — 연락처 편집
+  - `features/profile-edit/ui/career-form.tsx` — CareerForm + CareerSection
+  - `features/profile-edit/ui/education-form.tsx` — EducationForm + EducationSection
+  - `features/profile-edit/ui/language-form.tsx` — LanguageForm + LanguageSection
+  - `features/profile-edit/ui/url-form.tsx` — UrlForm + UrlSection
+  - `features/profile-edit/ui/skill-picker.tsx` — 디바운스 검색 + 스킬 추가/삭제
+  - `app/(dashboard)/candidate/profile/edit/page.tsx` — RSC 편집 페이지
+  - `__tests__/features/profile-edit/career-form.test.tsx`
+  - `__tests__/features/profile-edit/skill-picker.test.tsx`
+- **테스트**: 179개 통과 (기존 173 + 신규 6)
+- **타입 체크**: tsc --noEmit 오류 없음
+- **주요 패턴**:
+  - TanStack Form `defaultValues`를 명시적 타입으로 선언해 optional 프로퍼티(`?`) 보존 → Zod 스키마 validator 타입 호환
+  - 선택 필드 Input onChange: `e.target.value || undefined` (빈 문자열 → undefined 변환)
+  - Prisma Date → string 변환: `toISOString().split('T')[0]`
+  - `useEffect` 내 setState: setTimeout 콜백 안으로 이동해 동기 호출 회피 (react-hooks/set-state-in-effect)
 
 ---
 
