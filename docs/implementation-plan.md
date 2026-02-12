@@ -122,7 +122,7 @@ middleware.ts
 | 12  | Auth Modals                 | UI/Feature        | 로그인, 회원가입 모달          | ✅   |
 | 13  | Profile Display             | UI/Entity         | 재사용 프로필 섹션 컴포넌트    | ✅   |
 | 14  | Profile Edit                | UI/Feature        | 편집 폼 + 뮤테이션             | ✅   |
-| 15  | Job Browse + Apply          | UI/Feature+Entity | 채용공고 탐색, 지원            | ⬜   |
+| 15  | Job Browse + Apply          | UI/Feature+Entity | 채용공고 탐색, 지원            | ✅   |
 | 16  | Recruiter Dashboard         | UI/Feature        | 지원자 조회, 후보자 프로필     | ⬜   |
 | 17  | Uploads + Polish + E2E      | Infra/Polish      | S3, 에러 처리, 스모크 테스트   | ⬜   |
 
@@ -1000,6 +1000,31 @@ Task 9: 테스트.
 
 검증: pnpm test 통과.
 ```
+
+#### Prompt 15 결과
+
+- **생성 파일**: 15개 파일
+  - `entities/job/ui/_utils.ts` — WORK_ARRANGEMENT_LABELS, APPLY_STATUS_LABELS, formatSalary
+  - `entities/job/ui/jd-card.tsx` — 채용공고 카드 (href prop으로 공개/대시보드 라우팅 분기)
+  - `entities/job/ui/jd-detail.tsx` — 채용공고 상세 (children slot으로 지원 버튼 주입)
+  - `entities/application/ui/application-status.tsx` — 지원 상태 뱃지
+  - `features/apply/model/use-apply-mutations.ts` — useCreateApply, useWithdrawApply
+  - `features/apply/ui/apply-button.tsx` — 지원하기/지원완료/철회 상태 관리
+  - `features/job-browse/ui/jd-filters.tsx` — 직무·고용형태·근무형태 필터 (URL 쿼리 파라미터)
+  - `app/page.tsx` — `/jobs`로 리다이렉트
+  - `app/jobs/page.tsx` — 공개 채용공고 목록 (인증 불필요)
+  - `app/jobs/[id]/page.tsx` — 공개 채용공고 상세
+  - `app/jobs/[id]/_login-to-apply-cta.tsx` — 로그인 유도 버튼 (useAuthModal)
+  - `app/(dashboard)/candidate/jobs/page.tsx` — 인증된 채용공고 목록
+  - `app/(dashboard)/candidate/jobs/[id]/page.tsx` — 인증된 채용공고 상세 + 지원 버튼
+  - `app/(dashboard)/candidate/applications/page.tsx` — 내 지원 목록
+  - `__tests__/entities/job/jd-card.test.tsx`, `__tests__/features/apply/apply-button.test.tsx`
+- **테스트**: 189개 통과 (기존 179 + 신규 10)
+- **타입 체크**: tsc --noEmit 오류 없음
+- **주요 패턴**:
+  - `Extract<Awaited<ReturnType<typeof action>>, { success: true }>['data']` — QueryResult 유니온 타입에서 성공 분기 추출
+  - JdFilters: initialFilters를 RSC에서 props로 전달 (useSearchParams 불필요)
+  - ApplyButton: 로컬 상태 + router.refresh()로 낙관적 UI 구현
 
 ---
 
