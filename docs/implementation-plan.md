@@ -81,11 +81,19 @@ hooks/                        # 공유 훅 (shadcn alias 유지)
 
 # Next.js 라우팅
 app/
-  (auth)/login/, signup/
-  (dashboard)/
-    candidate/profile/, jobs/, applications/
-    recruiter/applicants/, candidates/
+  page.tsx                          ← /jobs 리다이렉트
+  jobs/page.tsx                     ← 공개 채용공고 목록 (인증 불필요)
+  jobs/[id]/page.tsx                ← 공개 채용공고 상세
+  announcement/page.tsx             ← 공개 공지사항 목록
+  announcement/[id]/page.tsx        ← 공개 공지사항 상세
+  (dashboard)/                      ← 좌측 사이드바 레이아웃 적용
+    candidate/profile/page.tsx      ← 프로필 조회
+    candidate/profile/edit/page.tsx ← 프로필 편집 (별도 라우트)
+    candidate/applications/page.tsx ← 내 지원 목록 (Figma: "My Jobs")
+    recruiter/applicants/page.tsx
+    recruiter/candidates/[id]/page.tsx
   api/auth/[...all]/
+# 주: (auth) 라우트 그룹 없음 — 로그인/회원가입은 모달 다이얼로그로 구현
 
 prisma/
   schema.prisma, seed.ts, seed-data/
@@ -110,8 +118,8 @@ middleware.ts
 | 8   | Profile Use-Cases + Actions | Data              | 프로필 CRUD (15+ 액션)         | ✅   |
 | 9   | Catalog + JD Queries        | Data              | 카탈로그/채용공고 조회         | ✅   |
 | 10  | Application Management      | Data              | 지원, 철회, 채용담당자 조회    | ✅   |
-| 11  | Layout + Providers + Nav    | UI/Widget         | 프로바이더, 네비게이션 쉘      | ⬜   |
-| 12  | Auth Pages                  | UI/Feature        | 로그인, 회원가입               | ⬜   |
+| 11  | Layout + Providers + Nav    | UI/Widget         | 프로바이더, 네비게이션 쉘      | ✅   |
+| 12  | Auth Modals                 | UI/Feature        | 로그인, 회원가입 모달          | ⬜   |
 | 13  | Profile Display             | UI/Entity         | 재사용 프로필 섹션 컴포넌트    | ⬜   |
 | 14  | Profile Edit                | UI/Feature        | 편집 폼 + 뮤테이션             | ⬜   |
 | 15  | Job Browse + Apply          | UI/Feature+Entity | 채용공고 탐색, 지원            | ⬜   |
@@ -701,76 +709,99 @@ Task 3: 테스트.
 
 ### Prompt 11: Layout + Providers + Navigation
 
-**목표**: Provider 래퍼, 네비게이션 위젯, 대시보드 레이아웃.
-**생성 파일**: `components/providers.tsx`, `widgets/nav/ui/*.tsx`, `hooks/use-session.ts`, 수정된 `app/layout.tsx`, `app/(dashboard)/layout.tsx`, 테스트
+**목표**: Provider 래퍼, 네비게이션 위젯, 대시보드 레이아웃 (Figma 기반 재설계).
+**생성 파일**: `components/providers.tsx`, `widgets/nav/ui/*.tsx`, `hooks/use-session.ts`, 수정된 `app/layout.tsx`, `app/(dashboard)/layout.tsx`, `app/(dashboard)/dashboard-sidebar.tsx`, `jest.d.ts`, 테스트
 
 ```
 이전: Auth 클라이언트, 모든 데이터 접근. 이제 UI 쉘 구축.
 
-Task 1: shadcn 컴포넌트 설치:
-  npx shadcn@latest add button dropdown-menu avatar skeleton separator
+설계 결정 (Figma 기반):
+- 단일 전역 상단 네비게이션 (공개/인증 페이지 동일): Jobs + Announcement 탭
+- (auth) 라우트 그룹 없음 — 로그인/회원가입은 Prompt 12에서 모달로 구현
+- 대시보드 레이아웃: 좌측 사이드바 (MY Page / My Profile / My Jobs / Logout)
+- 미인증 /dashboard/* → /jobs 리다이렉트 (Prompt 12에서 ?auth=required 파람 추가)
 
-Task 2: components/providers.tsx 생성 — "use client".
-- 적절한 기본값 (staleTime, retry)으로 QueryClientProvider.
-- 개발 환경에서 ReactQueryDevtools.
+Task 1: pnpm dlx shadcn@latest add button dropdown-menu avatar skeleton separator
 
-Task 3: app/layout.tsx 수정 — children을 <Providers>로 래핑.
+Task 2: components/providers.tsx 생성 — QueryClientProvider + ReactQueryDevtools.
 
-Task 4: hooks/use-session.ts 생성.
-- lib/infrastructure/auth-client.ts에서 useSession의 얇은 re-export.
+Task 3: app/layout.tsx 수정.
+- Inter 폰트 로드 (next/font/google), Geist Sans 제거
+- Providers 래핑, MainNav 렌더링
 
-Task 5: widgets/nav/ui/main-nav.tsx 생성 — "use client".
-- 상단 바: 로고/이름 (/ 링크), 역할 기반 네비게이션 링크.
-  Candidate: "프로필", "채용공고", "내 지원".
-  Recruiter: "대시보드", "지원자".
-- 오른쪽: 인증 시 UserMenu, 미인증 시 Login/Signup.
+Task 4: app/globals.css — @theme에서 --font-family-base: var(--font-inter)로 변경
 
-Task 6: widgets/nav/ui/user-menu.tsx 생성 — "use client".
-- 드롭다운: 이메일, 역할 뱃지, 로그아웃.
+Task 5: hooks/use-session.ts — auth-client에서 useSession re-export
 
-Task 7: app/(dashboard)/layout.tsx 생성.
-- Server Component. MainNav + 메인 콘텐츠 영역 렌더링.
+Task 6: widgets/nav/ui/main-nav.tsx 생성 — "use client".
+- 로고(VRIDGE) / Jobs + Announcement 탭 / EN 스텁 / 로그아웃 or UserMenu
 
-Task 8: widgets/nav/ui/main-nav 테스트.
-- useSession 모킹. 미인증 시 login/signup 표시.
-- Candidate 역할은 candidate 링크 표시. Recruiter는 recruiter 링크 표시.
+Task 7: widgets/nav/ui/user-menu.tsx — Avatar + DropdownMenu, My Profile / My Jobs / Logout
 
-검증: pnpm test 통과, tsc 통과.
+Task 8: app/(dashboard)/layout.tsx + dashboard-sidebar.tsx 생성.
+- 사이드바: MY Page 헤더, My Profile/My Jobs 링크, Logout 버튼
+- 메인 콘텐츠 영역
+
+Task 9: middleware.ts 수정 — /login, /signup 공개 경로 제거, 미인증 → /jobs
+
+Task 10: __tests__/widgets/nav/main-nav.test.tsx 작성
+
+검증: pnpm test 통과 (149개), tsc --noEmit 통과.
 ```
+
+#### Prompt 11 결과
+
+- shadcn 컴포넌트 설치: `button`, `dropdown-menu`, `avatar`, `skeleton`, `separator`
+- `components/providers.tsx`: QueryClientProvider + ReactQueryDevtools 래퍼 생성
+- `app/layout.tsx`: Inter 폰트로 교체, Providers 래핑, MainNav 전역 렌더링
+- `app/globals.css`: `--font-family-base: var(--font-inter)` 연결
+- `hooks/use-session.ts`: auth-client의 useSession re-export
+- `widgets/nav/ui/main-nav.tsx`: Jobs/Announcement 탭, 로그인 상태별 UI
+- `widgets/nav/ui/user-menu.tsx`: Avatar 트리거 + DropdownMenu (My Profile / My Jobs / Logout)
+- `app/(dashboard)/layout.tsx` + `dashboard-sidebar.tsx`: 좌측 사이드바 레이아웃
+- `middleware.ts`: /login, /signup 경로 제거; 미인증 → /jobs 리다이렉트
+- `jest.d.ts`: @testing-library/jest-dom 타입 전역 참조
+- 테스트: 149개 통과, tsc --noEmit 클린
 
 ---
 
-### Prompt 12: Auth Pages (Login + Signup)
+### Prompt 12: Auth Modals (Login + Signup)
 
-**목표**: Auth feature slice — 로그인/회원가입 폼 및 페이지.
-**생성 파일**: `app/(auth)/layout.tsx`, `app/(auth)/login/page.tsx`, `app/(auth)/signup/page.tsx`, `features/auth/ui/*.tsx`, `features/auth/model/*.ts`, 테스트
+**목표**: Auth feature slice — 로그인/회원가입 모달 다이얼로그 (Figma 기반).
+**생성 파일**: `features/auth/ui/*.tsx`, `features/auth/model/use-auth-modal.ts`, 수정된 `widgets/nav/ui/main-nav.tsx`, 테스트
 
 ```
-이전: Auth 클라이언트가 signIn, signUp export. 레이아웃 쉘 존재.
+이전: 레이아웃 쉘, MainNav의 Log in / Sign Up 버튼 (스텁). Auth 모달 연결 필요.
+(auth) 라우트 그룹 없음 — 로그인/회원가입은 모달 다이얼로그로 구현.
 
-Task 1: shadcn 설치: npx shadcn@latest add input label card
+Task 1: pnpm dlx shadcn@latest add dialog input label
 
-Task 2: app/(auth)/layout.tsx 생성 — 중앙 정렬 레이아웃, 네비게이션 바 없음.
+Task 2: features/auth/model/use-auth-modal.ts 생성 — Zustand store.
+- isLoginOpen, isSignupOpen, openLogin, openSignup, closeAll
 
-Task 3: features/auth/ui/login-form.tsx 생성 — "use client".
-- TanStack Form: email (필수, 이메일 형식), password (필수, min 8).
-- Submit은 signIn.email() 호출. 로딩 상태, 에러 표시.
-- signup 링크. 성공 시 /dashboard로 리다이렉트.
-- shadcn Card, Input, Label, Button 사용.
+Task 3: features/auth/ui/login-modal.tsx 생성 — "use client".
+- shadcn Dialog. TanStack Form: email, password.
+- Submit → signIn.email(). 로딩 상태, 에러 표시.
+- "Sign Up" 링크 → openSignup(). 성공 시 /dashboard/candidate/profile 이동.
 
-Task 4: features/auth/ui/signup-form.tsx 생성 — "use client".
-- 필드: name, email, password, confirmPassword (일치 필수).
-- Submit은 signUp.email() 호출. 로딩 상태, 에러 표시.
-- login 링크. 성공 시 /dashboard로 리다이렉트.
-- 모든 유저는 'candidate'로 시작. 역할은 나중에 admin이 변경.
+Task 4: features/auth/ui/signup-modal.tsx 생성 — "use client".
+- shadcn Dialog. TanStack Form: name, email, password, confirmPassword.
+- Submit → signUp.email(). 로딩, 에러, 완료 상태.
+- "Log in" 링크 → openLogin().
 
-Task 5: 페이지 파일 생성.
-- app/(auth)/login/page.tsx: LoginForm 렌더링.
-- app/(auth)/signup/page.tsx: SignupForm 렌더링.
+Task 5: app/layout.tsx 수정 — LoginModal, SignupModal 전역 렌더링.
 
-Task 6: 테스트.
-- login-form: 필드 렌더링, 필수 검증, signIn 호출, 실패 시 에러 표시.
-- signup-form: 이메일 검증, 비밀번호 일치, signUp 호출.
+Task 6: widgets/nav/ui/main-nav.tsx 수정.
+- Log in / Sign Up 버튼에 useAuthModal의 openLogin/openSignup 연결.
+
+Task 7: middleware.ts 수정.
+- 미인증 /dashboard/* → /jobs?auth=required 리다이렉트.
+- main-nav.tsx: useSearchParams로 auth=required 감지 → 자동 loginModal 오픈.
+
+Task 8: 테스트.
+- login-modal: 렌더링, 유효성 검사, signIn 호출, 에러 표시.
+- signup-modal: 이메일 형식, 비밀번호 일치 검증, signUp 호출.
+- middleware: /dashboard/* 미인증 → /jobs?auth=required.
 
 검증: pnpm test 통과.
 ```

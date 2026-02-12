@@ -15,7 +15,7 @@ function isAuthPage(pathname: string): boolean {
   return pathname.startsWith('/login') || pathname.startsWith('/signup');
 }
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const publicPath = isPublicPath(pathname);
   const authPage = isAuthPage(pathname);

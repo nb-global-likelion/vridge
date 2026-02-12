@@ -84,7 +84,7 @@
   --color-text-sub-2: var(--color-gray-500);
   --color-text-info: var(--color-gray-400);
 
-  --font-family-base: 'Inter', sans-serif;
+  --font-family-base: var(--font-inter);
   --font-family-display: 'Helvetica Now Display', 'Inter', sans-serif;
 
   --typography-label-normal-font-family: var(--font-family-base);
