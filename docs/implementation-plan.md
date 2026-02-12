@@ -109,7 +109,7 @@ middleware.ts
 | 7   | Authorization + Errors      | Domain            | 접근 제어, 도메인 에러         | ✅   |
 | 8   | Profile Use-Cases + Actions | Data              | 프로필 CRUD (15+ 액션)         | ✅   |
 | 9   | Catalog + JD Queries        | Data              | 카탈로그/채용공고 조회         | ✅   |
-| 10  | Application Management      | Data              | 지원, 철회, 채용담당자 조회    | ⬜   |
+| 10  | Application Management      | Data              | 지원, 철회, 채용담당자 조회    | ✅   |
 | 11  | Layout + Providers + Nav    | UI/Widget         | 프로바이더, 네비게이션 쉘      | ⬜   |
 | 12  | Auth Pages                  | UI/Feature        | 로그인, 회원가입               | ⬜   |
 | 13  | Profile Display             | UI/Entity         | 재사용 프로필 섹션 컴포넌트    | ⬜   |
@@ -631,6 +631,31 @@ Task 5: 테스트.
 - `Promise.all([findMany, count])` 사용 — `$transaction` 대신 (읽기 전용 쿼리에 트랜잭션 불필요, 테스트 mock이 더 단순).
 - `JD_INCLUDE` 상수 도입 — `getJobDescriptions`와 `getJobDescriptionById` 간 include 중복 제거.
 - 액션 테스트에서 use-case 팩토리 mock 사용 — auto-mock 시 Prisma 생성 파일 의존 회피 (profile 액션 테스트의 auth-utils mock과 동일한 패턴).
+
+#### Prompt 10 결과
+
+**상태**: ✅ 완료 (커밋: `9dd075c`)
+
+완료 항목:
+
+- `lib/use-cases/applications.ts`: 5개 함수.
+  - `createApplication`: JD 존재 확인 → 중복 지원 확인 → `status='applied'`로 생성.
+  - `withdrawApplication`: `findUnique` → `assertOwnership` → 상태 검증(`'applied'`만 가능) → `'withdrawn'`으로 업데이트.
+  - `getUserApplications`: JD/직무/기관 include, `createdAt desc`.
+  - `getApplicationsForJd`: 채용담당자용. `AppUser.profilePublic` + `AppUser.profileSkills(skill)` include.
+  - `getApplicantStats`: `groupBy(['status'])`, `_count: { _all: true }`.
+- `lib/actions/applications.ts`: 4개 서버 액션.
+  - `createApply`, `withdrawApply`: `requireRole('candidate')`, `revalidatePath('/dashboard/candidate/applications')`.
+  - `getMyApplications`: `requireRole('candidate')`.
+  - `getApplicationsForJd`: `requireRole('recruiter', 'admin')`.
+- `__tests__/lib/use-cases/applications.test.ts`: 9개 테스트.
+- `__tests__/lib/actions/applications.test.ts`: 7개 테스트.
+- 전체 테스트: 146개 통과 (기존 130개 → +16개).
+
+계획 대비 변경 사항:
+
+- `getApplicationsForJd`의 include: 계획에서는 `profilePublic.skills`로 명시했으나, 실제 Prisma 스키마에서 스킬은 `AppUser.profileSkills` 직접 관계로 설계됨 → `profilePublic: true, profileSkills: { include: { skill: true } }` 구조로 수정.
+- Zod 4 UUID 검증: `z.string().uuid()`가 RFC 4122 변형 비트(4번째 그룹 첫 자리 `[89ab]`)를 엄격하게 검증 → 테스트 UUID를 검증 통과 형식으로 수정.
 
 ---
 
