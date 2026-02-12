@@ -119,7 +119,7 @@ middleware.ts
 | 9   | Catalog + JD Queries        | Data              | 카탈로그/채용공고 조회         | ✅   |
 | 10  | Application Management      | Data              | 지원, 철회, 채용담당자 조회    | ✅   |
 | 11  | Layout + Providers + Nav    | UI/Widget         | 프로바이더, 네비게이션 쉘      | ✅   |
-| 12  | Auth Modals                 | UI/Feature        | 로그인, 회원가입 모달          | ⬜   |
+| 12  | Auth Modals                 | UI/Feature        | 로그인, 회원가입 모달          | ✅   |
 | 13  | Profile Display             | UI/Entity         | 재사용 프로필 섹션 컴포넌트    | ⬜   |
 | 14  | Profile Edit                | UI/Feature        | 편집 폼 + 뮤테이션             | ⬜   |
 | 15  | Job Browse + Apply          | UI/Feature+Entity | 채용공고 탐색, 지원            | ⬜   |
@@ -803,8 +803,20 @@ Task 8: 테스트.
 - signup-modal: 이메일 형식, 비밀번호 일치 검증, signUp 호출.
 - middleware: /dashboard/* 미인증 → /jobs?auth=required.
 
-검증: pnpm test 통과.
+검증: pnpm test 통과 (161개), tsc --noEmit 통과.
 ```
+
+#### Prompt 12 결과
+
+- shadcn 컴포넌트 설치: `dialog`, `input`, `label`
+- `features/auth/model/use-auth-modal.ts`: Zustand 스토어 (isLoginOpen/isSignupOpen/openLogin/openSignup/closeAll)
+- `features/auth/ui/login-modal.tsx`: shadcn Dialog + TanStack Form (email, password), signIn.email(), 성공 시 /dashboard/candidate/profile 이동
+- `features/auth/ui/signup-modal.tsx`: shadcn Dialog + TanStack Form (name, email, password, confirmPassword), signUp.email()
+- `features/auth/ui/auth-redirect-handler.tsx`: useSearchParams로 ?auth=required 감지 → 로그인 모달 자동 오픈 (Suspense 래핑)
+- `app/layout.tsx`: LoginModal, SignupModal, AuthRedirectHandler 전역 렌더링
+- `widgets/nav/ui/main-nav.tsx`: Log in/Sign Up 버튼에 openLogin/openSignup 연결
+- `proxy.ts`: /login,/signup 공개 경로 제거, /announcement 공개 추가, isAuthPage 로직 제거, 미인증 → /jobs?auth=required
+- 테스트: 161개 통과, tsc --noEmit 클린
 
 ---
 
