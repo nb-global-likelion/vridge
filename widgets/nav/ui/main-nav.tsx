@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useSession } from '@/hooks/use-session';
 import { Button } from '@/components/ui/button';
+import { useAuthModal } from '@/features/auth/model/use-auth-modal';
 import UserMenu from './user-menu';
 
 const NAV_LINKS = [
@@ -15,6 +16,7 @@ export default function MainNav() {
   const pathname = usePathname();
   const { data: session } = useSession();
   const user = session?.user;
+  const { openLogin, openSignup } = useAuthModal();
 
   return (
     <nav className="flex h-14 items-center justify-between border-b bg-white px-6">
@@ -59,10 +61,10 @@ export default function MainNav() {
           />
         ) : (
           <>
-            <Button variant="ghost" size="sm">
+            <Button variant="ghost" size="sm" onClick={openLogin}>
               Log in
             </Button>
-            <Button variant="ghost" size="sm">
+            <Button variant="ghost" size="sm" onClick={openSignup}>
               Sign Up
             </Button>
           </>

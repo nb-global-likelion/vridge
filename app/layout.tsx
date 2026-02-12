@@ -1,9 +1,13 @@
 import type { Metadata } from 'next';
 import { Inter, Geist_Mono } from 'next/font/google';
+import { Suspense } from 'react';
 import { GoogleAnalytics } from '@next/third-parties/google';
 import './globals.css';
 import Providers from '@/components/providers';
 import MainNav from '@/widgets/nav/ui/main-nav';
+import { LoginModal } from '@/features/auth/ui/login-modal';
+import { SignupModal } from '@/features/auth/ui/signup-modal';
+import { AuthRedirectHandler } from '@/features/auth/ui/auth-redirect-handler';
 
 const inter = Inter({
   variable: '--font-inter',
@@ -31,6 +35,11 @@ export default function RootLayout({
         <Providers>
           <MainNav />
           {children}
+          <LoginModal />
+          <SignupModal />
+          <Suspense>
+            <AuthRedirectHandler />
+          </Suspense>
         </Providers>
       </body>
       <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID!} />
