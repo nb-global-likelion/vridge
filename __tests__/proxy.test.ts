@@ -31,9 +31,9 @@ describe('공개 라우트', () => {
     expect(mockGetSession).not.toHaveBeenCalled();
   });
 
-  it('/announcement/* 은 세션 확인 후 처리', async () => {
+  it('/announcement/* 은 세션 확인 없이 통과', async () => {
     await proxy(makeRequest('/announcement/1'));
-    expect(mockGetSession).toHaveBeenCalledTimes(1);
+    expect(mockGetSession).not.toHaveBeenCalled();
   });
 
   it('/api/auth/* 은 세션 확인 없이 통과', async () => {
@@ -43,11 +43,13 @@ describe('공개 라우트', () => {
 });
 
 describe('보호 라우트', () => {
-  it('미인증 시 /login으로 리다이렉트', async () => {
+  it('미인증 시 /jobs?auth=required 로 리다이렉트', async () => {
     mockGetSession.mockResolvedValue(null);
     const res = await proxy(makeRequest('/dashboard/candidate/profile'));
     expect(res?.status).toBe(307);
-    expect(res?.headers.get('location')).toContain('/login');
+    const location = res?.headers.get('location') ?? '';
+    expect(location).toContain('/jobs');
+    expect(location).toContain('auth=required');
   });
 
   it('인증 시 통과', async () => {
