@@ -3,21 +3,51 @@ import { prismaAdapter } from 'better-auth/adapters/prisma';
 import { nextCookies } from 'better-auth/next-js';
 import { prisma } from '@/lib/infrastructure/db';
 
+const socialProviders = {
+  ...(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET
+    ? {
+        google: {
+          clientId: process.env.GOOGLE_CLIENT_ID,
+          clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+        },
+      }
+    : {}),
+  ...(process.env.FACEBOOK_CLIENT_ID && process.env.FACEBOOK_CLIENT_SECRET
+    ? {
+        facebook: {
+          clientId: process.env.FACEBOOK_CLIENT_ID,
+          clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
+        },
+      }
+    : {}),
+};
+
+const baseURL =
+  process.env.BETTER_AUTH_URL ??
+  process.env.NEXT_PUBLIC_APP_URL ??
+  'http://localhost:3000';
+
+const secret =
+  process.env.BETTER_AUTH_SECRET ??
+  (process.env.NODE_ENV === 'production'
+    ? undefined
+    : 'dev-secret-dev-secret-dev-secret');
+
+if (!secret) {
+  throw new Error('BETTER_AUTH_SECRET is required in production');
+}
+
 export const auth = betterAuth({
   database: prismaAdapter(prisma, { provider: 'postgresql' }),
-  emailAndPassword: { enabled: true },
-  socialProviders: {
-    google: {
-      clientId: process.env.GOOGLE_CLIENT_ID as string,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
-    },
-    facebook: {
-      clientId: process.env.FACEBOOK_CLIENT_ID as string,
-      clientSecret: process.env.FACEBOOK_CLIENT_SECRET as string,
+  advanced: {
+    database: {
+      generateId: 'uuid',
     },
   },
-  secret: process.env.BETTER_AUTH_SECRET,
-  baseURL: process.env.BETTER_AUTH_URL,
+  emailAndPassword: { enabled: true },
+  ...(Object.keys(socialProviders).length > 0 ? { socialProviders } : {}),
+  secret,
+  baseURL,
   plugins: [nextCookies()],
   databaseHooks: {
     user: {
