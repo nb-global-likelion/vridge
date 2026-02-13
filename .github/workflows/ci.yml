@@ -9,6 +9,10 @@ on:
 jobs:
   ci:
     runs-on: ubuntu-latest
+    env:
+      BETTER_AUTH_SECRET: ci-build-secret-ci-build-secret
+      BETTER_AUTH_URL: http://localhost:3000
+      NEXT_PUBLIC_APP_URL: http://localhost:3000
 
     steps:
       - name: 코드 체크아웃
@@ -30,6 +34,9 @@ jobs:
 
       - name: 린트 검사
         run: pnpm lint
+
+      - name: 필수 환경 변수 확인
+        run: node -e "if (!process.env.BETTER_AUTH_SECRET) { throw new Error('BETTER_AUTH_SECRET 누락') }"
 
       - name: 프로젝트 빌드
         run: pnpm build
