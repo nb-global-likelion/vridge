@@ -1,0 +1,283 @@
+# Phase 5 Re-Plan: Figma MVP Alignment (Prompts 17–24)
+
+## Context
+
+Prompts 1–15 built the full backend + basic UI, but the frontend diverges significantly from the Figma MVP designs. Prompt 16 (Recruiter Dashboard) is descoped. This plan replaces the old Prompts 17–18 with a comprehensive 8-prompt sequence to align the implementation with Figma.
+
+## Key Decisions
+
+| Decision      | Choice                                                                                                                                                           |
+| ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Schema gaps   | Add all missing fields (DOB, location, headline, hiringStatus, experienceLevel, graduationStatus enum, certification model, language testScore, profileImageUrl) |
+| Social login  | MVP — Google + Facebook via BetterAuth (server config already exists conditionally in `auth.ts`)                                                                 |
+| Profile URLs  | Shareable slugs: `/candidate/[slug]/profile` canonical, redirect from `/candidate/profile`                                                                       |
+| Job routes    | Merge `/candidate/jobs` → `/jobs` (single route, conditional apply based on auth)                                                                                |
+| Announcements | `/announcements` (plural), DB-backed Prisma model                                                                                                                |
+| S3 uploads    | Deferred to post-P24 (depends on AWS credentials)                                                                                                                |
+
+## Dependency Graph
+
+```
+P17 (Schema) ──> P18 (New Backends)  ──> P22 (Profile UI)
+                                      ──> P23 (Announcements + Slugs)
+
+P19 (Social Auth)       (independent)
+P20 (Design System)  ──> P21 (Jobs UI)
+                      ──> P22, P23
+
+P24 (Polish + E2E) depends on all
+```
+
+**Execution order: 17 → 18 → 19 → 20 → 21 → 22 → 23 → 24**
+(19 and 20 are independent of each other; either order works)
+
+---
+
+## Prompt 17: Schema Migration
+
+**Goal**: Evolve Prisma schema without breaking existing code. All 189+ tests must still pass.
+
+**Schema changes** (`prisma/schema.prisma`):
+
+- 2 new enums: `ExperienceLevel` (ENTRY/JUNIOR/MID/SENIOR/LEAD), `GraduationStatus` (ENROLLED/ON_LEAVE/GRADUATED/EXPECTED/WITHDRAWN)
+- `ProfilesPublic` +5 optional fields: `dateOfBirth` (DateTime?), `location` (String?), `headline` (String?), `isOpenToWork` (Boolean, default false), `profileImageUrl` (String?)
+- `ProfileCareer` +1: `experienceLevel` (ExperienceLevel?)
+- `ProfileEducation`: replace `isGraduated` (Boolean) → `graduationStatus` (GraduationStatus, default ENROLLED)
+- `ProfileLanguage` +2: `testName` (String?), `testScore` (String?)
+- New model: `ProfileCertification` (id, userId, name, date, description?, institutionName?, sortOrder, timestamps) + relation on AppUser
+- New model: `Announcement` (id, title, content as markdown, isPinned, timestamps)
+- Migration SQL: `--create-only`, add data transform for `isGraduated → graduationStatus`
+
+**Code updates to keep tests passing** (8 files reference `isGraduated`):
+
+- `lib/validations/profile.ts` — change `isGraduated: z.boolean()` → `graduationStatus: z.enum(...)`
+- `lib/use-cases/profile.ts` — update education-related functions (if they reference the field)
+- `entities/profile/ui/education-list.tsx` — update display
+- `features/profile-edit/ui/education-form.tsx` — update form field
+- `app/(dashboard)/candidate/profile/edit/page.tsx` — update if referencing the field
+- `prisma/seed.ts` — update seed data
+- `__tests__/lib/validations/profile.test.ts` — update test data
+- `__tests__/lib/use-cases/profile.test.ts` — update mock data
+
+**Tests**: All existing tests updated and passing. New: enum value smoke tests.
+
+---
+
+## Prompt 18: Certification + Announcement Backends
+
+**Goal**: Add backend for new models and extend existing schemas with new field validations.
+
+**Zod schema updates** (`lib/validations/profile.ts`):
+
+- `profilePublicSchema`: +`dateOfBirth`, `location`, `headline`, `isOpenToWork`
+- `profileCareerSchema`: +`experienceLevel` (optional enum)
+- `profileLanguageSchema`: +`testName`, `testScore` (optional strings)
+- New `profileCertificationSchema`: name, date, description?, institutionName?, sortOrder
+
+**New validation** (`lib/validations/announcement.ts`):
+
+- `announcementFilterSchema`: page, pageSize
+
+**Certification CRUD** (follows career/education/language pattern):
+
+- `lib/use-cases/profile.ts`: `addCertification`, `updateCertification`, `deleteCertification`, update `getFullProfile`/`getProfileForViewer` includes
+- `lib/actions/profile.ts`: corresponding server actions
+
+**Announcement queries** (follows jd-queries pattern):
+
+- `lib/use-cases/announcements.ts`: `getAnnouncements` (paginated, pinned first), `getAnnouncementById`
+- `lib/actions/announcements.ts`: corresponding server actions
+
+**Tests**: New test files for certification CRUD, announcement queries, updated validation tests.
+
+---
+
+## Prompt 19: Social Login + Auth Modal Redesign
+
+**Goal**: Enable Google/Facebook OAuth. Redesign login/signup modals to match Figma.
+
+**Server** (`lib/infrastructure/auth.ts`):
+
+- Social providers already conditionally configured — verify with BetterAuth social plugin import
+- `.env.example`: document `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `FACEBOOK_CLIENT_ID`, `FACEBOOK_CLIENT_SECRET`
+
+**Login modal** (`features/auth/ui/login-modal.tsx`):
+
+- Social login buttons (Google, Facebook) at top → "or" divider → email/password
+- Password visibility toggle (eye icon from `public/icons/show.svg` / `hidden.svg`)
+- "Forgot password?" link (stub for MVP)
+- Button: disabled/gray when empty, orange/brand when filled
+- Layout: "Don't have an account? Sign Up" at top-left
+
+**Signup modal** (`features/auth/ui/signup-modal.tsx`):
+
+- Two-step flow: Step 1 = method selection (Google / Facebook / Email), Step 2 = email + password form
+- Remove `name` and `confirmPassword` fields (Figma only shows email + password)
+- Privacy policy checkbox (required)
+- Real-time password validation (inline green ✓ / red ✗)
+- Success screen ("You're all set!" with orange checkmark)
+
+**Tests**: Modal render tests, step navigation, privacy checkbox blocks submit, social button rendering.
+
+---
+
+## Prompt 20: Design System Components
+
+**Goal**: Create shared UI primitives required by subsequent page redesigns.
+
+**New components**:
+
+- `components/ui/icon.tsx` — renders SVGs from `public/icons/` by name, configurable size/className
+- `components/ui/input-with-icon.tsx` — shadcn Input wrapper with `leadingIcon` prop
+- `components/ui/status-indicator.tsx` — green/gray dot + label ("Recruiting"/"Done")
+- `components/ui/numbered-pagination.tsx` — `‹ 1 2 3 … N ›` with active state, replaces inline PaginationRow
+
+**Button update** (`components/ui/button.tsx`):
+
+- Add `brand` variant: `rounded-full bg-brand text-white hover:bg-orange-600`
+
+**Tests**: Render tests for each component, active state for pagination, icon src correctness.
+
+---
+
+## Prompt 21: Jobs Route Merge + UI Redesign
+
+**Goal**: Single `/jobs` route with conditional apply. Redesign list and detail pages to match Figma.
+
+**Route merge**:
+
+- Delete `app/(dashboard)/candidate/jobs/` (both page.tsx and [id]/page.tsx)
+- `app/jobs/page.tsx`: check auth optionally, show apply button if logged in
+- `app/jobs/[id]/page.tsx`: ApplyButton if authenticated, LoginToApplyCta if not
+- Update `proxy.ts`, sidebar, user-menu — "My Jobs" in sidebar stays pointing to applications page
+
+**Jobs list redesign** (`app/jobs/page.tsx`):
+
+- Search bar (add `search` param to `jobDescriptionFilterSchema` + `getJobDescriptions` use-case)
+- Category tabs (horizontal, from job families) replacing dropdown filters
+- Sort dropdown ("Recent updated")
+- Redesigned `JdCard`: horizontal full-width, status indicator, metadata with icons, "Apply Now" button
+- `NumberedPagination` replacing prev/next
+
+**Job detail redesign** (`app/jobs/[id]/page.tsx`):
+
+- Two-column layout: main content (left, markdown) + sticky sidebar (right, metadata + apply + share)
+- Back arrow navigation
+- Status indicator in header
+
+**Backend**: Add `search` text filter to `lib/validations/job-description.ts` + `lib/use-cases/jd-queries.ts`
+
+**Key files**: `jd-card.tsx`, `jd-detail.tsx`, `jd-filters.tsx` (→ category tabs), `jd-queries.ts`, job-description validation
+
+**Tests**: Updated card/filter tests, search filter validation, route merge verification.
+
+---
+
+## Prompt 22: Profile View + Edit Redesign
+
+**Goal**: Update profile pages with all new fields from P17/P18. Add certification section.
+
+**Entity components** (`entities/profile/ui/`):
+
+- `profile-header.tsx`: +photo, DOB, location, headline, isOpenToWork badge
+- `education-list.tsx`: graduationStatus enum badges (already migrated in P17, just verify display)
+- `career-list.tsx`: +experienceLevel badge
+- `language-list.tsx`: +testName/testScore display ("TOEFL · 100")
+- New `certification-list.tsx`: name, date, institution, description
+
+**Label maps** (`_utils.ts`): Add `GRADUATION_STATUS_LABELS`, `EXPERIENCE_LEVEL_LABELS`
+
+**Profile view** (`app/(dashboard)/candidate/profile/page.tsx`):
+
+- Photo in header, new fields displayed
+- Certification section added
+- Section order: Basic → Education → Skills → Experience → Certification → Languages → URLs
+
+**Profile edit forms** (`features/profile-edit/ui/`):
+
+- `profile-public-form.tsx`: +DOB, location, headline, isOpenToWork toggle
+- `career-form.tsx`: +experienceLevel select
+- `language-form.tsx`: +testName, testScore
+- New `certification-form.tsx` + CertificationSection (same CRUD pattern as career/education)
+
+**Mutations** (`use-profile-mutations.ts`): +`useAddCertification`, `useUpdateCertification`, `useDeleteCertification`
+
+**Tests**: Entity component render tests for new fields, certification form tests, updated mock data.
+
+---
+
+## Prompt 23: Announcements + Candidate Landing + Shareable Slugs
+
+**Goal**: Build announcement pages, candidate landing, and shareable profile URLs.
+
+**Announcements**:
+
+- `app/announcements/page.tsx`: table layout (No / Title / Time), pinned posts with pin icon, `NumberedPagination`
+- `app/announcements/[id]/page.tsx`: back arrow, "(Pinned)" label, markdown content, next/previous navigation
+- Update `main-nav.tsx`: `/announcement` → `/announcements`
+- Update `proxy.ts`: public path update
+
+**Shareable profile slugs**:
+
+- New use-case: `getProfileBySlug(slug)` — query by `publicSlug`, respect `isPublic` flag
+- New action: `getProfileBySlug`
+- `app/candidate/[slug]/profile/page.tsx`: public profile view (read-only, no sidebar)
+- `app/(dashboard)/candidate/profile/page.tsx`: add redirect to `/candidate/[mySlug]/profile` for authenticated users
+
+**Candidate landing**:
+
+- `app/candidate/[slug]/page.tsx`: condensed profile card + My Jobs stats (Applied / In Progress counts)
+
+**My Applications update** (`app/(dashboard)/candidate/applications/page.tsx`):
+
+- Add summary stat cards (Applied: N, In Progress: N)
+- Reuse `JdCard` for application entries
+
+**Tests**: Announcement query coverage (from P18), slug use-case tests, proxy path tests, main-nav link update.
+
+---
+
+## Prompt 24: Polish + E2E
+
+**Goal**: Error boundaries, loading skeletons, build verification, integration smoke test.
+
+**Error/loading pages**:
+
+- `app/error.tsx`, `app/not-found.tsx`
+- Route-specific: `app/announcements/error.tsx`, `app/announcements/[id]/not-found.tsx`
+- Loading skeletons: `loading.tsx` for profile, jobs, announcements, applications
+
+**E2E smoke test** (`__tests__/e2e/smoke.test.ts`):
+
+- Candidate flow: profile CRUD (with new fields) → job browse (with search) → apply → view applications
+- Announcement flow: list (pinned ordering) → detail
+- Profile slug flow: public profile by slug
+- Authorization checks
+
+**Build verification**: `pnpm build` + `pnpm lint` + `tsc --noEmit` all clean.
+
+---
+
+## Deferred (Post-P24)
+
+| Item                                       | Reason                               |
+| ------------------------------------------ | ------------------------------------ |
+| S3 file uploads (profile photo, portfolio) | AWS credentials pending              |
+| Custom month/year date picker              | Can use HTML date inputs for MVP     |
+| Phone country code dropdown                | Plain phone input sufficient for MVP |
+| EN language dropdown                       | Stub exists, i18n is post-MVP        |
+| Forgot password flow                       | Needs email sending infrastructure   |
+| VRIDGE custom logo font                    | Text logo sufficient for MVP         |
+
+## Summary
+
+| #   | Scope                                                                                     | Size         | Depends On    |
+| --- | ----------------------------------------------------------------------------------------- | ------------ | ------------- |
+| 17  | Schema migration + isGraduated→graduationStatus code update                               | Small–Medium | —             |
+| 18  | Certification CRUD + announcement queries + new field validations                         | Medium       | P17           |
+| 19  | Social login (Google/Facebook) + auth modal redesign                                      | Medium       | —             |
+| 20  | Design system components (Icon, InputWithIcon, StatusIndicator, Pagination, Button brand) | Small        | —             |
+| 21  | Jobs route merge + list/detail UI redesign                                                | Large        | P20           |
+| 22  | Profile view/edit with all new fields + certification section                             | Large        | P18, P20      |
+| 23  | Announcements pages + candidate landing + shareable slugs                                 | Large        | P18, P20, P22 |
+| 24  | Error handling + loading states + E2E smoke test                                          | Medium       | All           |

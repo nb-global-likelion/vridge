@@ -125,13 +125,11 @@ proxy.ts                              # 미들웨어 (함수명: proxy, 테스�
 | 13  | Profile Display             | UI/Entity         | 재사용 프로필 섹션 컴포넌트    | ✅   |
 | 14  | Profile Edit                | UI/Feature        | 편집 폼 + 뮤테이션             | ✅   |
 | 15  | Job Browse + Apply          | UI/Feature+Entity | 채용공고 탐색, 지원            | ✅   |
-| 16  | Recruiter Dashboard         | UI/Feature        | 지원자 조회, 후보자 프로필     | ⬜   |
-| 17  | Uploads + Polish + E2E      | Infra/Polish      | S3, 에러 처리, 스모크 테스트   | ⬜   |
-| 18  | Announcement Pages          | UI/Page           | 공지사항 목록·상세             | ⬜   |
+| 16  | Recruiter Dashboard         | UI/Feature        | 지원자 조회, 후보자 프로필     | ❌   |
 
-> **범례**: ✅ 완료 / 🔶 부분 완료 (DB 자격 증명 대기) / ⬜ 미착수
+> **범례**: ✅ 완료 / 🔶 부분 완료 (DB 자격 증명 대기) / ⬜ 미착수 / ❌ 제외
 >
-> Prompt 17-18 상세 계획: [docs/implementation-plan-p17.md](./implementation-plan-p17.md)
+> Phase 5 (Prompts 17-24) 상세 계획: [docs/implementation-plan-p5.md](./implementation-plan-p5.md)
 
 ---
 
@@ -1075,12 +1073,14 @@ Task 7: 테스트.
 
 ---
 
-## Phase 5 이후
+## Phase 5: Figma MVP 정렬 (Prompts 17–24)
 
-Prompt 17 (Uploads + Polish + E2E) 및 Prompt 18 (Announcement Pages) 계획은
-분량 관리를 위해 별도 파일에서 관리합니다.
+Prompt 16 (Recruiter Dashboard)은 현재 계획에서 제외되었습니다.
+Phase 5는 Figma MVP 디자인과 현재 구현 간의 차이를 해소하기 위한 8개 프롬프트로 구성됩니다.
 
-→ **[docs/implementation-plan-p17.md](./implementation-plan-p17.md)**
+→ **[docs/implementation-plan-p5.md](./implementation-plan-p5.md)**
+
+이전 Phase 5 계획 (구 Prompt 17-18): [docs/implementation-plan-p17.md](./implementation-plan-p17.md) (대체됨)
 
 ---
 
