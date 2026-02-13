@@ -1,5 +1,7 @@
 import { PrismaClient } from '../lib/generated/prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
+import { hashPassword } from 'better-auth/crypto';
+import { randomUUID } from 'crypto';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 
@@ -121,6 +123,7 @@ interface SampleUserSeed {
   email: string;
   role: 'candidate' | 'recruiter' | 'admin';
   orgId?: string;
+  seedPassword?: string;
   profile?: SampleProfileSeed;
 }
 
@@ -133,6 +136,7 @@ interface SampleApplySeed {
 const SAMPLE_IDS = {
   org: '00000000-0000-0000-0000-000000000101',
   recruiter: '00000000-0000-0000-0000-000000000201',
+  admin: '00000000-0000-0000-0000-000000000202',
   candidateA: '00000000-0000-0000-0000-000000000301',
   candidateB: '00000000-0000-0000-0000-000000000302',
   jdFrontend: '00000000-0000-0000-0000-000000000401',
@@ -204,12 +208,22 @@ const SAMPLE_USERS: SampleUserSeed[] = [
     email: 'recruiter.demo@example.com',
     role: 'recruiter',
     orgId: SAMPLE_IDS.org,
+    seedPassword: 'Password123!',
+  },
+  {
+    id: SAMPLE_IDS.admin,
+    name: 'Admin Demo',
+    email: 'admin.demo@example.com',
+    role: 'admin',
+    orgId: SAMPLE_IDS.org,
+    seedPassword: 'Password123!',
   },
   {
     id: SAMPLE_IDS.candidateA,
     name: 'Minji Kim',
     email: 'minji.kim@example.com',
     role: 'candidate',
+    seedPassword: 'Password123!',
     profile: {
       public: {
         firstName: 'Minji',
@@ -282,6 +296,7 @@ const SAMPLE_USERS: SampleUserSeed[] = [
     name: 'Anh Nguyen',
     email: 'anh.nguyen@example.com',
     role: 'candidate',
+    seedPassword: 'Password123!',
     profile: {
       public: {
         firstName: 'Anh',
@@ -680,6 +695,49 @@ async function seedSampleUsers() {
   console.log(`시드 완료: sample users ${SAMPLE_USERS.length}`);
 }
 
+async function seedSampleCredentialAccounts() {
+  for (const user of SAMPLE_USERS) {
+    if (!user.seedPassword) continue;
+
+    const passwordHash = await hashPassword(user.seedPassword);
+    const existingCredentialAccount = await prisma.account.findFirst({
+      where: {
+        userId: user.id,
+        providerId: 'credential',
+      },
+      select: { id: true },
+    });
+
+    if (existingCredentialAccount) {
+      await prisma.account.update({
+        where: { id: existingCredentialAccount.id },
+        data: {
+          accountId: user.id,
+          providerId: 'credential',
+          password: passwordHash,
+        },
+      });
+      continue;
+    }
+
+    await prisma.account.create({
+      data: {
+        id: randomUUID(),
+        userId: user.id,
+        accountId: user.id,
+        providerId: 'credential',
+        password: passwordHash,
+      },
+    });
+  }
+
+  console.log('시드 완료: credential 계정 생성/갱신');
+  console.log('테스트 로그인 계정');
+  console.log('  candidate: minji.kim@example.com / Password123!');
+  console.log('  recruiter: recruiter.demo@example.com / Password123!');
+  console.log('  admin: admin.demo@example.com / Password123!');
+}
+
 async function seedSampleApplies() {
   await prisma.apply.createMany({
     data: SAMPLE_APPLIES.map((apply) => ({
@@ -699,6 +757,7 @@ async function main() {
   await seedSampleOrg();
   await seedSampleJobDescriptions();
   await seedSampleUsers();
+  await seedSampleCredentialAccounts();
   await seedSampleApplies();
 }
 
