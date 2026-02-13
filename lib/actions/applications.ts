@@ -15,7 +15,7 @@ import {
 type MutationResult = { success: true } | { error: string };
 type QueryResult<T> = { success: true; data: T } | { error: string };
 
-const APPLICATIONS_PATH = '/dashboard/candidate/applications';
+const APPLICATIONS_PATH = '/candidate/applications';
 
 function handleError(e: unknown): { error: string } {
   if (e instanceof DomainError) return { error: e.message };

@@ -120,7 +120,7 @@ export default async function CandidateJobsPage({
             <JdCard
               key={jd.id}
               {...mapJd(jd)}
-              href={`/dashboard/candidate/jobs/${jd.id}`}
+              href={`/candidate/jobs/${jd.id}`}
             />
           ))}
         </div>
@@ -129,7 +129,7 @@ export default async function CandidateJobsPage({
       <PaginationRow
         page={page}
         totalPages={totalPages}
-        basePath="/dashboard/candidate/jobs"
+        basePath="/candidate/jobs"
         currentParams={
           Object.fromEntries(
             Object.entries(params).filter(([k]) => k !== 'page')

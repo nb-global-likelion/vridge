@@ -59,7 +59,7 @@ export default async function CandidateProfileEditPage() {
   return (
     <div className="flex flex-col gap-6 p-6">
       <Link
-        href="/dashboard/candidate/profile"
+        href="/candidate/profile"
         className="text-sm text-muted-foreground hover:underline"
       >
         ← 프로필로 돌아가기

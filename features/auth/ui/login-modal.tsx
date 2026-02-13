@@ -37,7 +37,7 @@ export function LoginModal() {
         fetchOptions: {
           onSuccess: () => {
             closeAll();
-            router.push('/dashboard/candidate/profile');
+            router.push('/candidate/profile');
           },
           onError: (ctx) => {
             setServerError(

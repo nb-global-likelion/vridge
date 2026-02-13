@@ -38,7 +38,7 @@ export default async function CandidateProfilePage() {
           aboutMe={profilePublic?.aboutMe}
         />
         <Button variant="outline" size="sm" asChild>
-          <Link href="/dashboard/candidate/profile/edit">편집</Link>
+          <Link href="/candidate/profile/edit">편집</Link>
         </Button>
       </div>
 
