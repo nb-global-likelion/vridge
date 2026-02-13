@@ -18,6 +18,9 @@ import {
   deleteProfileUrl,
   addProfileSkill,
   deleteProfileSkill,
+  addProfileCertification,
+  updateProfileCertification,
+  deleteProfileCertification,
 } from '@/lib/actions/profile';
 
 async function unwrap<T>(p: Promise<{ error: string } | T>): Promise<T> {
@@ -94,4 +97,20 @@ export const useAddSkill = () =>
 export const useDeleteSkill = () =>
   useMutation({
     mutationFn: (skillId: string) => unwrap(deleteProfileSkill(skillId)),
+  });
+
+export const useAddCertification = () =>
+  useMutation({
+    mutationFn: (d: unknown) => unwrap(addProfileCertification(d)),
+  });
+
+export const useUpdateCertification = () =>
+  useMutation({
+    mutationFn: ({ id, data }: { id: string; data: unknown }) =>
+      unwrap(updateProfileCertification(id, data)),
+  });
+
+export const useDeleteCertification = () =>
+  useMutation({
+    mutationFn: (id: string) => unwrap(deleteProfileCertification(id)),
   });

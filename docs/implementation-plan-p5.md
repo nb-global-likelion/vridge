@@ -97,6 +97,17 @@ P24 (Polish + E2E) depends on all
 
 **Tests**: New test files for certification CRUD, announcement queries, updated validation tests.
 
+### Prompt 18 결과
+
+- PR #22 (`feat/prompt18-cert-announcement-backend` → `dev`)
+- 14개 파일 변경 (신규 5개, 수정 9개)
+- Zod 스키마 확장: profilePublic +4필드, profileCareer +experienceLevel, profileLanguage +testName/testScore
+- 신규 스키마: profileCertificationSchema, announcementFilterSchema
+- 자격증 CRUD: use-case + action + mutation hook (소유권 검증 포함)
+- 공지사항 조회: getAnnouncements (고정글 우선, 페이지네이션) + getAnnouncementById
+- getFullProfile/getProfileForViewer에 certifications include 추가
+- 233개 테스트 통과 (31 suite), `tsc --noEmit` 클린
+
 ---
 
 ## Prompt 19: Social Login + Auth Modal Redesign

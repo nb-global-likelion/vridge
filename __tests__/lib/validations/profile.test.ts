@@ -6,6 +6,7 @@ import {
   profileEducationSchema,
   profileUrlSchema,
   profileSkillSchema,
+  profileCertificationSchema,
 } from '@/lib/validations/profile';
 
 describe('profilePublicSchema', () => {
@@ -33,6 +34,56 @@ describe('profilePublicSchema', () => {
     ).toBe(false);
   });
   it('aboutMe 없어도 통과', () => {
+    expect(
+      profilePublicSchema.safeParse({ firstName: 'A', lastName: 'B' }).success
+    ).toBe(true);
+  });
+  it('dateOfBirth 유효한 날짜 통과', () => {
+    expect(
+      profilePublicSchema.safeParse({
+        firstName: 'A',
+        lastName: 'B',
+        dateOfBirth: '1990-01-15',
+      }).success
+    ).toBe(true);
+  });
+  it('dateOfBirth 잘못된 형식 거부', () => {
+    expect(
+      profilePublicSchema.safeParse({
+        firstName: 'A',
+        lastName: 'B',
+        dateOfBirth: '1990/01/15',
+      }).success
+    ).toBe(false);
+  });
+  it('location 200자 초과 거부', () => {
+    expect(
+      profilePublicSchema.safeParse({
+        firstName: 'A',
+        lastName: 'B',
+        location: 'x'.repeat(201),
+      }).success
+    ).toBe(false);
+  });
+  it('headline 200자 초과 거부', () => {
+    expect(
+      profilePublicSchema.safeParse({
+        firstName: 'A',
+        lastName: 'B',
+        headline: 'x'.repeat(201),
+      }).success
+    ).toBe(false);
+  });
+  it('isOpenToWork boolean 통과', () => {
+    expect(
+      profilePublicSchema.safeParse({
+        firstName: 'A',
+        lastName: 'B',
+        isOpenToWork: true,
+      }).success
+    ).toBe(true);
+  });
+  it('새 필드 모두 optional', () => {
     expect(
       profilePublicSchema.safeParse({ firstName: 'A', lastName: 'B' }).success
     ).toBe(true);
@@ -71,6 +122,37 @@ describe('profileLanguageSchema', () => {
         language: 'Korean',
         proficiency: 'expert',
         sortOrder: 0,
+      }).success
+    ).toBe(false);
+  });
+  it('testName, testScore optional 통과', () => {
+    expect(
+      profileLanguageSchema.safeParse({
+        language: 'English',
+        proficiency: 'fluent',
+        sortOrder: 0,
+        testName: 'TOEIC',
+        testScore: '990',
+      }).success
+    ).toBe(true);
+  });
+  it('testName 100자 초과 거부', () => {
+    expect(
+      profileLanguageSchema.safeParse({
+        language: 'English',
+        proficiency: 'fluent',
+        sortOrder: 0,
+        testName: 'x'.repeat(101),
+      }).success
+    ).toBe(false);
+  });
+  it('testScore 50자 초과 거부', () => {
+    expect(
+      profileLanguageSchema.safeParse({
+        language: 'English',
+        proficiency: 'fluent',
+        sortOrder: 0,
+        testScore: 'x'.repeat(51),
       }).success
     ).toBe(false);
   });
@@ -123,6 +205,23 @@ describe('profileCareerSchema', () => {
       profileCareerSchema.safeParse({ ...valid, description: 'x'.repeat(5001) })
         .success
     ).toBe(false);
+  });
+  it('유효한 experienceLevel 통과', () => {
+    for (const level of ['ENTRY', 'JUNIOR', 'MID', 'SENIOR', 'LEAD']) {
+      expect(
+        profileCareerSchema.safeParse({ ...valid, experienceLevel: level })
+          .success
+      ).toBe(true);
+    }
+  });
+  it('잘못된 experienceLevel 거부', () => {
+    expect(
+      profileCareerSchema.safeParse({ ...valid, experienceLevel: 'EXPERT' })
+        .success
+    ).toBe(false);
+  });
+  it('experienceLevel 없어도 통과', () => {
+    expect(profileCareerSchema.safeParse(valid).success).toBe(true);
   });
 });
 
@@ -214,5 +313,60 @@ describe('profileSkillSchema', () => {
   });
   it('빈 skillId 거부', () => {
     expect(profileSkillSchema.safeParse({ skillId: '' }).success).toBe(false);
+  });
+});
+
+describe('profileCertificationSchema', () => {
+  const valid = {
+    name: '정보처리기사',
+    date: '2023-06-15',
+    sortOrder: 0,
+  };
+  it('유효한 데이터 통과', () => {
+    expect(profileCertificationSchema.safeParse(valid).success).toBe(true);
+  });
+  it('optional 필드 포함 통과', () => {
+    expect(
+      profileCertificationSchema.safeParse({
+        ...valid,
+        description: '국가기술자격',
+        institutionName: '한국산업인력공단',
+      }).success
+    ).toBe(true);
+  });
+  it('빈 name 거부', () => {
+    expect(
+      profileCertificationSchema.safeParse({ ...valid, name: '' }).success
+    ).toBe(false);
+  });
+  it('name 200자 초과 거부', () => {
+    expect(
+      profileCertificationSchema.safeParse({
+        ...valid,
+        name: 'x'.repeat(201),
+      }).success
+    ).toBe(false);
+  });
+  it('잘못된 날짜 형식 거부', () => {
+    expect(
+      profileCertificationSchema.safeParse({ ...valid, date: '2023/06/15' })
+        .success
+    ).toBe(false);
+  });
+  it('description 5000자 초과 거부', () => {
+    expect(
+      profileCertificationSchema.safeParse({
+        ...valid,
+        description: 'x'.repeat(5001),
+      }).success
+    ).toBe(false);
+  });
+  it('institutionName 200자 초과 거부', () => {
+    expect(
+      profileCertificationSchema.safeParse({
+        ...valid,
+        institutionName: 'x'.repeat(201),
+      }).success
+    ).toBe(false);
   });
 });

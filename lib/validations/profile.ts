@@ -4,6 +4,10 @@ export const profilePublicSchema = z.object({
   firstName: z.string().min(1).max(100),
   lastName: z.string().min(1).max(100),
   aboutMe: z.string().max(2000).optional(),
+  dateOfBirth: z.string().date().optional(),
+  location: z.string().max(200).optional(),
+  headline: z.string().max(200).optional(),
+  isOpenToWork: z.boolean().optional(),
 });
 
 export const profilePrivateSchema = z.object({
@@ -16,6 +20,8 @@ export const profilePrivateSchema = z.object({
 export const profileLanguageSchema = z.object({
   language: z.string().min(1),
   proficiency: z.enum(['native', 'fluent', 'professional', 'basic']),
+  testName: z.string().max(100).optional(),
+  testScore: z.string().max(50).optional(),
   sortOrder: z.number().int().min(0),
 });
 
@@ -28,6 +34,9 @@ export const profileCareerSchema = z
     startDate: z.string().date(),
     endDate: z.string().date().optional(),
     description: z.string().max(5000).optional(),
+    experienceLevel: z
+      .enum(['ENTRY', 'JUNIOR', 'MID', 'SENIOR', 'LEAD'])
+      .optional(),
     sortOrder: z.number().int().min(0),
   })
   .refine((data) => !data.endDate || data.endDate >= data.startDate, {
@@ -79,4 +88,12 @@ export const profileUrlSchema = z.object({
 
 export const profileSkillSchema = z.object({
   skillId: z.string().min(1),
+});
+
+export const profileCertificationSchema = z.object({
+  name: z.string().min(1).max(200),
+  date: z.string().date(),
+  description: z.string().max(5000).optional(),
+  institutionName: z.string().max(200).optional(),
+  sortOrder: z.number().int().min(0),
 });

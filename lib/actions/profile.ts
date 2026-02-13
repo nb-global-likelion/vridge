@@ -17,6 +17,7 @@ import {
   profileEducationSchema,
   profileLanguageSchema,
   profileUrlSchema,
+  profileCertificationSchema,
 } from '@/lib/validations/profile';
 import {
   getFullProfile,
@@ -37,6 +38,9 @@ import {
   deleteUrl,
   addSkill,
   deleteSkill,
+  addCertification,
+  updateCertification,
+  deleteCertification,
 } from '@/lib/use-cases/profile';
 
 type MutationResult = { success: true } | { error: string };
@@ -259,6 +263,48 @@ export async function deleteProfileSkill(
   try {
     const user = await requireUser();
     await deleteSkill(user.userId, skillId);
+    revalidatePath(PROFILE_PATH);
+    return { success: true };
+  } catch (e) {
+    return handleError(e);
+  }
+}
+
+export async function addProfileCertification(
+  input: unknown
+): Promise<MutationResult> {
+  try {
+    const user = await requireUser();
+    const data = profileCertificationSchema.parse(input);
+    await addCertification(user.userId, data);
+    revalidatePath(PROFILE_PATH);
+    return { success: true };
+  } catch (e) {
+    return handleError(e);
+  }
+}
+
+export async function updateProfileCertification(
+  id: string,
+  input: unknown
+): Promise<MutationResult> {
+  try {
+    const user = await requireUser();
+    const data = profileCertificationSchema.parse(input);
+    await updateCertification(user.userId, id, data);
+    revalidatePath(PROFILE_PATH);
+    return { success: true };
+  } catch (e) {
+    return handleError(e);
+  }
+}
+
+export async function deleteProfileCertification(
+  id: string
+): Promise<MutationResult> {
+  try {
+    const user = await requireUser();
+    await deleteCertification(user.userId, id);
     revalidatePath(PROFILE_PATH);
     return { success: true };
   } catch (e) {

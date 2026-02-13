@@ -8,6 +8,9 @@ import {
   deleteProfileSkill,
   getMyProfile,
   getProfileForRecruiter,
+  addProfileCertification,
+  updateProfileCertification,
+  deleteProfileCertification,
 } from '@/lib/actions/profile';
 import { DomainError } from '@/lib/domain/errors';
 import * as profileUseCases from '@/lib/use-cases/profile';
@@ -212,6 +215,69 @@ describe('deleteProfileSkill', () => {
     );
 
     const result = await deleteProfileSkill('typescript');
+
+    expect(result).toEqual({ success: true });
+  });
+});
+
+describe('addProfileCertification', () => {
+  const validCert = {
+    name: '정보처리기사',
+    date: '2023-06-15',
+    sortOrder: 0,
+  };
+
+  it('유효한 자격증 → success', async () => {
+    (authUtils.requireUser as unknown as jest.Mock).mockResolvedValue(mockUser);
+    (
+      profileUseCases.addCertification as unknown as jest.Mock
+    ).mockResolvedValue({});
+
+    const result = await addProfileCertification(validCert);
+
+    expect(result).toEqual({ success: true });
+  });
+
+  it('Zod 검증 실패 → { error: ... }', async () => {
+    (authUtils.requireUser as unknown as jest.Mock).mockResolvedValue(mockUser);
+
+    const result = await addProfileCertification({ name: '', date: 'bad' });
+
+    expect(result).toEqual(
+      expect.objectContaining({ error: expect.any(String) })
+    );
+  });
+});
+
+describe('updateProfileCertification', () => {
+  it('존재하지 않는 자격증 → { error: ... }', async () => {
+    (authUtils.requireUser as unknown as jest.Mock).mockResolvedValue(mockUser);
+    const domainErr = new DomainError(
+      'NOT_FOUND',
+      '자격증을(를) 찾을 수 없습니다'
+    );
+    (
+      profileUseCases.updateCertification as unknown as jest.Mock
+    ).mockRejectedValue(domainErr);
+
+    const result = await updateProfileCertification('cert-1', {
+      name: '자격증',
+      date: '2023-06-15',
+      sortOrder: 0,
+    });
+
+    expect(result).toEqual({ error: '자격증을(를) 찾을 수 없습니다' });
+  });
+});
+
+describe('deleteProfileCertification', () => {
+  it('자격증 삭제 성공', async () => {
+    (authUtils.requireUser as unknown as jest.Mock).mockResolvedValue(mockUser);
+    (
+      profileUseCases.deleteCertification as unknown as jest.Mock
+    ).mockResolvedValue(undefined);
+
+    const result = await deleteProfileCertification('cert-1');
 
     expect(result).toEqual({ success: true });
   });

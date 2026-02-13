@@ -17,6 +17,9 @@ import {
   deleteUrl,
   addSkill,
   deleteSkill,
+  addCertification,
+  updateCertification,
+  deleteCertification,
 } from '@/lib/use-cases/profile';
 import { DomainError } from '@/lib/domain/errors';
 import { prisma } from '@/lib/infrastructure/db';
@@ -60,6 +63,12 @@ jest.mock('@/lib/infrastructure/db', () => ({
       create: jest.fn(),
       deleteMany: jest.fn(),
     },
+    profileCertification: {
+      findFirst: jest.fn(),
+      create: jest.fn(),
+      update: jest.fn(),
+      delete: jest.fn(),
+    },
   },
 }));
 
@@ -75,6 +84,7 @@ const mockUser = {
   urls: [],
   profileSkills: [],
   attachments: [],
+  certifications: [],
 };
 
 describe('getFullProfile', () => {
@@ -382,5 +392,77 @@ describe('deleteSkill', () => {
     expect(prisma.profileSkill.deleteMany).toHaveBeenCalledWith({
       where: { userId: 'user-1', skillId: 'typescript' },
     });
+  });
+});
+
+const certificationData = {
+  name: '정보처리기사',
+  date: '2023-06-15',
+  description: '국가기술자격',
+  institutionName: '한국산업인력공단',
+  sortOrder: 0,
+};
+
+describe('addCertification', () => {
+  it('자격증 생성 호출', async () => {
+    const created = { id: 'cert-1', userId: 'user-1', ...certificationData };
+    (
+      prisma.profileCertification.create as unknown as jest.Mock
+    ).mockResolvedValue(created);
+    const result = await addCertification('user-1', certificationData);
+    expect(prisma.profileCertification.create).toHaveBeenCalledWith({
+      data: { ...certificationData, userId: 'user-1' },
+    });
+    expect(result).toEqual(created);
+  });
+});
+
+describe('updateCertification', () => {
+  it('자격증 찾아 업데이트', async () => {
+    const existing = { id: 'cert-1', userId: 'user-1' };
+    (
+      prisma.profileCertification.findFirst as unknown as jest.Mock
+    ).mockResolvedValue(existing);
+    (
+      prisma.profileCertification.update as unknown as jest.Mock
+    ).mockResolvedValue({ ...existing, ...certificationData });
+    await updateCertification('user-1', 'cert-1', certificationData);
+    expect(prisma.profileCertification.update).toHaveBeenCalledWith({
+      where: { id: 'cert-1' },
+      data: certificationData,
+    });
+  });
+
+  it('자격증 없음 → NOT_FOUND throw', async () => {
+    (
+      prisma.profileCertification.findFirst as unknown as jest.Mock
+    ).mockResolvedValue(null);
+    await expect(
+      updateCertification('user-1', 'nonexistent', certificationData)
+    ).rejects.toThrow(DomainError);
+  });
+});
+
+describe('deleteCertification', () => {
+  it('자격증 찾아 삭제', async () => {
+    (
+      prisma.profileCertification.findFirst as unknown as jest.Mock
+    ).mockResolvedValue({ id: 'cert-1', userId: 'user-1' });
+    (
+      prisma.profileCertification.delete as unknown as jest.Mock
+    ).mockResolvedValue({});
+    await deleteCertification('user-1', 'cert-1');
+    expect(prisma.profileCertification.delete).toHaveBeenCalledWith({
+      where: { id: 'cert-1' },
+    });
+  });
+
+  it('자격증 없음 → NOT_FOUND throw', async () => {
+    (
+      prisma.profileCertification.findFirst as unknown as jest.Mock
+    ).mockResolvedValue(null);
+    await expect(deleteCertification('user-1', 'nonexistent')).rejects.toThrow(
+      DomainError
+    );
   });
 });

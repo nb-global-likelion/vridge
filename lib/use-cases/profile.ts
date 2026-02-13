@@ -8,6 +8,7 @@ import type {
   profileEducationSchema,
   profileLanguageSchema,
   profileUrlSchema,
+  profileCertificationSchema,
 } from '@/lib/validations/profile';
 
 export async function getFullProfile(userId: string) {
@@ -22,6 +23,7 @@ export async function getFullProfile(userId: string) {
       urls: { orderBy: { sortOrder: 'asc' } },
       profileSkills: { include: { skill: true } },
       attachments: true,
+      certifications: { orderBy: { sortOrder: 'asc' } },
     },
   });
   if (!profile) throw notFound('프로필');
@@ -39,6 +41,7 @@ export async function getProfileForViewer(
     languages: { orderBy: { sortOrder: 'asc' } },
     urls: { orderBy: { sortOrder: 'asc' } },
     profileSkills: { include: { skill: true } },
+    certifications: { orderBy: { sortOrder: 'asc' } },
   } as const;
 
   const include =
@@ -170,6 +173,33 @@ export async function deleteUrl(userId: string, id: string) {
   const existing = await prisma.profileUrl.findFirst({ where: { id, userId } });
   if (!existing) throw notFound('URL');
   return prisma.profileUrl.delete({ where: { id } });
+}
+
+export async function addCertification(
+  userId: string,
+  data: z.infer<typeof profileCertificationSchema>
+) {
+  return prisma.profileCertification.create({ data: { ...data, userId } });
+}
+
+export async function updateCertification(
+  userId: string,
+  id: string,
+  data: z.infer<typeof profileCertificationSchema>
+) {
+  const existing = await prisma.profileCertification.findFirst({
+    where: { id, userId },
+  });
+  if (!existing) throw notFound('자격증');
+  return prisma.profileCertification.update({ where: { id }, data });
+}
+
+export async function deleteCertification(userId: string, id: string) {
+  const existing = await prisma.profileCertification.findFirst({
+    where: { id, userId },
+  });
+  if (!existing) throw notFound('자격증');
+  return prisma.profileCertification.delete({ where: { id } });
 }
 
 export async function addSkill(userId: string, skillId: string) {
