@@ -1,12 +1,16 @@
 import { Badge } from '@/components/ui/badge';
-import { formatDate, EDUCATION_TYPE_LABELS } from './_utils';
+import {
+  formatDate,
+  EDUCATION_TYPE_LABELS,
+  GRADUATION_STATUS_LABELS,
+} from './_utils';
 
 type Education = {
   id: string;
   institutionName: string;
   educationType: string;
   field: string | null;
-  isGraduated: boolean;
+  graduationStatus: string;
   startDate: Date;
   endDate: Date | null;
   sortOrder: number;
@@ -30,8 +34,13 @@ export function EducationList({ educations }: Props) {
             <Badge variant="secondary">
               {EDUCATION_TYPE_LABELS[edu.educationType] ?? edu.educationType}
             </Badge>
-            <Badge variant={edu.isGraduated ? 'default' : 'outline'}>
-              {edu.isGraduated ? '졸업' : '재학 중'}
+            <Badge
+              variant={
+                edu.graduationStatus === 'GRADUATED' ? 'default' : 'outline'
+              }
+            >
+              {GRADUATION_STATUS_LABELS[edu.graduationStatus] ??
+                edu.graduationStatus}
             </Badge>
           </div>
           {edu.field && (

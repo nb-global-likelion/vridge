@@ -16,6 +16,14 @@ export const PROFICIENCY_LABELS: Record<string, string> = {
   basic: '기초',
 };
 
+export const GRADUATION_STATUS_LABELS: Record<string, string> = {
+  ENROLLED: '재학 중',
+  ON_LEAVE: '휴학',
+  GRADUATED: '졸업',
+  EXPECTED: '졸업 예정',
+  WITHDRAWN: '중퇴',
+};
+
 export const EDUCATION_TYPE_LABELS: Record<string, string> = {
   vet_elementary: '직업 초급',
   vet_intermediate: '직업 중급',

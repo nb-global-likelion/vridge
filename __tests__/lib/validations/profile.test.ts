@@ -130,7 +130,7 @@ describe('profileEducationSchema', () => {
   const valid = {
     institutionName: 'Seoul Univ',
     educationType: 'higher_bachelor',
-    isGraduated: true,
+    graduationStatus: 'GRADUATED',
     startDate: '2018-03-01',
     sortOrder: 0,
   };
@@ -150,6 +150,28 @@ describe('profileEducationSchema', () => {
     expect(
       profileEducationSchema.safeParse({ ...valid, educationType: 'bachelor' })
         .success
+    ).toBe(false);
+  });
+  it('유효한 graduationStatus 값 통과', () => {
+    for (const status of [
+      'ENROLLED',
+      'ON_LEAVE',
+      'GRADUATED',
+      'EXPECTED',
+      'WITHDRAWN',
+    ]) {
+      expect(
+        profileEducationSchema.safeParse({ ...valid, graduationStatus: status })
+          .success
+      ).toBe(true);
+    }
+  });
+  it('잘못된 graduationStatus 거부', () => {
+    expect(
+      profileEducationSchema.safeParse({
+        ...valid,
+        graduationStatus: 'DROPPED',
+      }).success
     ).toBe(false);
   });
 });

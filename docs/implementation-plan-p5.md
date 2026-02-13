@@ -61,6 +61,13 @@ P24 (Polish + E2E) depends on all
 
 **Tests**: All existing tests updated and passing. New: enum value smoke tests.
 
+### Prompt 17 결과
+
+- PR #21 (`feat/prompt17-schema-migration` → `dev`)
+- 9개 파일 변경: schema, validations, \_utils, education-list, education-form, edit page, seed, 테스트 2개
+- 191개 테스트 통과 (28 suite), `tsc --noEmit` 클린
+- DB 마이그레이션 SQL은 DB 자격 증명 확보 후 생성 예정
+
 ---
 
 ## Prompt 18: Certification + Announcement Backends
