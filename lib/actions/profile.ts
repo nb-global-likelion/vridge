@@ -48,7 +48,7 @@ function handleError(e: unknown): { error: string } {
   throw e;
 }
 
-const PROFILE_PATH = '/dashboard/candidate/profile';
+const PROFILE_PATH = '/candidate/profile';
 
 export async function updateProfilePublic(
   input: unknown

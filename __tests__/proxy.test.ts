@@ -45,7 +45,7 @@ describe('공개 라우트', () => {
 describe('보호 라우트', () => {
   it('미인증 시 /jobs?auth=required 로 리다이렉트', async () => {
     mockGetSession.mockResolvedValue(null);
-    const res = await proxy(makeRequest('/dashboard/candidate/profile'));
+    const res = await proxy(makeRequest('/candidate/profile'));
     expect(res?.status).toBe(307);
     const location = res?.headers.get('location') ?? '';
     expect(location).toContain('/jobs');
@@ -54,7 +54,7 @@ describe('보호 라우트', () => {
 
   it('인증 시 통과', async () => {
     mockGetSession.mockResolvedValue({ user: { id: 'u1' } });
-    const res = await proxy(makeRequest('/dashboard/candidate/profile'));
+    const res = await proxy(makeRequest('/candidate/profile'));
     expect(res?.status).not.toBe(307);
   });
 });

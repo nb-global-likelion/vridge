@@ -43,13 +43,11 @@ export default function UserMenu({ name, email, image }: UserMenuProps) {
           <p className="truncate text-xs text-muted-foreground">{email}</p>
         </div>
         <DropdownMenuSeparator />
-        <DropdownMenuItem
-          onClick={() => router.push('/dashboard/candidate/profile')}
-        >
+        <DropdownMenuItem onClick={() => router.push('/candidate/profile')}>
           My Profile
         </DropdownMenuItem>
         <DropdownMenuItem
-          onClick={() => router.push('/dashboard/candidate/applications')}
+          onClick={() => router.push('/candidate/applications')}
         >
           My Jobs
         </DropdownMenuItem>

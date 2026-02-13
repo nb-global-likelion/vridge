@@ -5,8 +5,8 @@ import { usePathname, useRouter } from 'next/navigation';
 import { signOut } from '@/lib/infrastructure/auth-client';
 
 const SIDEBAR_LINKS = [
-  { label: 'My Profile', href: '/dashboard/candidate/profile' },
-  { label: 'My Jobs', href: '/dashboard/candidate/applications' },
+  { label: 'My Profile', href: '/candidate/profile' },
+  { label: 'My Jobs', href: '/candidate/applications' },
 ];
 
 export default function DashboardSidebar() {
