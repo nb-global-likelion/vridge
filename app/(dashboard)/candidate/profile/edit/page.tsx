@@ -50,7 +50,7 @@ export default async function CandidateProfileEditPage() {
     institutionName: e.institutionName,
     educationType: e.educationType,
     field: e.field ?? undefined,
-    isGraduated: e.isGraduated,
+    graduationStatus: e.graduationStatus,
     startDate: e.startDate.toISOString().split('T')[0],
     endDate: e.endDate?.toISOString().split('T')[0],
     sortOrder: e.sortOrder,

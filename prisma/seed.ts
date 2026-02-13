@@ -97,7 +97,12 @@ interface SampleProfileSeed {
       | 'international_program'
       | 'other';
     field?: string;
-    isGraduated?: boolean;
+    graduationStatus?:
+      | 'ENROLLED'
+      | 'ON_LEAVE'
+      | 'GRADUATED'
+      | 'EXPECTED'
+      | 'WITHDRAWN';
     startDate: string;
     endDate?: string;
     sortOrder?: number;
@@ -254,7 +259,7 @@ const SAMPLE_USERS: SampleUserSeed[] = [
           institutionName: 'Seoul National University',
           educationType: 'higher_bachelor',
           field: 'Computer Science',
-          isGraduated: true,
+          graduationStatus: 'GRADUATED',
           startDate: '2016-03-01',
           endDate: '2020-02-28',
           sortOrder: 1,
@@ -326,7 +331,7 @@ const SAMPLE_USERS: SampleUserSeed[] = [
           institutionName: 'Ho Chi Minh City University of Technology',
           educationType: 'higher_bachelor',
           field: 'Software Engineering',
-          isGraduated: true,
+          graduationStatus: 'GRADUATED',
           startDate: '2015-09-01',
           endDate: '2019-06-30',
           sortOrder: 1,
@@ -623,7 +628,7 @@ async function seedSampleUsers() {
           institutionName: education.institutionName,
           educationType: education.educationType,
           field: education.field ?? null,
-          isGraduated: education.isGraduated ?? false,
+          graduationStatus: education.graduationStatus ?? 'ENROLLED',
           startDate: dateOnly(education.startDate),
           endDate: education.endDate ? dateOnly(education.endDate) : null,
           sortOrder: education.sortOrder ?? 0,
@@ -634,7 +639,7 @@ async function seedSampleUsers() {
           institutionName: education.institutionName,
           educationType: education.educationType,
           field: education.field ?? null,
-          isGraduated: education.isGraduated ?? false,
+          graduationStatus: education.graduationStatus ?? 'ENROLLED',
           startDate: dateOnly(education.startDate),
           endDate: education.endDate ? dateOnly(education.endDate) : null,
           sortOrder: education.sortOrder ?? 0,

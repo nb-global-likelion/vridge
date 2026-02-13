@@ -81,6 +81,26 @@ enum ApplyStatus {
   @@map("apply_status")
 }
 
+enum ExperienceLevel {
+  ENTRY
+  JUNIOR
+  MID
+  SENIOR
+  LEAD
+
+  @@map("experience_level")
+}
+
+enum GraduationStatus {
+  ENROLLED
+  ON_LEAVE
+  GRADUATED
+  EXPECTED
+  WITHDRAWN
+
+  @@map("graduation_status")
+}
+
 enum SalaryPeriod {
   year
   month
@@ -185,7 +205,8 @@ model AppUser {
   educations    ProfileEducation[]
   urls          ProfileUrl[]
   attachments   ProfileAttachment[]
-  profileSkills ProfileSkill[]
+  profileSkills  ProfileSkill[]
+  certifications ProfileCertification[]
 
   applies Apply[]
 
@@ -200,6 +221,11 @@ model ProfilesPublic {
   aboutMe   String?  @map("about_me")
   isPublic  Boolean  @default(true) @map("is_public")
   publicSlug String  @unique @map("public_slug") @db.Text @default(dbgenerated("public.generate_profile_slug()"))
+  dateOfBirth     DateTime? @map("date_of_birth") @db.Date
+  location        String?
+  headline        String?
+  isOpenToWork    Boolean   @default(false) @map("is_open_to_work")
+  profileImageUrl String?   @map("profile_image_url")
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
 
@@ -224,6 +250,8 @@ model ProfileLanguage {
   userId      String              @map("user_id") @db.Uuid
   language    String
   proficiency LanguageProficiency
+  testName    String?             @map("test_name")
+  testScore   String?             @map("test_score")
   sortOrder   Int                 @default(0) @map("sort_order")
   createdAt   DateTime            @default(now()) @map("created_at") @db.Timestamptz
   updatedAt   DateTime            @updatedAt @map("updated_at") @db.Timestamptz
@@ -244,10 +272,11 @@ model ProfileCareer {
   employmentType EmploymentType @map("employment_type")
   startDate      DateTime       @map("start_date") @db.Date
   endDate        DateTime?      @map("end_date") @db.Date
-  description    String?
-  sortOrder      Int            @default(0) @map("sort_order")
-  createdAt      DateTime       @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt      DateTime       @updatedAt @map("updated_at") @db.Timestamptz
+  description     String?
+  experienceLevel ExperienceLevel? @map("experience_level")
+  sortOrder       Int            @default(0) @map("sort_order")
+  createdAt       DateTime       @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt       DateTime       @updatedAt @map("updated_at") @db.Timestamptz
 
   user AppUser @relation(fields: [userId], references: [id], onDelete: Cascade)
   job  Job     @relation(fields: [jobId], references: [id], onDelete: Restrict)
@@ -263,7 +292,7 @@ model ProfileEducation {
   institutionName String          @map("institution_name")
   educationType   EducationTypeVn @map("education_type")
   field           String?
-  isGraduated     Boolean         @default(false) @map("is_graduated")
+  graduationStatus GraduationStatus @default(ENROLLED) @map("graduation_status")
   startDate       DateTime        @map("start_date") @db.Date
   endDate         DateTime?       @map("end_date") @db.Date
   sortOrder       Int             @default(0) @map("sort_order")
@@ -454,4 +483,32 @@ model Apply {
   @@index([userId], map: "apply_user_idx")
   @@index([jdId], map: "apply_jd_idx")
   @@map("apply")
+}
+
+model ProfileCertification {
+  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId          String   @map("user_id") @db.Uuid
+  name            String
+  date            DateTime @db.Date
+  description     String?
+  institutionName String?  @map("institution_name")
+  sortOrder       Int      @default(0) @map("sort_order")
+  createdAt       DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt       DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  user AppUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId], map: "profile_certification_user_idx")
+  @@map("profile_certification")
+}
+
+model Announcement {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title     String
+  content   String
+  isPinned  Boolean  @default(false) @map("is_pinned")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@map("announcement")
 }

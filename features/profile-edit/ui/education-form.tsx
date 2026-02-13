@@ -20,7 +20,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { EDUCATION_TYPE_LABELS } from '@/entities/profile/ui/_utils';
+import {
+  EDUCATION_TYPE_LABELS,
+  GRADUATION_STATUS_LABELS,
+} from '@/entities/profile/ui/_utils';
 import {
   useAddEducation,
   useUpdateEducation,
@@ -31,7 +34,7 @@ type EducationData = {
   institutionName: string;
   educationType: string;
   field?: string;
-  isGraduated: boolean;
+  graduationStatus: string;
   startDate: string;
   endDate?: string;
   sortOrder: number;
@@ -67,7 +70,7 @@ export function EducationForm({
     institutionName: initialData?.institutionName ?? '',
     educationType: initialData?.educationType ?? '',
     field: initialData?.field ?? undefined,
-    isGraduated: initialData?.isGraduated ?? false,
+    graduationStatus: initialData?.graduationStatus ?? 'ENROLLED',
     startDate: initialData?.startDate ?? '',
     endDate: initialData?.endDate ?? undefined,
     sortOrder: initialData?.sortOrder ?? 0,
@@ -158,16 +161,27 @@ export function EducationForm({
         )}
       </form.Field>
 
-      <form.Field name="isGraduated">
+      <form.Field name="graduationStatus">
         {(field) => (
-          <div className="flex items-center gap-2">
-            <input
-              id="edu-graduated"
-              type="checkbox"
-              checked={field.state.value}
-              onChange={(e) => field.handleChange(e.target.checked)}
-            />
-            <Label htmlFor="edu-graduated">졸업</Label>
+          <div className="flex flex-col gap-1.5">
+            <Label>졸업 상태</Label>
+            <Select
+              value={field.state.value}
+              onValueChange={field.handleChange}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="상태 선택" />
+              </SelectTrigger>
+              <SelectContent>
+                {Object.entries(GRADUATION_STATUS_LABELS).map(
+                  ([value, label]) => (
+                    <SelectItem key={value} value={value}>
+                      {label}
+                    </SelectItem>
+                  )
+                )}
+              </SelectContent>
+            </Select>
           </div>
         )}
       </form.Field>

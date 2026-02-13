@@ -227,7 +227,7 @@ const educationData = {
   institutionName: '서울대학교',
   educationType: 'higher_bachelor' as const,
   field: '컴퓨터공학',
-  isGraduated: true,
+  graduationStatus: 'GRADUATED' as const,
   startDate: '2016-03-01',
   endDate: '2020-02-28',
   sortOrder: 0,
