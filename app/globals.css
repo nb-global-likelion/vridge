@@ -69,12 +69,13 @@
   --color-white: #ffffff;
 
   --color-brand: var(--color-orange-500);
-  --color-brand-sub: var(--color-orange-50);
+  --color-brand-sub: #ffefe5;
   --color-secondary: var(--color-black);
   --color-error: var(--color-red-500);
   --color-success: var(--color-green-600);
   --color-info: var(--color-blue-500);
   --color-bg: #fbfbfb;
+  --color-border: #b3b3b3;
 
   --color-text-title-1: var(--color-black);
   --color-text-title-2: var(--color-gray-950);
