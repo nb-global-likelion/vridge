@@ -7,9 +7,9 @@
 ## Current Status
 
 - **Branch**: `dev` (clean working tree)
-- **Tests**: 189 passing (28 suites), 0 failing
+- **Tests**: 249 passing (32 suites), 0 failing
 - **Types**: `tsc --noEmit` clean
-- **PRs**: 18 merged to dev (PRs #3–#18)
+- **PRs**: 22 merged to dev (PRs #3–#22), PR #23 open (P19)
 
 ## Completed Prompts (1–15)
 
@@ -31,6 +31,10 @@
 | 14  | Feature UI | Profile edit forms (7 forms + skill picker), 16 mutation hooks                                        |
 | 15  | Feature UI | Job browse (filters, card grid, pagination), job detail, apply/withdraw button, my applications       |
 
+| 17 | Schema | Prisma schema evolution: 2 new enums, 6 new fields, 2 new models (ProfileCertification, Announcement) |
+| 18 | Data | Certification CRUD, announcement queries, extended Zod schemas (+7 fields across 3 schemas) |
+| 19 | Auth UI | Social login (Google/Facebook), PasswordInput component, login/signup modal redesign (two-step flow) |
+
 ## Descoped
 
 - **Prompt 16** (Recruiter Dashboard) — descoped from current plan
@@ -41,8 +45,9 @@
 - **File uploads**: No S3 integration, no attachment upload/download
 - **Error pages**: No `error.tsx`, `not-found.tsx`, or loading skeletons
 - **E2E smoke test**: No integration-level test covering full user flows
-- **Announcement pages**: `app/announcement/` routes not created (nav tab links to nothing)
+- **Announcement pages**: Backend ready (P18), `app/announcements/` routes not created yet
 - **Recruiter sidebar**: Dashboard sidebar only shows candidate links (My Profile, My Jobs)
+- **Design system**: Shared UI primitives (Icon, StatusIndicator, Pagination, brand button) not yet built (P20)
 
 ## Existing Backend Ready but No UI
 
@@ -54,6 +59,8 @@ These use-cases and actions exist but have no corresponding pages:
 | `getApplicantStats(jdId)`                | Recruiter: status counts per JD                  | No page         |
 | `getProfileForViewer(candidateId, mode)` | Recruiter: view candidate profile (partial/full) | No page         |
 | `getProfileForRecruiter` action          | Wraps above with authorization                   | No page         |
+| Certification CRUD (P18)                 | add/update/deleteCertification + actions         | No edit form UI |
+| Announcement queries (P18)               | getAnnouncements + getAnnouncementById + actions | No page         |
 | Attachment use-cases                     | Planned in Prompt 17                             | Not implemented |
 
 ## Key Technical Patterns Established
@@ -69,7 +76,8 @@ These use-cases and actions exist but have no corresponding pages:
 
 - **Entity components**: Server components, no `'use client'`, local prop types (decoupled from Prisma)
 - **Feature components**: Client components with `'use client'`, TanStack Form for forms, TanStack Query for mutations
-- **Auth modals**: Zustand store (`use-auth-modal.ts`), modals rendered globally in `app/layout.tsx`
+- **Auth modals**: Zustand store (`use-auth-modal.ts`), modals rendered globally in `app/layout.tsx`. Social login via `signIn.social()`. Shared `PasswordInput` component (lock icon + eye toggle).
+- **Signup flow**: Two-step (method select → email form → success). `signUp.email()` passes `name: email.split('@')[0]` as derived fallback.
 - **QueryResult extraction**: `Extract<Awaited<ReturnType<typeof action>>, { success: true }>['data']`
 - **JD pages**: Dual routing — public (`/jobs/`) and authenticated (`/candidate/jobs/`)
 
@@ -219,14 +227,14 @@ Ori's notes during mapping (to be discussed):
 
 **Differences**:
 
-- [ ] Missing: Google + Facebook social login buttons
-- [ ] Missing: Input field icons (@ prefix, lock prefix)
-- [ ] Missing: Password visibility toggle (show/hide eye icon)
-- [ ] Missing: "Forgot password?" link
-- [ ] Missing: Button disabled state (gray when form empty, orange when filled)
-- [ ] Layout: Figma has "Don't have an account?" at top-left; impl has it at bottom-center
+- [x] Missing: Google + Facebook social login buttons
+- [ ] Missing: Input field icons (@ prefix for email — P20 InputWithIcon)
+- [x] Missing: Password visibility toggle (show/hide eye icon) — PasswordInput component
+- [x] Missing: "Forgot password?" link (stub)
+- [ ] Missing: Button disabled state (gray when form empty, orange when filled — P20 brand variant)
+- [x] Layout: Figma has "Don't have an account?" at top-left; impl has it at bottom-center
 - [ ] Label: Figma says "Login" title + "Continue" button; impl says "로그인" + "Log in"
-- [ ] Style: Figma button is rounded-full orange; impl uses shadcn default
+- [ ] Style: Figma button is rounded-full orange; impl uses shadcn default (P20)
 
 ### Sign Up Modal
 
@@ -236,14 +244,14 @@ Ori's notes during mapping (to be discussed):
 
 **Differences**:
 
-- [ ] Missing: Two-step signup flow (method selection → form)
-- [ ] Missing: Google + Facebook signup options
-- [ ] Missing: Privacy policy / Terms of Service checkbox
-- [ ] Missing: Real-time password validation (green ✓ / red ✗ inline feedback)
+- [x] Missing: Two-step signup flow (method selection → form)
+- [x] Missing: Google + Facebook signup options
+- [x] Missing: Privacy policy / Terms of Service checkbox
+- [x] Missing: Real-time password validation (green ✓ / red ✗ inline feedback)
 - [ ] Missing: Real-time email duplicate check
-- [ ] Missing: Success screen ("You're all set!" with checkmark)
-- [ ] Extra: Current has `name` and `confirmPassword` fields; Figma does not
-- [ ] Layout: Figma has "Have an account?" at top-left; impl has it at bottom-center
+- [x] Missing: Success screen ("You're all set!" with checkmark)
+- [x] Extra: Current has `name` and `confirmPassword` fields; Figma does not — removed, name derived from email
+- [x] Layout: Figma has "Have an account?" at top-left; impl has it at bottom-center
 
 ### Jobs List (`/jobs`)
 
@@ -320,7 +328,7 @@ Ori's notes during mapping (to be discussed):
 - [ ] Missing: Date of birth display
 - [ ] Missing: Location field
 - [ ] Missing: "Open to Work" toggle/badge
-- [ ] Missing: Certification section (not in Prisma schema)
+- [ ] Missing: Certification section (Prisma model added in P17, CRUD in P18, UI pending P22)
 - [ ] Missing: Portfolio/attachment display (S3 not implemented)
 - [ ] Missing: Language test score display (e.g., "TOEFL · 100")
 - [ ] Layout: Figma has "Basic Profile" as unified header card with photo; impl has separate Card sections
@@ -342,11 +350,11 @@ Ori's notes during mapping (to be discussed):
 - [ ] Missing: Headline field
 - [ ] Missing: Phone country code dropdown (+84, +82)
 - [ ] Missing: Custom month/year date picker (current uses HTML date input)
-- [ ] Missing: Experience Level dropdown (Entry/Junior/Mid/Senior/Lead)
-- [ ] Missing: Certification section
+- [ ] Missing: Experience Level dropdown — schema field added P17, Zod added P18, UI pending P22
+- [ ] Missing: Certification section — backend ready P18, UI pending P22
 - [ ] Missing: File upload (Portfolio)
 - [ ] Enum mismatch: Education levels (Figma: High School → Doctoral + Other; schema may differ)
-- [ ] Enum mismatch: Graduation status (Figma: Enrolled/On Leave/Graduated/Expected/Withdrawn; schema: isGraduated boolean)
+- [x] Enum mismatch: Graduation status (Figma: Enrolled/On Leave/Graduated/Expected/Withdrawn; schema migrated to GraduationStatus enum in P17)
 
 ### My Jobs / Applications (`/candidate/applications`)
 

@@ -74,8 +74,9 @@ Prisma 직접 호출 (MVP에서 repository 레이어 생략).
 
 ```
 lib/use-cases/
-├── profile.ts          # 프로필 CRUD (18개 함수)
+├── profile.ts          # 프로필 CRUD (18개 함수 + 자격증 CRUD 3개)
 ├── applications.ts     # 지원/철회/조회 (5개 함수)
+├── announcements.ts    # 공지사항 조회 (페이지네이션, 고정글 우선)
 ├── catalog.ts          # 카탈로그 조회 (직무군, 스킬 검색)
 └── jd-queries.ts       # 채용공고 조회 + 페이지네이션
 ```
@@ -86,7 +87,8 @@ lib/use-cases/
 
 ```
 lib/actions/
-├── profile.ts          # 프로필 뮤테이션/쿼리 액션 (18개)
+├── profile.ts          # 프로필 뮤테이션/쿼리 액션 (18개 + 자격증 3개)
+├── announcements.ts    # 공지사항 쿼리 액션
 ├── applications.ts     # 지원 관련 액션 (4개)
 ├── catalog.ts          # 카탈로그 읽기 액션
 └── jd-queries.ts       # 채용공고 쿼리 액션
@@ -98,7 +100,8 @@ lib/actions/
 
 ```
 lib/validations/
-├── profile.ts          # 프로필 관련 7개 스키마
+├── profile.ts          # 프로필 관련 스키마 (7개 + 자격증 1개)
+├── announcement.ts     # 공지사항 필터 스키마
 ├── application.ts      # 지원 스키마 (UUID 검증)
 └── job-description.ts  # 채용공고 필터 스키마
 ```
@@ -143,8 +146,9 @@ features/
 ├── auth/
 │   ├── model/use-auth-modal.ts         # Zustand (모달 상태)
 │   └── ui/
-│       ├── login-modal.tsx             # 로그인 모달 (TanStack Form)
-│       ├── signup-modal.tsx            # 회원가입 모달
+│       ├── login-modal.tsx             # 로그인 모달 (소셜 로그인 + 이메일)
+│       ├── signup-modal.tsx            # 회원가입 모달 (2단계 플로우)
+│       ├── password-input.tsx          # 비밀번호 입력 (잠금 아이콘 + 표시 토글)
 │       └── auth-redirect-handler.tsx   # ?auth=required 감지
 ├── profile-edit/
 │   ├── model/use-profile-mutations.ts  # TanStack Query 뮤테이션 (16개)
@@ -230,7 +234,7 @@ app/
 
 ## 테스트 (`__tests__/`)
 
-소스 코드 구조를 미러링. 189개 테스트.
+소스 코드 구조를 미러링. 249개 테스트.
 
 ```
 __tests__/
@@ -239,9 +243,9 @@ __tests__/
 ├── lib/
 │   ├── domain/         (authorization, errors)
 │   ├── infrastructure/ (auth, auth-utils)
-│   ├── use-cases/      (profile, applications, catalog, jd-queries)
-│   ├── actions/        (profile, applications, catalog, jd-queries)
-│   └── validations/    (profile, application, job-description)
+│   ├── use-cases/      (profile, announcements, applications, catalog, jd-queries)
+│   ├── actions/        (profile, announcements, applications, catalog, jd-queries)
+│   └── validations/    (profile, announcement, application, job-description)
 ├── entities/
 │   ├── profile/        (profile-header, career-list, skill-badges)
 │   └── job/            (jd-card)
@@ -258,7 +262,7 @@ __tests__/
 
 ```
 prisma/
-├── schema.prisma       # 20 모델, 9 enum, BetterAuth 4 모델 포함
+├── schema.prisma       # 22 모델, 11 enum, BetterAuth 4 모델 포함
 ├── seed.ts             # 카탈로그 데이터 시드 (tsx 런타임)
 ├── bootstrap.sql       # 초기 DB 설정
 └── seed-data/
