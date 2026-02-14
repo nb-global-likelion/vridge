@@ -9,7 +9,7 @@ jest.mock('@/features/auth/model/use-auth-modal', () => ({
 }));
 
 jest.mock('@/lib/infrastructure/auth-client', () => ({
-  signIn: { email: jest.fn() },
+  signIn: { email: jest.fn(), social: jest.fn() },
 }));
 
 jest.mock('next/navigation', () => ({
@@ -47,7 +47,7 @@ describe('LoginModal', () => {
   it('"Sign Up" 클릭 시 openSignup() 호출', () => {
     mockModalState(true);
     render(<LoginModal />);
-    fireEvent.click(screen.getByText(/sign up/i));
+    fireEvent.click(screen.getByRole('button', { name: /^sign up$/i }));
     expect(mockOpenSignup).toHaveBeenCalledTimes(1);
   });
 
@@ -72,5 +72,29 @@ describe('LoginModal', () => {
         })
       );
     });
+  });
+
+  it('Google 소셜 로그인 버튼 클릭 시 signIn.social() 호출', () => {
+    mockModalState(true);
+    render(<LoginModal />);
+    fireEvent.click(screen.getByRole('button', { name: /google/i }));
+    expect(signIn.social).toHaveBeenCalledWith(
+      expect.objectContaining({ provider: 'google' })
+    );
+  });
+
+  it('Facebook 소셜 로그인 버튼 클릭 시 signIn.social() 호출', () => {
+    mockModalState(true);
+    render(<LoginModal />);
+    fireEvent.click(screen.getByRole('button', { name: /facebook/i }));
+    expect(signIn.social).toHaveBeenCalledWith(
+      expect.objectContaining({ provider: 'facebook' })
+    );
+  });
+
+  it('Forgot password 링크가 렌더링됨', () => {
+    mockModalState(true);
+    render(<LoginModal />);
+    expect(screen.getByText(/forgot password/i)).toBeInTheDocument();
   });
 });

@@ -137,6 +137,17 @@ P24 (Polish + E2E) depends on all
 
 **Tests**: Modal render tests, step navigation, privacy checkbox blocks submit, social button rendering.
 
+### Prompt 19 results
+
+- 10개 파일 변경 (신규 6개, 수정 4개)
+- 공유 PasswordInput 컴포넌트: Figma 스펙 일치 (잠금 아이콘 + 비밀번호 표시 토글, h-60px, rounded-10px)
+- 소셜 로그인 아이콘: google.svg, facebook.svg, email-at.svg 추가
+- 로그인 모달: Google/Facebook 소셜 버튼 + "or" 구분선 + PasswordInput + Forgot password 링크
+- 회원가입 모달: 3단계 플로우 (method→form→success), name/confirmPassword 제거, 개인정보 동의 체크박스
+- signUp.email()에 name=email.split('@')[0] 자동 전달 (BetterAuth name 필수 필드 대응)
+- 모달 닫기 시 step 자동 리셋
+- 249개 테스트 통과 (32 suite), `tsc --noEmit` 클린
+
 ---
 
 ## Prompt 20: Design System Components
