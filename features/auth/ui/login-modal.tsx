@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { useForm } from '@tanstack/react-form';
 import { z } from 'zod';
 import {
@@ -15,6 +16,7 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { signIn } from '@/lib/infrastructure/auth-client';
 import { useAuthModal } from '../model/use-auth-modal';
+import { PasswordInput } from './password-input';
 
 const loginSchema = z.object({
   email: z.string().email('유효한 이메일을 입력하세요'),
@@ -55,7 +57,54 @@ export function LoginModal() {
       <DialogContent className="sm:max-w-sm">
         <DialogHeader>
           <DialogTitle>로그인</DialogTitle>
+          <p className="text-sm text-muted-foreground">
+            계정이 없으신가요?{' '}
+            <button
+              type="button"
+              onClick={openSignup}
+              className="font-medium text-brand hover:underline"
+            >
+              Sign Up
+            </button>
+          </p>
         </DialogHeader>
+
+        <div className="flex flex-col gap-3">
+          <Button
+            variant="outline"
+            type="button"
+            className="w-full gap-2"
+            onClick={() =>
+              signIn.social({
+                provider: 'google',
+                callbackURL: '/candidate/profile',
+              })
+            }
+          >
+            <Image src="/icons/google.svg" alt="" width={20} height={20} />
+            Sign up with Google
+          </Button>
+          <Button
+            variant="outline"
+            type="button"
+            className="w-full gap-2"
+            onClick={() =>
+              signIn.social({
+                provider: 'facebook',
+                callbackURL: '/candidate/profile',
+              })
+            }
+          >
+            <Image src="/icons/facebook.svg" alt="" width={20} height={20} />
+            Sign up with Facebook
+          </Button>
+        </div>
+
+        <div className="relative flex items-center py-2">
+          <div className="grow border-t" />
+          <span className="px-3 text-xs text-muted-foreground">or</span>
+          <div className="grow border-t" />
+        </div>
 
         <form
           onSubmit={(e) => {
@@ -95,9 +144,8 @@ export function LoginModal() {
             {(field) => (
               <div className="flex flex-col gap-1.5">
                 <Label htmlFor="login-password">Password</Label>
-                <Input
+                <PasswordInput
                   id="login-password"
-                  type="password"
                   autoComplete="current-password"
                   value={field.state.value}
                   onChange={(e) => field.handleChange(e.target.value)}
@@ -118,6 +166,13 @@ export function LoginModal() {
             )}
           </form.Field>
 
+          <button
+            type="button"
+            className="self-end text-xs text-muted-foreground hover:underline"
+          >
+            Forgot password?
+          </button>
+
           {serverError && (
             <p className="text-sm text-destructive">{serverError}</p>
           )}
@@ -129,17 +184,6 @@ export function LoginModal() {
               </Button>
             )}
           </form.Subscribe>
-
-          <p className="text-center text-sm text-muted-foreground">
-            계정이 없으신가요?{' '}
-            <button
-              type="button"
-              onClick={openSignup}
-              className="font-medium text-brand hover:underline"
-            >
-              Sign Up
-            </button>
-          </p>
         </form>
       </DialogContent>
     </Dialog>
