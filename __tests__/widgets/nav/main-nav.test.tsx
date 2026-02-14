@@ -80,4 +80,28 @@ describe('MainNav', () => {
     const announcementLink = screen.getByRole('link', { name: 'Announcement' });
     expect(announcementLink.className).toContain('text-brand');
   });
+
+  it('로고에 brand 액센트 점 포함', () => {
+    mockUseSession.mockReturnValue({ data: null });
+    render(<MainNav />);
+
+    const logo = screen.getByRole('link', { name: /vridge/i });
+    expect(logo).toBeInTheDocument();
+    expect(logo.querySelector('.text-brand')).toBeInTheDocument();
+  });
+
+  it('네비게이션 shadow 스타일 적용', () => {
+    mockUseSession.mockReturnValue({ data: null });
+    render(<MainNav />);
+
+    const nav = screen.getByRole('navigation');
+    expect(nav).toHaveClass('shadow-[0_4px_13px_rgba(0,0,0,0.04)]');
+  });
+
+  it('미인증 — Log in | Sign Up 구분선 표시', () => {
+    mockUseSession.mockReturnValue({ data: null });
+    render(<MainNav />);
+
+    expect(screen.getByText('|')).toBeInTheDocument();
+  });
 });

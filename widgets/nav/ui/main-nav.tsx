@@ -3,8 +3,8 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useSession } from '@/hooks/use-session';
-import { Button } from '@/components/ui/button';
 import { useAuthModal } from '@/features/auth/model/use-auth-modal';
+import { LangPicker } from '@/components/ui/lang-picker';
 import UserMenu from './user-menu';
 
 const NAV_LINKS = [
@@ -19,14 +19,17 @@ export default function MainNav() {
   const { openLogin, openSignup } = useAuthModal();
 
   return (
-    <nav className="flex h-14 items-center justify-between border-b bg-white px-6">
+    <nav className="flex items-center justify-between bg-white px-[45px] py-[10px] shadow-[0_4px_13px_rgba(0,0,0,0.04)]">
       {/* 로고 */}
-      <Link href="/jobs" className="text-lg font-bold tracking-tight">
-        VRIDGE
+      <Link
+        href="/jobs"
+        className="font-[Oswald] text-[32px] font-semibold tracking-tight"
+      >
+        VRIDGE<span className="text-brand">.</span>
       </Link>
 
       {/* 탭 네비게이션 */}
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-[50px]">
         {NAV_LINKS.map(({ label, href }) => {
           const isActive = pathname === href || pathname.startsWith(href + '/');
           return (
@@ -34,10 +37,8 @@ export default function MainNav() {
               key={href}
               href={href}
               className={[
-                'rounded-full border px-4 py-1.5 text-sm transition-colors',
-                isActive
-                  ? 'border-brand font-semibold text-brand'
-                  : 'border-transparent text-foreground hover:border-border',
+                'text-[22px] font-bold transition-colors',
+                isActive ? 'text-brand' : 'text-[#333] hover:text-brand',
               ].join(' ')}
             >
               {label}
@@ -47,11 +48,12 @@ export default function MainNav() {
       </div>
 
       {/* 우측 영역 */}
-      <div className="flex items-center gap-2">
-        {/* 언어 선택 스텁 */}
-        <Button variant="ghost" size="sm" className="text-sm">
-          EN ▾
-        </Button>
+      <div className="flex items-center gap-4">
+        <LangPicker
+          value="EN"
+          onChange={() => {}}
+          options={['EN', 'KR', 'VN']}
+        />
 
         {user ? (
           <UserMenu
@@ -60,14 +62,23 @@ export default function MainNav() {
             image={user.image}
           />
         ) : (
-          <>
-            <Button variant="ghost" size="sm" onClick={openLogin}>
+          <div className="flex items-center gap-0 text-[18px]">
+            <button
+              type="button"
+              onClick={openLogin}
+              className="font-medium text-[#333] hover:text-brand"
+            >
               Log in
-            </Button>
-            <Button variant="ghost" size="sm" onClick={openSignup}>
+            </button>
+            <span className="mx-2 text-[#ccc]">|</span>
+            <button
+              type="button"
+              onClick={openSignup}
+              className="font-medium text-[#333] hover:text-brand"
+            >
               Sign Up
-            </Button>
-          </>
+            </button>
+          </div>
         )}
       </div>
     </nav>

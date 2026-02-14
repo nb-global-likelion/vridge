@@ -14,9 +14,9 @@ export default function DashboardSidebar() {
   const router = useRouter();
 
   return (
-    <aside className="flex w-[220px] shrink-0 flex-col border-r px-6 py-8">
-      <p className="mb-6 text-2xl font-bold">MY Page</p>
-      <nav className="flex flex-1 flex-col gap-1">
+    <aside className="flex w-[220px] shrink-0 flex-col px-6 py-8">
+      <p className="mb-6 text-[22px] font-bold text-[#1a1a1a]">MY Page</p>
+      <nav className="flex flex-1 flex-col gap-2">
         {SIDEBAR_LINKS.map(({ label, href }) => {
           const isActive = pathname === href || pathname.startsWith(href + '/');
           return (
@@ -24,10 +24,10 @@ export default function DashboardSidebar() {
               key={href}
               href={href}
               className={[
-                'py-1 text-base transition-colors',
+                'py-1 text-[16px] transition-colors',
                 isActive
-                  ? 'font-semibold text-brand'
-                  : 'text-foreground hover:text-brand',
+                  ? 'font-bold text-brand'
+                  : 'text-[#666] hover:text-brand',
               ].join(' ')}
             >
               {label}
@@ -39,7 +39,7 @@ export default function DashboardSidebar() {
         onClick={() =>
           signOut({ fetchOptions: { onSuccess: () => router.push('/jobs') } })
         }
-        className="mt-4 text-left text-base text-muted-foreground transition-colors hover:text-foreground"
+        className="mt-4 text-left text-[16px] text-[#999] transition-colors hover:text-[#333]"
       >
         Logout
       </button>
