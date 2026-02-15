@@ -119,6 +119,14 @@ interface SampleProfileSeed {
     url: string;
     sortOrder?: number;
   }>;
+  certifications?: Array<{
+    id: string;
+    name: string;
+    date: string;
+    description?: string;
+    institutionName?: string;
+    sortOrder?: number;
+  }>;
   skillIds: string[];
 }
 
@@ -136,6 +144,13 @@ interface SampleApplySeed {
   userId: string;
   jdId: string;
   status?: 'applied' | 'accepted' | 'rejected' | 'withdrawn';
+}
+
+interface SampleAnnouncementSeed {
+  id: string;
+  title: string;
+  content: string;
+  isPinned?: boolean;
 }
 
 const SAMPLE_IDS = {
@@ -287,6 +302,16 @@ const SAMPLE_USERS: SampleUserSeed[] = [
           sortOrder: 1,
         },
       ],
+      certifications: [
+        {
+          id: '00000000-0000-0000-0000-000000001501',
+          name: 'AWS Certified Developer - Associate',
+          date: '2023-06-15',
+          institutionName: 'Amazon Web Services',
+          description: 'Associate-level certification for cloud development.',
+          sortOrder: 1,
+        },
+      ],
       skillIds: [
         'typescript',
         'react',
@@ -359,6 +384,16 @@ const SAMPLE_USERS: SampleUserSeed[] = [
           sortOrder: 1,
         },
       ],
+      certifications: [
+        {
+          id: '00000000-0000-0000-0000-000000002501',
+          name: 'Oracle Certified Professional, Java SE',
+          date: '2022-11-10',
+          institutionName: 'Oracle',
+          description: 'Professional certification for Java platform skills.',
+          sortOrder: 1,
+        },
+      ],
       skillIds: ['nodejs', 'postgresql', 'docker', 'aws', 'problem-solving'],
     },
   },
@@ -379,6 +414,23 @@ const SAMPLE_APPLIES: SampleApplySeed[] = [
     userId: SAMPLE_IDS.candidateB,
     jdId: SAMPLE_IDS.jdBackend,
     status: 'applied',
+  },
+];
+
+const SAMPLE_ANNOUNCEMENTS: SampleAnnouncementSeed[] = [
+  {
+    id: '00000000-0000-0000-0000-000000003101',
+    title: '서비스 점검 안내',
+    content:
+      '2026-02-20 02:00~04:00 (KST) 동안 시스템 점검이 진행됩니다. 점검 중 일부 기능이 제한될 수 있습니다.',
+    isPinned: true,
+  },
+  {
+    id: '00000000-0000-0000-0000-000000003102',
+    title: '신규 채용 공고 업데이트',
+    content:
+      '프론트엔드/백엔드 포지션 신규 공고가 등록되었습니다. Jobs 페이지에서 상세 내용을 확인하세요.',
+    isPinned: false,
   },
 ];
 
@@ -685,6 +737,29 @@ async function seedSampleUsers() {
       });
     }
 
+    for (const certification of user.profile.certifications ?? []) {
+      await prisma.profileCertification.upsert({
+        where: { id: certification.id },
+        update: {
+          userId: user.id,
+          name: certification.name,
+          date: dateOnly(certification.date),
+          description: certification.description ?? null,
+          institutionName: certification.institutionName ?? null,
+          sortOrder: certification.sortOrder ?? 0,
+        },
+        create: {
+          id: certification.id,
+          userId: user.id,
+          name: certification.name,
+          date: dateOnly(certification.date),
+          description: certification.description ?? null,
+          institutionName: certification.institutionName ?? null,
+          sortOrder: certification.sortOrder ?? 0,
+        },
+      });
+    }
+
     await prisma.profileSkill.deleteMany({
       where: { userId: user.id, skillId: { notIn: user.profile.skillIds } },
     });
@@ -756,11 +831,33 @@ async function seedSampleApplies() {
   console.log(`시드 완료: sample applies ${SAMPLE_APPLIES.length}`);
 }
 
+async function seedAnnouncements() {
+  for (const announcement of SAMPLE_ANNOUNCEMENTS) {
+    await prisma.announcement.upsert({
+      where: { id: announcement.id },
+      update: {
+        title: announcement.title,
+        content: announcement.content,
+        isPinned: announcement.isPinned ?? false,
+      },
+      create: {
+        id: announcement.id,
+        title: announcement.title,
+        content: announcement.content,
+        isPinned: announcement.isPinned ?? false,
+      },
+    });
+  }
+
+  console.log(`시드 완료: announcements ${SAMPLE_ANNOUNCEMENTS.length}`);
+}
+
 async function main() {
   await seedJobFamilies();
   await seedSkills();
   await seedSampleOrg();
   await seedSampleJobDescriptions();
+  await seedAnnouncements();
   await seedSampleUsers();
   await seedSampleCredentialAccounts();
   await seedSampleApplies();
