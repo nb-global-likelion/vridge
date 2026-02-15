@@ -144,6 +144,7 @@ export const viMessages: Record<MessageKey, string> = {
   'profile.actions.addCertification': '+ Thêm chứng chỉ',
   'profile.actions.addLanguage': '+ Thêm ngôn ngữ',
   'profile.actions.addUrl': '+ Thêm liên kết',
+  'profile.actions.editProfile': 'Chỉnh sửa hồ sơ',
 
   'form.firstName': 'Tên',
   'form.lastName': 'Họ',

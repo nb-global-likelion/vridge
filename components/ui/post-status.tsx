@@ -1,3 +1,5 @@
+'use client';
+
 import { Icon } from './icon';
 import { useI18n } from '@/lib/i18n/client';
 

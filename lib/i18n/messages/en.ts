@@ -147,6 +147,7 @@ export const enMessages = {
   'profile.actions.addCertification': '+ Add certification',
   'profile.actions.addLanguage': '+ Add language',
   'profile.actions.addUrl': '+ Add link',
+  'profile.actions.editProfile': 'Edit Profile',
 
   'form.firstName': 'First Name',
   'form.lastName': 'Last Name',

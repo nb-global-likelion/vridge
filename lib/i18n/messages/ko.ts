@@ -137,6 +137,7 @@ export const koMessages: Record<MessageKey, string> = {
   'profile.actions.addCertification': '+ 자격증 추가',
   'profile.actions.addLanguage': '+ 언어 추가',
   'profile.actions.addUrl': '+ 링크 추가',
+  'profile.actions.editProfile': '프로필 수정',
 
   'form.firstName': '이름',
   'form.lastName': '성',
