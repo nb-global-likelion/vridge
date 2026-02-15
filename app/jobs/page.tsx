@@ -4,6 +4,13 @@ import { PostingListItem } from '@/entities/job/ui/posting-list-item';
 import { NumberedPagination } from '@/components/ui/numbered-pagination';
 import { JobSearchForm } from '@/features/job-browse/ui/job-search-form';
 import { JobCategoryTabs } from '@/features/job-browse/ui/job-category-tabs';
+import { JobSortControl } from '@/features/job-browse/ui/job-sort-control';
+import {
+  applyJobsQueryPatch,
+  buildJobsHref,
+  getEffectiveJobsSort,
+  parseJobsQueryFromRecord,
+} from '@/features/job-browse/model/query-state';
 
 export default async function JobsPage({
   searchParams,
@@ -11,12 +18,14 @@ export default async function JobsPage({
   searchParams: Promise<Record<string, string>>;
 }) {
   const params = await searchParams;
-  const search = params.search || undefined;
-  const familyId = params.familyId || undefined;
-  const page = params.page ? Number(params.page) : 1;
+  const query = parseJobsQueryFromRecord(params);
+  const search = query.search;
+  const familyId = query.familyId;
+  const sort = getEffectiveJobsSort(query);
+  const page = query.page ?? 1;
 
   const [jdResult, familiesResult] = await Promise.all([
-    getJobDescriptions({ search, familyId, page }),
+    getJobDescriptions({ search, familyId, sort, page }),
     getJobFamilies(),
   ]);
 
@@ -29,18 +38,20 @@ export default async function JobsPage({
   const totalPages = Math.ceil(total / pageSize);
 
   function buildHref(p: number) {
-    const qs = new URLSearchParams();
-    if (search) qs.set('search', search);
-    if (familyId) qs.set('familyId', familyId);
-    if (p > 1) qs.set('page', String(p));
-    const s = qs.toString();
-    return s ? `/jobs?${s}` : '/jobs';
+    return buildJobsHref(applyJobsQueryPatch(query, { page: p }));
   }
 
   return (
     <div className="mx-auto flex max-w-4xl flex-col gap-6 px-6 py-8">
       <JobSearchForm initialSearch={search} />
-      <JobCategoryTabs families={jobFamilies} activeFamilyId={familyId} />
+      <div className="flex items-start justify-between gap-4">
+        <JobCategoryTabs
+          families={jobFamilies}
+          activeFamilyId={familyId}
+          query={query}
+        />
+        <JobSortControl />
+      </div>
 
       {items.length === 0 ? (
         <p className="text-muted-foreground">채용공고가 없습니다.</p>

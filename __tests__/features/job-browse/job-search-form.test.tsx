@@ -2,12 +2,17 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { JobSearchForm } from '@/features/job-browse/ui/job-search-form';
 
 const mockPush = jest.fn();
+let mockSearchParams = new URLSearchParams();
+
 jest.mock('next/navigation', () => ({
   useRouter: jest.fn(() => ({ push: mockPush })),
-  useSearchParams: jest.fn(() => new URLSearchParams()),
+  useSearchParams: jest.fn(() => mockSearchParams),
 }));
 
-beforeEach(() => jest.clearAllMocks());
+beforeEach(() => {
+  jest.clearAllMocks();
+  mockSearchParams = new URLSearchParams();
+});
 
 describe('JobSearchForm', () => {
   it('SearchBar를 렌더링한다', () => {
@@ -36,5 +41,18 @@ describe('JobSearchForm', () => {
     fireEvent.submit(screen.getByRole('form'));
 
     expect(mockPush).toHaveBeenCalledWith('/jobs');
+  });
+
+  it('제출 시 familyId, sort 유지 + page 제거', () => {
+    mockSearchParams = new URLSearchParams(
+      'familyId=engineering&sort=created_desc&page=3'
+    );
+
+    render(<JobSearchForm initialSearch="백엔드" />);
+    fireEvent.submit(screen.getByRole('form'));
+
+    expect(mockPush).toHaveBeenCalledWith(
+      '/jobs?search=%EB%B0%B1%EC%97%94%EB%93%9C&familyId=engineering&sort=created_desc'
+    );
   });
 });

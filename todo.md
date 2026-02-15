@@ -79,6 +79,6 @@
 
 ## 현재 상태
 
-- **테스트**: 391개 통과 (57 suite)
+- **테스트**: 408개 통과 (59 suite)
 - **타입 체크**: `tsc --noEmit` 클린
-- **브랜치**: `feat/prompt22`
+- **브랜치**: `feat/prompt21-sort-query-state`

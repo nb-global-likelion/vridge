@@ -53,4 +53,24 @@ describe('jobDescriptionFilterSchema', () => {
     expect(result.search).toBeUndefined();
     expect(result.familyId).toBeUndefined();
   });
+
+  it('sort 기본값은 updated_desc', () => {
+    const result = jobDescriptionFilterSchema.parse({});
+    expect(result.sort).toBe('updated_desc');
+  });
+
+  it('sort 값으로 updated_desc, created_desc 허용', () => {
+    expect(
+      jobDescriptionFilterSchema.safeParse({ sort: 'updated_desc' }).success
+    ).toBe(true);
+    expect(
+      jobDescriptionFilterSchema.safeParse({ sort: 'created_desc' }).success
+    ).toBe(true);
+  });
+
+  it('잘못된 sort 값 거부', () => {
+    expect(
+      jobDescriptionFilterSchema.safeParse({ sort: 'oldest' }).success
+    ).toBe(false);
+  });
 });
