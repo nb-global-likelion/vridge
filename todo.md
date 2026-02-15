@@ -1,6 +1,6 @@
 # 프로젝트 진행 현황
 
-> 마지막 업데이트: 2026-02-13
+> 마지막 업데이트: 2026-02-15
 
 ## 범례
 
@@ -56,8 +56,8 @@
 | 17  | 스키마 마이그레이션               | isGraduated→graduationStatus, 새 필드/모델 추가  | —             | ✅   |
 | 18  | 자격증 CRUD + 공지사항 백엔드     | 새 Zod 스키마, use-case, action                  | P17           | ✅   |
 | 19  | 소셜 로그인 + 인증 모달 재설계    | Google/Facebook OAuth, 2단계 회원가입            | —             | ✅   |
-| 20  | 디자인 시스템 컴포넌트            | Icon, InputWithIcon, StatusIndicator, Pagination | —             | ⬜   |
-| 21  | 채용공고 라우트 통합 + UI 재설계  | `/candidate/jobs` → `/jobs` 통합, 검색/탭/정렬   | P20           | ⬜   |
+| 20  | 디자인 시스템 컴포넌트            | Icon, InputWithIcon, StatusIndicator, Pagination | —             | ✅   |
+| 21  | 채용공고 라우트 통합 + UI 재설계  | `/candidate/jobs` → `/jobs` 통합, 검색/탭/정렬   | P20           | ✅   |
 | 22  | 프로필 조회/편집 재설계           | 새 필드 반영, 자격증 섹션, 섹션 순서 변경        | P18, P20      | ⬜   |
 | 23  | 공지사항 + 후보자 랜딩 + 공유 URL | 공지 목록/상세, 프로필 슬러그                    | P18, P20, P22 | ⬜   |
 | 24  | 에러 처리 + 로딩 + E2E 테스트     | error.tsx, loading.tsx, 스모크 테스트            | 전체          | ⬜   |
@@ -79,6 +79,6 @@
 
 ## 현재 상태
 
-- **테스트**: 249개 통과 (32 suite)
+- **테스트**: 377개 통과 (52 suite)
 - **타입 체크**: `tsc --noEmit` 클린
-- **브랜치**: `feat/prompt19-social-login` (PR #3–#22 병합 완료)
+- **브랜치**: `feat/prompt21-jobs-redesign` (PR #25 → dev)
