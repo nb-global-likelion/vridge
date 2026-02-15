@@ -44,6 +44,14 @@ describe('CareerForm', () => {
     expect(screen.getByRole('button', { name: /저장/i })).toBeInTheDocument();
   });
 
+  it('renders experience level dropdown', () => {
+    render(<CareerForm jobFamilies={jobFamilies} onSuccess={jest.fn()} />);
+    expect(screen.getByText('경력 레벨 (선택)')).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /레벨 선택/i })
+    ).toBeInTheDocument();
+  });
+
   it('renders edit mode with pre-filled companyName', () => {
     render(
       <CareerForm

@@ -2,7 +2,8 @@ import Link from 'next/link';
 import { requireUser } from '@/lib/infrastructure/auth-utils';
 import { getMyProfile } from '@/lib/actions/profile';
 import { getJobFamilies } from '@/lib/actions/catalog';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { SectionTitle } from '@/components/ui/section-title';
 import { ProfilePublicForm } from '@/features/profile-edit/ui/profile-public-form';
 import { ContactForm } from '@/features/profile-edit/ui/contact-form';
 import { CareerSection } from '@/features/profile-edit/ui/career-form';
@@ -10,6 +11,7 @@ import { EducationSection } from '@/features/profile-edit/ui/education-form';
 import { LanguageSection } from '@/features/profile-edit/ui/language-form';
 import { UrlSection } from '@/features/profile-edit/ui/url-form';
 import { SkillPicker } from '@/features/profile-edit/ui/skill-picker';
+import { CertificationSection } from '@/features/profile-edit/ui/certification-form';
 
 export default async function CandidateProfileEditPage() {
   await requireUser();
@@ -27,9 +29,10 @@ export default async function CandidateProfileEditPage() {
     profilePrivate,
     careers: rawCareers,
     educations: rawEducations,
-    languages,
+    languages: rawLanguages,
     urls,
     profileSkills,
+    certifications: rawCertifications,
   } = profileResult.data;
   const jobFamilies = 'error' in familiesResult ? [] : familiesResult.data;
 
@@ -42,6 +45,7 @@ export default async function CandidateProfileEditPage() {
     startDate: c.startDate.toISOString().split('T')[0],
     endDate: c.endDate?.toISOString().split('T')[0],
     description: c.description ?? undefined,
+    experienceLevel: c.experienceLevel ?? undefined,
     sortOrder: c.sortOrder,
   }));
 
@@ -56,6 +60,24 @@ export default async function CandidateProfileEditPage() {
     sortOrder: e.sortOrder,
   }));
 
+  const languages = rawLanguages.map((language) => ({
+    id: language.id,
+    language: language.language,
+    proficiency: language.proficiency,
+    testName: language.testName ?? undefined,
+    testScore: language.testScore ?? undefined,
+    sortOrder: language.sortOrder,
+  }));
+
+  const certifications = rawCertifications.map((certification) => ({
+    id: certification.id,
+    name: certification.name,
+    date: certification.date.toISOString().split('T')[0],
+    description: certification.description ?? undefined,
+    institutionName: certification.institutionName ?? undefined,
+    sortOrder: certification.sortOrder,
+  }));
+
   return (
     <div className="flex flex-col gap-6 p-6">
       <Link
@@ -67,7 +89,7 @@ export default async function CandidateProfileEditPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">기본 정보</CardTitle>
+          <SectionTitle title="기본 정보" />
         </CardHeader>
         <CardContent>
           <ProfilePublicForm initialData={profilePublic ?? undefined} />
@@ -76,7 +98,7 @@ export default async function CandidateProfileEditPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">연락처</CardTitle>
+          <SectionTitle title="연락처" />
         </CardHeader>
         <CardContent>
           <ContactForm initialData={profilePrivate ?? undefined} />
@@ -85,7 +107,7 @@ export default async function CandidateProfileEditPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">스킬</CardTitle>
+          <SectionTitle title="스킬" />
         </CardHeader>
         <CardContent>
           <SkillPicker currentSkills={profileSkills} />
@@ -94,7 +116,7 @@ export default async function CandidateProfileEditPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">경력</CardTitle>
+          <SectionTitle title="경력" />
         </CardHeader>
         <CardContent>
           <CareerSection careers={careers} jobFamilies={jobFamilies} />
@@ -103,7 +125,7 @@ export default async function CandidateProfileEditPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">학력</CardTitle>
+          <SectionTitle title="학력" />
         </CardHeader>
         <CardContent>
           <EducationSection educations={educations} />
@@ -112,7 +134,16 @@ export default async function CandidateProfileEditPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">언어</CardTitle>
+          <SectionTitle title="자격증" />
+        </CardHeader>
+        <CardContent>
+          <CertificationSection certifications={certifications} />
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <SectionTitle title="언어" />
         </CardHeader>
         <CardContent>
           <LanguageSection languages={languages} />
@@ -121,7 +152,7 @@ export default async function CandidateProfileEditPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">링크</CardTitle>
+          <SectionTitle title="링크" />
         </CardHeader>
         <CardContent>
           <UrlSection urls={urls} />

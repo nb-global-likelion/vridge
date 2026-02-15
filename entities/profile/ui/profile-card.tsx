@@ -1,9 +1,6 @@
-'use client';
-
-import { useState } from 'react';
+import Image from 'next/image';
 import { Icon } from '@/components/ui/icon';
 import { PostStatus } from '@/components/ui/post-status';
-import { ToggleSwitch } from '@/components/ui/toggle-switch';
 
 type Props = {
   firstName: string;
@@ -11,9 +8,11 @@ type Props = {
   dateOfBirth?: Date;
   phone?: string | null;
   email?: string | null;
-  city?: string | null;
+  location?: string | null;
   headline?: string | null;
-  variant?: 'profile' | 'page';
+  aboutMe?: string | null;
+  isOpenToWork?: boolean;
+  profileImageUrl?: string | null;
 };
 
 const MONTHS = [
@@ -44,25 +43,35 @@ export function ProfileCard({
   dateOfBirth,
   phone,
   email,
-  city,
+  location,
   headline,
-  variant = 'profile',
+  aboutMe,
+  isOpenToWork = false,
+  profileImageUrl,
 }: Props) {
-  const [openToWork, setOpenToWork] = useState(true);
-
   return (
     <div className="rounded-[20px] bg-[#fbfbfb] px-[40px] py-[30px]">
       <div className="flex gap-6">
         <div className="flex flex-col items-center gap-2">
-          <div className="flex h-[200px] w-[200px] items-center justify-center rounded-full bg-[#e6e6e6]">
-            <Icon name="profile" size={80} alt="Profile photo" />
-          </div>
-          <div className="flex items-center gap-2">
-            <PostStatus status="recruiting" label="Open to Work" size="sm" />
-            {variant === 'page' && (
-              <ToggleSwitch checked={openToWork} onChange={setOpenToWork} />
+          <div className="flex h-[200px] w-[200px] items-center justify-center overflow-hidden rounded-full bg-[#e6e6e6]">
+            {profileImageUrl ? (
+              <Image
+                src={profileImageUrl}
+                width={200}
+                height={200}
+                alt={`${firstName} ${lastName} profile image`}
+                className="h-full w-full object-cover"
+                unoptimized
+              />
+            ) : (
+              <Icon name="profile" size={80} alt="Profile photo" />
             )}
           </div>
+          <PostStatus
+            status={isOpenToWork ? 'recruiting' : 'done'}
+            label={isOpenToWork ? 'Open to Work' : 'Not Open to Work'}
+            size="sm"
+          />
         </div>
 
         <div className="flex flex-1 flex-col gap-3">
@@ -88,13 +97,15 @@ export function ProfileCard({
                 {email}
               </span>
             )}
-            {city && (
+            {location && (
               <span className="inline-flex items-center gap-2">
                 <Icon name="location" size={16} />
-                {city}
+                {location}
               </span>
             )}
           </div>
+
+          {aboutMe && <p className="text-[14px] text-[#4c4c4c]">{aboutMe}</p>}
 
           {headline && (
             <div className="rounded-[10px] bg-white p-[20px] text-[14px] text-[#333]">

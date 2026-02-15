@@ -5,6 +5,8 @@ type Language = {
   id: string;
   language: string;
   proficiency: string;
+  testName?: string | null;
+  testScore?: string | null;
   sortOrder: number;
 };
 
@@ -25,6 +27,11 @@ export function LanguageList({ languages }: Props) {
           <Badge variant="secondary">
             {PROFICIENCY_LABELS[lang.proficiency] ?? lang.proficiency}
           </Badge>
+          {lang.testName && lang.testScore && (
+            <span className="text-sm text-muted-foreground">
+              {lang.testName} · {lang.testScore}
+            </span>
+          )}
         </li>
       ))}
     </ul>

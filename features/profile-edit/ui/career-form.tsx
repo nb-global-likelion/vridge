@@ -23,7 +23,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { EMPLOYMENT_TYPE_LABELS } from '@/entities/profile/ui/_utils';
+import { FormDropdown } from '@/components/ui/form-dropdown';
+import {
+  EMPLOYMENT_TYPE_LABELS,
+  EXPERIENCE_LEVEL_LABELS,
+} from '@/entities/profile/ui/_utils';
 import {
   useAddCareer,
   useUpdateCareer,
@@ -44,6 +48,7 @@ type CareerData = {
   startDate: string;
   endDate?: string;
   description?: string;
+  experienceLevel?: string;
   sortOrder: number;
 };
 
@@ -83,6 +88,7 @@ export function CareerForm({
     startDate: initialData?.startDate ?? '',
     endDate: initialData?.endDate,
     description: initialData?.description,
+    experienceLevel: initialData?.experienceLevel,
     sortOrder: initialData?.sortOrder ?? 0,
   };
 
@@ -257,6 +263,25 @@ export function CareerForm({
               value={field.state.value ?? ''}
               onChange={(e) => field.handleChange(e.target.value || undefined)}
               onBlur={field.handleBlur}
+            />
+          </div>
+        )}
+      </form.Field>
+
+      <form.Field name="experienceLevel">
+        {(field) => (
+          <div className="flex flex-col gap-1.5">
+            <Label>경력 레벨 (선택)</Label>
+            <FormDropdown
+              value={field.state.value}
+              options={Object.entries(EXPERIENCE_LEVEL_LABELS).map(
+                ([value, label]) => ({
+                  value,
+                  label,
+                })
+              )}
+              placeholder="레벨 선택"
+              onChange={(value) => field.handleChange(value)}
             />
           </div>
         )}

@@ -253,6 +253,14 @@ P24 (Polish + E2E) depends on all
 
 **Tests**: Entity component render tests for new fields, certification form tests, updated mock data.
 
+#### Prompt 22 results
+
+- 프로필 조회 페이지를 Prompt 20 컴포넌트 재사용 규칙에 맞게 재구성 (`ProfileCard`, `SectionTitle`, `PostStatus`, `Icon`)
+- 섹션 순서를 `Basic → Education → Skills → Experience → Certification → Languages → URLs`로 고정하고 자격증 섹션 추가
+- 엔티티 표시 확장: 경력 `experienceLevel`, 언어 `testName/testScore`, 프로필 `location/isOpenToWork/profileImageUrl` 반영
+- 프로필 편집 확장: 공개정보 폼(DOB/location/headline/open-to-work), 경력 experienceLevel, 언어 시험정보, 자격증 CRUD 섹션 추가
+- 신규/수정 테스트 추가 후 전체 검증 완료 (`57 suite`, `391 tests`, `tsc --noEmit` 클린)
+
 ---
 
 ## Prompt 23: Announcements + Candidate Landing + Shareable Slugs
@@ -320,13 +328,13 @@ P24 (Polish + E2E) depends on all
 
 ## Summary
 
-| #   | Scope                                                                                     | Size         | Depends On    |
-| --- | ----------------------------------------------------------------------------------------- | ------------ | ------------- |
-| 17  | Schema migration + isGraduated→graduationStatus code update                               | Small–Medium | —             |
-| 18  | Certification CRUD + announcement queries + new field validations                         | Medium       | P17           |
-| 19  | Social login (Google/Facebook) + auth modal redesign                                      | Medium       | —             |
-| 20  | Design system components (Icon, InputWithIcon, StatusIndicator, Pagination, Button brand) | Small        | —             |
-| 21  | Jobs route merge + list/detail UI redesign                                                | Large        | P20           |
-| 22  | Profile view/edit with all new fields + certification section                             | Large        | P18, P20      |
-| 23  | Announcements pages + candidate landing + shareable slugs                                 | Large        | P18, P20, P22 |
-| 24  | Error handling + loading states + E2E smoke test                                          | Medium       | All           |
+| #   | Scope                                                                                     | Size         | Depends On    | Status |
+| --- | ----------------------------------------------------------------------------------------- | ------------ | ------------- | ------ |
+| 17  | Schema migration + isGraduated→graduationStatus code update                               | Small–Medium | —             | ✅     |
+| 18  | Certification CRUD + announcement queries + new field validations                         | Medium       | P17           | ✅     |
+| 19  | Social login (Google/Facebook) + auth modal redesign                                      | Medium       | —             | ✅     |
+| 20  | Design system components (Icon, InputWithIcon, StatusIndicator, Pagination, Button brand) | Small        | —             | ✅     |
+| 21  | Jobs route merge + list/detail UI redesign                                                | Large        | P20           | ✅     |
+| 22  | Profile view/edit with all new fields + certification section                             | Large        | P18, P20      | ✅     |
+| 23  | Announcements pages + candidate landing + shareable slugs                                 | Large        | P18, P20, P22 | ⬜     |
+| 24  | Error handling + loading states + E2E smoke test                                          | Medium       | All           | ⬜     |

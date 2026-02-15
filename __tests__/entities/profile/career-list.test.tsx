@@ -9,6 +9,7 @@ const baseCareer = {
   startDate: new Date('2021-03-01'),
   endDate: null,
   description: null,
+  experienceLevel: null,
   sortOrder: 0,
   job: { displayNameEn: 'Software Engineer' },
 };
@@ -49,5 +50,11 @@ describe('CareerList', () => {
   it('renders empty state when careers is empty', () => {
     render(<CareerList careers={[]} />);
     expect(screen.getByText('경력 없음')).toBeInTheDocument();
+  });
+
+  it('renders experience level when provided', () => {
+    const career = { ...baseCareer, experienceLevel: 'SENIOR' };
+    render(<CareerList careers={[career]} />);
+    expect(screen.getByText('Senior')).toBeInTheDocument();
   });
 });

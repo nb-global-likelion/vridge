@@ -24,6 +24,14 @@ export const GRADUATION_STATUS_LABELS: Record<string, string> = {
   WITHDRAWN: '중퇴',
 };
 
+export const EXPERIENCE_LEVEL_LABELS: Record<string, string> = {
+  ENTRY: 'Entry',
+  JUNIOR: 'Junior',
+  MID: 'Mid',
+  SENIOR: 'Senior',
+  LEAD: 'Lead',
+};
+
 export const EDUCATION_TYPE_LABELS: Record<string, string> = {
   vet_elementary: '직업 초급',
   vet_intermediate: '직업 중급',

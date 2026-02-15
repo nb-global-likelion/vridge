@@ -4,79 +4,71 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm } from '@tanstack/react-form';
 import type { z } from 'zod';
-import { profileLanguageSchema } from '@/lib/validations/profile';
-import { Input } from '@/components/ui/input';
-import { FormInput } from '@/components/ui/form-input';
+import { profileCertificationSchema } from '@/lib/validations/profile';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+import { FormInput } from '@/components/ui/form-input';
+import { DatePicker } from '@/components/ui/date-picker';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { PROFICIENCY_LABELS } from '@/entities/profile/ui/_utils';
 import {
-  useAddLanguage,
-  useUpdateLanguage,
-  useDeleteLanguage,
+  useAddCertification,
+  useUpdateCertification,
+  useDeleteCertification,
 } from '../model/use-profile-mutations';
 
-type LanguageData = z.infer<typeof profileLanguageSchema>;
+type CertificationData = z.infer<typeof profileCertificationSchema>;
 
-type LanguageFormProps = {
+type CertificationFormProps = {
   onSuccess: () => void;
-  languageId?: string;
-  initialData?: LanguageData;
+  certificationId?: string;
+  initialData?: CertificationData;
 };
 
 function FieldError({ errors }: { errors: unknown[] }) {
   if (errors.length === 0) return null;
   const msg =
-    errors[0] instanceof Object
+    typeof errors[0] === 'object' && errors[0] !== null
       ? (errors[0] as { message: string }).message
       : String(errors[0]);
   return <p className="text-xs text-destructive">{msg}</p>;
 }
 
-export function LanguageForm({
+export function CertificationForm({
   onSuccess,
-  languageId,
+  certificationId,
   initialData,
-}: LanguageFormProps) {
-  const addLanguage = useAddLanguage();
-  const updateLanguage = useUpdateLanguage();
+}: CertificationFormProps) {
+  const addCertification = useAddCertification();
+  const updateCertification = useUpdateCertification();
   const [serverError, setServerError] = useState<string | null>(null);
 
-  const mutation = languageId ? updateLanguage : addLanguage;
+  const mutation = certificationId ? updateCertification : addCertification;
 
-  const defaultValues: LanguageData = {
-    language: initialData?.language ?? '',
-    proficiency: initialData?.proficiency ?? 'native',
-    testName: initialData?.testName ?? undefined,
-    testScore: initialData?.testScore ?? undefined,
+  const defaultValues: CertificationData = {
+    name: initialData?.name ?? '',
+    date: initialData?.date ?? '',
+    description: initialData?.description ?? undefined,
+    institutionName: initialData?.institutionName ?? undefined,
     sortOrder: initialData?.sortOrder ?? 0,
   };
 
   const form = useForm({
     defaultValues,
-    validators: { onSubmit: profileLanguageSchema },
+    validators: { onSubmit: profileCertificationSchema },
     onSubmit: async ({ value }) => {
       setServerError(null);
-      if (languageId) {
-        updateLanguage.mutate(
-          { id: languageId, data: value },
+      if (certificationId) {
+        updateCertification.mutate(
+          { id: certificationId, data: value },
           { onSuccess, onError: (err) => setServerError(err.message) }
         );
       } else {
-        addLanguage.mutate(value, {
+        addCertification.mutate(value, {
           onSuccess,
           onError: (err) => setServerError(err.message),
         });
@@ -92,15 +84,16 @@ export function LanguageForm({
       }}
       className="flex flex-col gap-4"
     >
-      <form.Field name="language">
+      <form.Field name="name">
         {(field) => (
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="lang-language">언어</Label>
-            <Input
-              id="lang-language"
+            <Label htmlFor="cert-name">자격증명</Label>
+            <FormInput
+              id="cert-name"
               value={field.state.value}
               onChange={(e) => field.handleChange(e.target.value)}
               onBlur={field.handleBlur}
+              filled={field.state.value.length > 0}
             />
             {field.state.meta.isTouched && (
               <FieldError errors={field.state.meta.errors} />
@@ -109,27 +102,21 @@ export function LanguageForm({
         )}
       </form.Field>
 
-      <form.Field name="proficiency">
+      <form.Field name="date">
         {(field) => (
           <div className="flex flex-col gap-1.5">
-            <Label>숙련도</Label>
-            <Select
-              value={field.state.value}
-              onValueChange={(value) =>
-                field.handleChange(value as LanguageData['proficiency'])
+            <Label>취득일</Label>
+            <DatePicker
+              type="full"
+              value={
+                field.state.value
+                  ? new Date(`${field.state.value}T00:00:00.000Z`)
+                  : undefined
               }
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="숙련도 선택" />
-              </SelectTrigger>
-              <SelectContent>
-                {Object.entries(PROFICIENCY_LABELS).map(([value, label]) => (
-                  <SelectItem key={value} value={value}>
-                    {label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+              onChange={(date) =>
+                field.handleChange(date.toISOString().split('T')[0])
+              }
+            />
             {field.state.meta.isTouched && (
               <FieldError errors={field.state.meta.errors} />
             )}
@@ -137,12 +124,12 @@ export function LanguageForm({
         )}
       </form.Field>
 
-      <form.Field name="testName">
+      <form.Field name="institutionName">
         {(field) => (
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="lang-test-name">시험명 (선택)</Label>
+            <Label htmlFor="cert-institution">발급 기관 (선택)</Label>
             <FormInput
-              id="lang-test-name"
+              id="cert-institution"
               value={field.state.value ?? ''}
               onChange={(e) => field.handleChange(e.target.value || undefined)}
               onBlur={field.handleBlur}
@@ -152,12 +139,13 @@ export function LanguageForm({
         )}
       </form.Field>
 
-      <form.Field name="testScore">
+      <form.Field name="description">
         {(field) => (
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="lang-test-score">점수 (선택)</Label>
+            <Label htmlFor="cert-description">설명 (선택)</Label>
             <FormInput
-              id="lang-test-score"
+              id="cert-description"
+              size="lg"
               value={field.state.value ?? ''}
               onChange={(e) => field.handleChange(e.target.value || undefined)}
               onBlur={field.handleBlur}
@@ -180,13 +168,18 @@ export function LanguageForm({
   );
 }
 
-type Language = LanguageData & { id: string };
+type Certification = CertificationData & { id: string };
 
-export function LanguageSection({ languages }: { languages: Language[] }) {
+export function CertificationSection({
+  certifications,
+}: {
+  certifications: Certification[];
+}) {
   const router = useRouter();
-  const deleteLanguage = useDeleteLanguage();
+  const deleteCertification = useDeleteCertification();
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [editingLanguage, setEditingLanguage] = useState<Language | null>(null);
+  const [editingCertification, setEditingCertification] =
+    useState<Certification | null>(null);
 
   const handleSuccess = () => {
     setDialogOpen(false);
@@ -195,30 +188,25 @@ export function LanguageSection({ languages }: { languages: Language[] }) {
 
   return (
     <div className="flex flex-col gap-3">
-      {languages.length > 0 && (
+      {certifications.length > 0 && (
         <ul className="flex flex-col gap-2">
-          {languages.map((lang) => (
+          {certifications.map((certification) => (
             <li
-              key={lang.id}
+              key={certification.id}
               className="flex items-center justify-between rounded border p-3"
             >
               <div>
-                <p className="font-medium">{lang.language}</p>
+                <p className="font-medium">{certification.name}</p>
                 <p className="text-sm text-muted-foreground">
-                  {PROFICIENCY_LABELS[lang.proficiency] ?? lang.proficiency}
+                  {certification.date}
                 </p>
-                {lang.testName && lang.testScore && (
-                  <p className="text-sm text-muted-foreground">
-                    {lang.testName} · {lang.testScore}
-                  </p>
-                )}
               </div>
               <div className="flex gap-2">
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={() => {
-                    setEditingLanguage(lang);
+                    setEditingCertification(certification);
                     setDialogOpen(true);
                   }}
                 >
@@ -228,7 +216,7 @@ export function LanguageSection({ languages }: { languages: Language[] }) {
                   variant="destructive"
                   size="sm"
                   onClick={() =>
-                    deleteLanguage.mutate(lang.id, {
+                    deleteCertification.mutate(certification.id, {
                       onSuccess: () => router.refresh(),
                     })
                   }
@@ -240,26 +228,28 @@ export function LanguageSection({ languages }: { languages: Language[] }) {
           ))}
         </ul>
       )}
+
       <Button
         variant="outline"
         onClick={() => {
-          setEditingLanguage(null);
+          setEditingCertification(null);
           setDialogOpen(true);
         }}
       >
-        + 언어 추가
+        + 자격증 추가
       </Button>
+
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
             <DialogTitle>
-              {editingLanguage ? '언어 편집' : '언어 추가'}
+              {editingCertification ? '자격증 편집' : '자격증 추가'}
             </DialogTitle>
           </DialogHeader>
-          <LanguageForm
+          <CertificationForm
             onSuccess={handleSuccess}
-            languageId={editingLanguage?.id}
-            initialData={editingLanguage ?? undefined}
+            certificationId={editingCertification?.id}
+            initialData={editingCertification ?? undefined}
           />
         </DialogContent>
       </Dialog>

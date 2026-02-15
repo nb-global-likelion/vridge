@@ -1,5 +1,9 @@
 import { Badge } from '@/components/ui/badge';
-import { formatDate, EMPLOYMENT_TYPE_LABELS } from './_utils';
+import {
+  formatDate,
+  EMPLOYMENT_TYPE_LABELS,
+  EXPERIENCE_LEVEL_LABELS,
+} from './_utils';
 
 type Career = {
   id: string;
@@ -9,6 +13,7 @@ type Career = {
   startDate: Date;
   endDate: Date | null;
   description: string | null;
+  experienceLevel: string | null;
   sortOrder: number;
   job: { displayNameEn: string };
 };
@@ -32,6 +37,12 @@ export function CareerList({ careers }: Props) {
               {EMPLOYMENT_TYPE_LABELS[career.employmentType] ??
                 career.employmentType}
             </Badge>
+            {career.experienceLevel && (
+              <Badge variant="outline">
+                {EXPERIENCE_LEVEL_LABELS[career.experienceLevel] ??
+                  career.experienceLevel}
+              </Badge>
+            )}
           </div>
           <span className="text-sm">{career.positionTitle}</span>
           <span className="text-sm text-muted-foreground">
