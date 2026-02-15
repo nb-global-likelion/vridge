@@ -3,6 +3,11 @@
 import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { SearchBar } from '@/components/ui/search-bar';
+import {
+  applyJobsQueryPatch,
+  buildJobsHref,
+  parseJobsQueryFromSearchParams,
+} from '@/features/job-browse/model/query-state';
 
 type Props = {
   initialSearch?: string;
@@ -15,12 +20,13 @@ export function JobSearchForm({ initialSearch = '' }: Props) {
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    const params = new URLSearchParams();
-    const familyId = searchParams.get('familyId');
-    if (familyId) params.set('familyId', familyId);
-    if (value.trim()) params.set('search', value.trim());
-    const qs = params.toString();
-    router.push(qs ? `/jobs?${qs}` : '/jobs');
+    const query = parseJobsQueryFromSearchParams(searchParams);
+    const nextQuery = applyJobsQueryPatch(
+      query,
+      { search: value.trim() || undefined },
+      { resetPage: true }
+    );
+    router.push(buildJobsHref(nextQuery));
   }
 
   return (

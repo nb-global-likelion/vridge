@@ -43,6 +43,7 @@ describe('getJobDescriptions', () => {
     const result = await getJobDescriptions({
       page: 1,
       pageSize: 20,
+      sort: 'updated_desc',
     });
 
     expect(result).toEqual({
@@ -56,7 +57,7 @@ describe('getJobDescriptions', () => {
         where: {},
         skip: 0,
         take: 20,
-        orderBy: { createdAt: 'desc' },
+        orderBy: [{ updatedAt: 'desc' }, { id: 'desc' }],
       })
     );
   });
@@ -68,6 +69,7 @@ describe('getJobDescriptions', () => {
       workArrangement: 'remote',
       page: 1,
       pageSize: 20,
+      sort: 'updated_desc',
     });
 
     expect(prisma.jobDescription.findMany).toHaveBeenCalledWith(
@@ -86,6 +88,7 @@ describe('getJobDescriptions', () => {
       jobId: 'frontend',
       page: 1,
       pageSize: 20,
+      sort: 'updated_desc',
     });
 
     const callArg = (prisma.jobDescription.findMany as unknown as jest.Mock)
@@ -99,6 +102,7 @@ describe('getJobDescriptions', () => {
       search: '프론트엔드',
       page: 1,
       pageSize: 20,
+      sort: 'updated_desc',
     });
 
     const callArg = (prisma.jobDescription.findMany as unknown as jest.Mock)
@@ -114,6 +118,7 @@ describe('getJobDescriptions', () => {
       familyId: 'engineering',
       page: 1,
       pageSize: 20,
+      sort: 'updated_desc',
     });
 
     const callArg = (prisma.jobDescription.findMany as unknown as jest.Mock)
@@ -122,7 +127,7 @@ describe('getJobDescriptions', () => {
   });
 
   it('search, familyId 미전달 시 where에 포함되지 않음', async () => {
-    await getJobDescriptions({ page: 1, pageSize: 20 });
+    await getJobDescriptions({ page: 1, pageSize: 20, sort: 'updated_desc' });
 
     const callArg = (prisma.jobDescription.findMany as unknown as jest.Mock)
       .mock.calls[0][0];
@@ -131,7 +136,7 @@ describe('getJobDescriptions', () => {
   });
 
   it('page 2 — skip: pageSize', async () => {
-    await getJobDescriptions({ page: 2, pageSize: 10 });
+    await getJobDescriptions({ page: 2, pageSize: 10, sort: 'updated_desc' });
 
     expect(prisma.jobDescription.findMany).toHaveBeenCalledWith(
       expect.objectContaining({ skip: 10, take: 10 })
@@ -141,11 +146,29 @@ describe('getJobDescriptions', () => {
   it('{ items, total, page, pageSize } 형태 반환', async () => {
     (prisma.jobDescription.count as unknown as jest.Mock).mockResolvedValue(42);
 
-    const result = await getJobDescriptions({ page: 3, pageSize: 5 });
+    const result = await getJobDescriptions({
+      page: 3,
+      pageSize: 5,
+      sort: 'updated_desc',
+    });
 
     expect(result.total).toBe(42);
     expect(result.page).toBe(3);
     expect(result.pageSize).toBe(5);
+  });
+
+  it('sort=created_desc면 createdAt 기준 정렬', async () => {
+    await getJobDescriptions({
+      page: 1,
+      pageSize: 20,
+      sort: 'created_desc',
+    });
+
+    expect(prisma.jobDescription.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
+      })
+    );
   });
 });
 

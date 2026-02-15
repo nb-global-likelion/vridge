@@ -24,12 +24,17 @@ describe('getJobDescriptions', () => {
       mockResult
     );
 
-    const result = await getJobDescriptions({ page: 1, pageSize: 20 });
+    const result = await getJobDescriptions({
+      page: 1,
+      pageSize: 20,
+      sort: 'updated_desc',
+    });
 
     expect(result).toEqual({ success: true, data: mockResult });
     expect(jdQueriesUC.getJobDescriptions).toHaveBeenCalledWith({
       page: 1,
       pageSize: 20,
+      sort: 'updated_desc',
     });
   });
 
@@ -69,8 +74,44 @@ describe('getJobDescriptions', () => {
 
     expect(result).toEqual(expect.objectContaining({ success: true }));
     expect(jdQueriesUC.getJobDescriptions).toHaveBeenCalledWith(
-      expect.objectContaining({ page: 1, pageSize: 20 })
+      expect.objectContaining({
+        page: 1,
+        pageSize: 20,
+        sort: 'updated_desc',
+      })
     );
+  });
+
+  it('sort 파라미터가 use-case에 전달됨', async () => {
+    (jdQueriesUC.getJobDescriptions as unknown as jest.Mock).mockResolvedValue({
+      items: [],
+      total: 0,
+      page: 1,
+      pageSize: 20,
+    });
+
+    await getJobDescriptions({
+      sort: 'created_desc',
+      page: 1,
+      pageSize: 20,
+    });
+
+    expect(jdQueriesUC.getJobDescriptions).toHaveBeenCalledWith(
+      expect.objectContaining({ sort: 'created_desc' })
+    );
+  });
+
+  it('유효하지 않은 sort 값은 거부', async () => {
+    const result = await getJobDescriptions({
+      sort: 'oldest',
+      page: 1,
+      pageSize: 20,
+    });
+
+    expect(result).toEqual(
+      expect.objectContaining({ error: expect.any(String) })
+    );
+    expect(jdQueriesUC.getJobDescriptions).not.toHaveBeenCalled();
   });
 });
 

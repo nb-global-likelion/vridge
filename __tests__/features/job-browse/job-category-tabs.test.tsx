@@ -8,24 +8,30 @@ const families = [
 
 describe('JobCategoryTabs', () => {
   it('"All" 탭이 항상 렌더링된다', () => {
-    render(<JobCategoryTabs families={families} />);
+    render(<JobCategoryTabs families={families} query={{}} />);
     expect(screen.getByText('All')).toBeInTheDocument();
   });
 
   it('패밀리 이름이 모두 렌더링된다', () => {
-    render(<JobCategoryTabs families={families} />);
+    render(<JobCategoryTabs families={families} query={{}} />);
     expect(screen.getByText('Engineering')).toBeInTheDocument();
     expect(screen.getByText('Design')).toBeInTheDocument();
   });
 
   it('activeFamilyId 미전달 시 "All" 탭이 활성 상태', () => {
-    render(<JobCategoryTabs families={families} />);
+    render(<JobCategoryTabs families={families} query={{}} />);
     const allTab = screen.getByText('All').closest('a');
     expect(allTab?.className).toContain('ff6000');
   });
 
   it('activeFamilyId 전달 시 해당 탭이 활성 상태', () => {
-    render(<JobCategoryTabs families={families} activeFamilyId="design" />);
+    render(
+      <JobCategoryTabs
+        families={families}
+        activeFamilyId="design"
+        query={{ search: 'react', sort: 'created_desc', page: 3 }}
+      />
+    );
     const designTab = screen.getByText('Design').closest('a');
     expect(designTab?.className).toContain('ff6000');
 
@@ -34,14 +40,35 @@ describe('JobCategoryTabs', () => {
   });
 
   it('탭 href에 familyId가 포함된다', () => {
-    render(<JobCategoryTabs families={families} />);
+    render(
+      <JobCategoryTabs
+        families={families}
+        query={{ search: 'react', sort: 'created_desc', page: 3 }}
+      />
+    );
     const engLink = screen.getByText('Engineering').closest('a');
-    expect(engLink).toHaveAttribute('href', '/jobs?familyId=engineering');
+    expect(engLink).toHaveAttribute(
+      'href',
+      '/jobs?search=react&familyId=engineering&sort=created_desc'
+    );
   });
 
-  it('"All" 탭 href는 /jobs', () => {
-    render(<JobCategoryTabs families={families} />);
+  it('"All" 탭 href는 search/sort 유지 + familyId/page 제거', () => {
+    render(
+      <JobCategoryTabs
+        families={families}
+        query={{
+          search: 'react',
+          familyId: 'design',
+          sort: 'created_desc',
+          page: 3,
+        }}
+      />
+    );
     const allLink = screen.getByText('All').closest('a');
-    expect(allLink).toHaveAttribute('href', '/jobs');
+    expect(allLink).toHaveAttribute(
+      'href',
+      '/jobs?search=react&sort=created_desc'
+    );
   });
 });

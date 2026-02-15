@@ -19,6 +19,7 @@ export async function getJobDescriptions(
     workArrangement,
     search,
     familyId,
+    sort,
     page,
     pageSize,
   } = filters;
@@ -30,11 +31,16 @@ export async function getJobDescriptions(
   if (search) where.title = { contains: search, mode: 'insensitive' };
   if (familyId) where.job = { is: { jobFamilyId: familyId } };
 
+  const orderBy =
+    sort === 'created_desc'
+      ? [{ createdAt: 'desc' as const }, { id: 'desc' as const }]
+      : [{ updatedAt: 'desc' as const }, { id: 'desc' as const }];
+
   const [items, total] = await Promise.all([
     prisma.jobDescription.findMany({
       where,
       include: JD_INCLUDE,
-      orderBy: { createdAt: 'desc' },
+      orderBy,
       skip: (page - 1) * pageSize,
       take: pageSize,
     }),
