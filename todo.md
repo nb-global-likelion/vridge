@@ -81,4 +81,4 @@
 
 - **테스트**: 424개 통과 (63 suite)
 - **타입 체크**: `tsc --noEmit` 클린
-- **브랜치**: `feat/prompt23-announcement-slug`
+- **브랜치**: `feat/prompt23-ui-alignment`

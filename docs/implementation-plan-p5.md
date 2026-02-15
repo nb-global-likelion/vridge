@@ -315,6 +315,10 @@ P24 (Polish + E2E) depends on all
 - 공개 프로필 슬러그 조회 흐름을 추가했다: `getProfileBySlug` use-case/action + `/candidate/[slug]`, `/candidate/[slug]/profile`.
 - 대시보드 `/candidate/profile`은 내 slug 기반 공개 프로필로 리다이렉트하도록 변경했다.
 - `/candidate/applications`를 Prompt 20 재사용 원칙에 맞춰 개편했다 (`PostingListItem` 기반 목록 + 요약 카드).
+- 프로필 편집 페이지를 서버/클라이언트 오케스트레이션 구조로 재구성했다: `ProfileEditPageClient` 기반 전역 draft/baseline 비교, 하단 고정 Save 바, 섹션별 diff 저장 파이프라인 적용.
+- 미저장 이탈 방지 가드를 추가했다 (`beforeunload`, 링크 클릭, 뒤로가기 confirm).
+- 로그인/회원가입 모달을 Figma 구조에 맞게 재정렬하면서 기존 인증 동작을 유지했다 (소셜 로그인, 이메일/비밀번호, 3-step signup).
+- Prompt 20 공유 컴포넌트 재사용을 강화했다 (`FormInput`, `Icon`, `Button`, `ToggleSwitch`, `SectionTitle`, `DatePicker`, `FormDropdown`, `SearchBar`, `Chip`, `DialcodePicker`).
 - 테스트를 확장했다: 공지사항 페이지/상세, 후보자 slug 페이지, 지원 목록 페이지, nav/proxy/profile/announcement use-case·action.
 - 전체 검증 완료: `63 suite`, `424 tests`, `tsc --noEmit` 클린.
 
