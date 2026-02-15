@@ -14,6 +14,7 @@
 ```text
 vridge/
 ├── app/
+├── .storybook/
 ├── lib/
 ├── entities/
 ├── features/
@@ -23,6 +24,7 @@ vridge/
 ├── prisma/
 ├── __tests__/
 ├── docs/
+├── stories/
 ├── public/
 ├── proxy.ts
 └── 설정 파일들
@@ -150,6 +152,30 @@ lib/i18n/
     ├── en.ts
     └── ko.ts
 ```
+
+## Storybook 구조
+
+```text
+stories/
+└── ui/
+    ├── button.stories.tsx
+    ├── chip.stories.tsx
+    ├── date-picker.stories.tsx
+    ├── dialcode-picker.stories.tsx
+    ├── form-dropdown.stories.tsx
+    ├── form-input.stories.tsx
+    ├── icon.stories.tsx
+    ├── lang-picker.stories.tsx
+    ├── numbered-pagination.stories.tsx
+    ├── post-status.stories.tsx
+    ├── search-bar.stories.tsx
+    ├── section-title.stories.tsx
+    ├── tab-item.stories.tsx
+    └── toggle-switch.stories.tsx
+```
+
+- Storybook 스토리 로딩 경로는 `.storybook/main.ts`에서 `stories/**/*.stories.*`를 사용합니다.
+- 기본 스캐폴드 예제(`stories/Button`, `stories/Header`, `stories/Page`)는 제거되었습니다.
 
 ## 테스트 구조 (`__tests__/`)
 

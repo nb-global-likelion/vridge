@@ -130,6 +130,15 @@
 - [x] SVG 아이콘 자산 실사용
 - [ ] 토큰/테마의 Figma 1:1 매칭 검증
 
+## Storybook 문서화
+
+- [x] Prompt 20 Tier-1 공통 컴포넌트 14종 스토리 작성
+- [x] 스토리 파일 위치를 `stories/ui`로 일원화
+- [x] 스토리 메타데이터(`공통/*`, `tags: ['autodocs']`) 정리
+- [x] `PostStatus` i18n 의존 스토리에 로컬 Provider 적용
+- [x] 기본 스캐폴드 예제(`Button/Header/Page`) 제거
+- [x] Storybook 설정(`.storybook/main.ts`, `.storybook/preview.ts`) 최신화
+
 ---
 
 ## 비고

@@ -10,6 +10,7 @@
 - 앱 라우팅: Next.js App Router (`app/`)
 - 인증: Better Auth + `proxy.ts` 기반 라우트 보호
 - 다국어: `vi` 기본, `en`/`ko` 지원, 쿠키 기반 로케일 유지
+- Storybook: Prompt 20 Tier-1 공통 컴포넌트 문서화 완료(`stories/ui/*`)
 
 ## 완료 범위
 
@@ -49,6 +50,17 @@
   - `lib/i18n/catalog.ts` 카탈로그 표시명 선택 헬퍼
   - 액션 에러 계약 표준화: `{ errorCode, errorKey, errorMessage? }`
 
+### Storybook 문서화 (Phase 7)
+
+- 공통 컴포넌트 문서화
+  - Prompt 20 Tier-1 대상 14개 컴포넌트 스토리 추가
+  - 위치: `stories/ui/*.stories.tsx`
+  - 문서 형식: CSF + Autodocs, 사이드바 타이틀 `공통/*`
+- Storybook 설정 정리
+  - `.storybook/main.ts` 스토리 glob을 `stories/**/*.stories.*` 기준으로 고정
+  - `.storybook/preview.ts`에 `app/globals.css`와 `nextjs.appDirectory` 설정 반영
+  - 기본 스캐폴드 예제 스토리(`Button/Header/Page`) 제거
+
 ## 라우트 상태
 
 ### 공개 라우트
@@ -82,6 +94,8 @@
   - `features/job-browse/model/query-state.ts`
 - 테스트 헬퍼
   - i18n 의존 클라이언트 컴포넌트는 `__tests__/test-utils/render-with-i18n.tsx` 사용
+- Storybook 스토리 위치
+  - 구현 컴포넌트와 분리하여 `stories/ui`에 문서 스토리를 유지
 
 ## 보류/후속 과제
 
