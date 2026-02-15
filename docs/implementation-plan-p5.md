@@ -220,6 +220,21 @@ P24 (Polish + E2E) depends on all
 - 중복 제거: /candidate/jobs 라우트 삭제, JdFilters 삭제, 인라인 PaginationRow/mapJd 삭제
 - 377개 테스트 통과 (52 suite), `tsc --noEmit` 클린
 
+#### Prompt 21 후속 작업
+
+- Jobs 목록 정렬 UI를 추가하고(`Recent updated`, `Recent posted`), `getJobDescriptions` 및 `jobDescriptionFilterSchema`에 정렬 파라미터(`sort`)를 연결한다.
+- 검색/카테고리/정렬/페이지네이션이 URL 쿼리 상태(`search`, `familyId`, `sort`, `page`)를 일관되게 보존하도록 쿼리 상태 헬퍼를 도입한다.
+
+#### Prompt 21 results
+
+- Jobs 목록 정렬 기능을 추가하고 기본 정렬을 `Recent updated`(`updated_desc`)로 설정했다.
+- `sort` 파라미터를 검증 스키마(`jobDescriptionFilterSchema`)와 조회 use-case(`getJobDescriptions`)에 연결했다.
+- 정렬 기준별 DB 정렬을 적용했다: `updated_desc`(`updatedAt DESC`), `created_desc`(`createdAt DESC`) + `id DESC` tie-breaker.
+- jobs query-state 헬퍼(`features/job-browse/model/query-state.ts`)를 추가해 `search`/`familyId`/`sort`/`page` 병합 규칙을 중앙화했다.
+- 검색/카테고리/정렬/페이지네이션 간 URL 상태 보존 문제를 수정해 상호 동작 일관성을 확보했다.
+- 테스트를 확장했다: query-state 유닛 테스트, sort-control 테스트, jobs 관련 validation/action/use-case/UI 테스트 업데이트.
+- 전체 검증 완료: `59 suite`, `408 tests`, `tsc --noEmit` 클린.
+
 ---
 
 ## Prompt 22: Profile View + Edit Redesign
@@ -312,6 +327,20 @@ P24 (Polish + E2E) depends on all
 - Authorization checks
 
 **Build verification**: `pnpm build` + `pnpm lint` + `tsc --noEmit` all clean.
+
+**Frontend architecture polish (FSD alignment):**
+
+- Remove cross-entity coupling by moving shared UI labels/formatters out of entity-internal utils and into a shared frontend module, then update imports in `entities/job`, `entities/application`, `features/profile-edit`, and dashboard pages.
+- Centralize jobs query-state handling in `features/job-browse/model` (single parse/build policy for `search`, `familyId`, `sort`, `page`) and reuse it across search form, category tabs, sort control, and pagination.
+- Add lint-based layer guardrails (e.g., `no-restricted-imports`) to enforce FSD dependency direction and prevent future cross-layer leaks.
+- Reconcile architecture docs (`docs/folder-structure.md`) with the actual current structure and ownership boundaries.
+
+**Polish acceptance criteria (FSD):**
+
+- No imports from `entities/profile/ui/_utils` outside the profile entity slice.
+- Jobs browse controls preserve query state consistently under one shared policy.
+- ESLint catches prohibited cross-layer imports in CI.
+- Folder-structure documentation matches real code paths and slice responsibilities.
 
 ---
 
