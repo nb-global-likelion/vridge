@@ -60,7 +60,7 @@
 | 21  | 채용공고 라우트 통합 + UI 재설계       | `/candidate/jobs` → `/jobs` 통합, 검색/탭/정렬     | P20           | ✅   |
 | 22  | 프로필 조회/편집 재설계                | 새 필드 반영, 자격증 섹션, 섹션 순서 변경          | P18, P20      | ✅   |
 | 23  | 공지사항 + 후보자 랜딩 + 공유 URL      | 공지 목록/상세, 프로필 슬러그                      | P18, P20, P22 | ✅   |
-| 24  | 에러/로딩 UX + FSD 가드레일 (E2E 제외) | error.tsx, not-found.tsx, loading.tsx, import 가드 | 전체          | 🔶   |
+| 24  | 에러/로딩 UX + FSD 가드레일 (E2E 제외) | error.tsx, not-found.tsx, loading.tsx, import 가드 | 전체          | ✅   |
 
 ---
 
@@ -80,7 +80,7 @@
 ## 현재 상태
 
 - **테스트**: 440개 통과 (65 suite)
-- **타입 체크**: `pnpm exec tsc --noEmit` 클린
+- **타입 체크**: `pnpm tsc --noEmit` 클린
 - **린트**: `pnpm lint` 클린
-- **빌드**: `pnpm build`는 Google Fonts 네트워크 fetch 제한으로 실패 (Inter/Geist Mono)
+- **빌드**: `BETTER_AUTH_SECRET` 미설정 시 실패, 설정 시 통과
 - **브랜치**: `feat/prompt24-polish-e2e`

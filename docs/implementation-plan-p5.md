@@ -357,15 +357,13 @@ P24 (Polish, E2E deferred) depends on all
 - Added announcement detail tests for `NOT_FOUND` mapping and non-404 error propagation.
 - Added route loading UI tests for all newly added `loading.tsx` files.
 
-#### Prompt 24 results (re-scoped)
+#### Prompt 24 results
 
 - E2E work is intentionally deferred and excluded from this prompt.
 - Existing Jest suite: `65 suite`, `440 tests` passed.
 - `pnpm lint` passed.
-- `pnpm exec tsc --noEmit` passed.
-- `pnpm build` is blocked in this environment by external Google Fonts fetch failures (`Inter`, `Geist Mono`), not by app code changes.
-
----
+- `pnpm tsc --noEmit` passed.
+- `pnpm build`는 `BETTER_AUTH_SECRET` 미설정 시 실패하며, 값 설정 시 통과한다.
 
 ## Deferred (Post-P24)
 
@@ -389,4 +387,4 @@ P24 (Polish, E2E deferred) depends on all
 | 21  | Jobs route merge + list/detail UI redesign                                                | Large        | P20           | ✅     |
 | 22  | Profile view/edit with all new fields + certification section                             | Large        | P18, P20      | ✅     |
 | 23  | Announcements pages + candidate landing + shareable slugs                                 | Large        | P18, P20, P22 | ✅     |
-| 24  | Error handling + loading states + FSD guardrails (E2E deferred)                           | Medium       | All           | 🔶     |
+| 24  | Error handling + loading states + FSD guardrails (E2E deferred)                           | Medium       | All           | ✅     |
