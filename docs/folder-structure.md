@@ -70,6 +70,8 @@ app/
 └── api/auth/[...all]/route.ts
 ```
 
+- `/candidate/profile`는 대시보드 내 "내 프로필" 화면을 직접 렌더링하며, 하단 CTA로 `/candidate/profile/edit`에 연결됩니다.
+
 ## 백엔드 계층 (`lib/`)
 
 ```text
@@ -182,6 +184,7 @@ stories/
 - 소스 구조를 미러링하여 `app/`, `lib/`, `entities/`, `features/`, `widgets/` 단위로 유지
 - UI 렌더링 테스트 + use-case/action 단위 테스트 + `proxy.ts` node 환경 테스트
 - i18n 클라이언트 컴포넌트는 `__tests__/test-utils/render-with-i18n.tsx`로 감싸서 렌더링
+- 내 프로필 라우트 회귀 테스트: `__tests__/app/candidate-profile-page.test.tsx`
 
 ## `proxy.ts` 역할
 

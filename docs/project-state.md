@@ -1,11 +1,11 @@
 # 프로젝트 상태 — vridge ATS MVP
 
-> 내부 공유 문서 (기준 브랜치: `dev`)
+> 내부 공유 문서 (기준 브랜치: `feat/item1-candidate-profile-fix`)
 
 ## 현재 스냅샷
 
-- 브랜치: `dev`
-- 테스트: `70` suite, `457` tests 통과
+- 브랜치: `feat/item1-candidate-profile-fix`
+- 테스트: `71` suite, `459` tests 통과
 - 타입 체크: `pnpm exec tsc --noEmit` 통과
 - 앱 라우팅: Next.js App Router (`app/`)
 - 인증: Better Auth + `proxy.ts` 기반 라우트 보호
@@ -30,6 +30,7 @@
 - 후보자 공개 페이지(`app/candidate/[slug]/*`)
 - 대시보드 내 내 프로필/프로필 편집/내 지원 목록
 - 전역 `error.tsx`, `not-found.tsx`, 라우트별 `loading.tsx`/`error.tsx` 반영
+- `app/(dashboard)/candidate/profile/page.tsx`는 더 이상 slug 페이지로 리다이렉트하지 않고, 내 프로필 섹션 렌더링 + 하단 `Edit Profile` CTA 제공
 
 ### i18n (Phase 6)
 
@@ -77,6 +78,8 @@
 - `/candidate/profile/edit`
 - `/candidate/applications`
 
+`/candidate/profile`은 인증 사용자 기준 대시보드형 내 프로필 화면(읽기)이며, 편집 진입은 `/candidate/profile/edit`로 연결됩니다.
+
 ### 미구현/후속 라우트 (채용담당자)
 
 - `/recruiter` 대시보드
@@ -96,6 +99,8 @@
   - i18n 의존 클라이언트 컴포넌트는 `__tests__/test-utils/render-with-i18n.tsx` 사용
 - Storybook 스토리 위치
   - 구현 컴포넌트와 분리하여 `stories/ui`에 문서 스토리를 유지
+- 클라이언트 경계
+  - `components/ui/post-status.tsx`는 `useI18n()` 사용을 위해 클라이언트 컴포넌트로 유지
 
 ## 보류/후속 과제
 

@@ -81,8 +81,15 @@
 - [ ] 포트폴리오 파일 첨부(현재 URL 링크 목록)
 - [x] 언어 시험명/점수 표시
 - [x] 기본 프로필 섹션 카드 구성
-- [ ] Figma와 동일한 편집 버튼 위치/스타일
+- [x] 공개 프로필은 읽기 전용(편집 버튼 없음, 편집 진입은 `/candidate/profile`)
 - [x] 섹션 순서(Basic → Education → Skills → Experience → Certification → Languages → Portfolio)
+
+## My Profile (`/candidate/profile`)
+
+- [x] slug 페이지 리다이렉트 없이 대시보드 내 페이지 직접 렌더링
+- [x] Basic → Education → Skills → Experience → Certification → Languages → Portfolio 섹션 렌더링
+- [x] 하단 고정 `Edit Profile` CTA
+- [x] `Edit Profile` 클릭 시 `/candidate/profile/edit` 이동
 
 ## Profile Edit (`/candidate/profile/edit`)
 

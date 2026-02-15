@@ -77,6 +77,21 @@
 | --- | ----------------------------------------------- | ---- |
 | 29  | Prompt 20 Tier-1 공통 컴포넌트 Storybook 문서화 | ✅   |
 
+## Hotfix: 구현 불일치 보정 (`fix_needed.md`)
+
+| #   | 작업                                   | 상태 |
+| --- | -------------------------------------- | ---- |
+| 30  | `/candidate/profile` 렌더링/수정 CTA   | ✅   |
+| 31  | `/candidate/[slug]` i18n 이슈 정리     | ⬜   |
+| 32  | `/candidate/profile/edit` 링크/동선    | ⬜   |
+| 33  | `/candidate/applications` 디자인 보정  | ⬜   |
+| 34  | 인증 입력 필드(이메일/비밀번호) 아이콘 | ⬜   |
+| 35  | `/jobs` 디자인/기능 보정               | ⬜   |
+| 36  | `/jobs/[id]` 디자인/기능 보정          | ⬜   |
+| 37  | `/announcements` 디자인 보정           | ⬜   |
+| 38  | `/announcements/[id]` 디자인 보정      | ⬜   |
+| 39  | 로그인/회원가입 플로우 전반 보정       | ⬜   |
+
 ---
 
 ## 보류 항목 (Post-P6)
@@ -94,8 +109,8 @@
 
 ## 현재 상태
 
-- **브랜치**: `feat/prompt25-storybook-docs`
-- **테스트**: 457개 통과 (70 suite)
+- **브랜치**: `feat/item1-candidate-profile-fix`
+- **테스트**: 459개 통과 (71 suite)
 - **타입 체크**: `pnpm exec tsc --noEmit` 클린
 - **로케일 정책**: `vi` 기본, `en/ko` 지원, 쿠키 키 `vridge_locale`
 - **에러 계약**: 서버 액션은 `{ errorCode, errorKey, errorMessage? }` 형태로 표준화
