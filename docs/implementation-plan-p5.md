@@ -307,6 +307,17 @@ P24 (Polish + E2E) depends on all
 
 **Tests**: Announcement query coverage (from P18), slug use-case tests, proxy path tests, main-nav link update.
 
+#### Prompt 23 results
+
+- 공지사항 목록/상세 페이지를 추가했다: `/announcements`, `/announcements/[id]` (핀 고정글, 날짜 표시, 다음/이전 글 내비게이션 포함).
+- 공지사항 상세 인접 글 조회를 위해 `getAnnouncementNeighbors` use-case/action을 추가했다.
+- 네비게이션 및 공개 경로를 단수 `/announcement`에서 복수 `/announcements`로 정리했다 (`MainNav`, `proxy` 반영).
+- 공개 프로필 슬러그 조회 흐름을 추가했다: `getProfileBySlug` use-case/action + `/candidate/[slug]`, `/candidate/[slug]/profile`.
+- 대시보드 `/candidate/profile`은 내 slug 기반 공개 프로필로 리다이렉트하도록 변경했다.
+- `/candidate/applications`를 Prompt 20 재사용 원칙에 맞춰 개편했다 (`PostingListItem` 기반 목록 + 요약 카드).
+- 테스트를 확장했다: 공지사항 페이지/상세, 후보자 slug 페이지, 지원 목록 페이지, nav/proxy/profile/announcement use-case·action.
+- 전체 검증 완료: `63 suite`, `424 tests`, `tsc --noEmit` 클린.
+
 ---
 
 ## Prompt 24: Polish + E2E
@@ -365,5 +376,5 @@ P24 (Polish + E2E) depends on all
 | 20  | Design system components (Icon, InputWithIcon, StatusIndicator, Pagination, Button brand) | Small        | —             | ✅     |
 | 21  | Jobs route merge + list/detail UI redesign                                                | Large        | P20           | ✅     |
 | 22  | Profile view/edit with all new fields + certification section                             | Large        | P18, P20      | ✅     |
-| 23  | Announcements pages + candidate landing + shareable slugs                                 | Large        | P18, P20, P22 | ⬜     |
+| 23  | Announcements pages + candidate landing + shareable slugs                                 | Large        | P18, P20, P22 | ✅     |
 | 24  | Error handling + loading states + E2E smoke test                                          | Medium       | All           | ⬜     |

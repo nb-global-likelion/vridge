@@ -59,7 +59,7 @@
 | 20  | 디자인 시스템 컴포넌트            | Icon, InputWithIcon, StatusIndicator, Pagination | —             | ✅   |
 | 21  | 채용공고 라우트 통합 + UI 재설계  | `/candidate/jobs` → `/jobs` 통합, 검색/탭/정렬   | P20           | ✅   |
 | 22  | 프로필 조회/편집 재설계           | 새 필드 반영, 자격증 섹션, 섹션 순서 변경        | P18, P20      | ✅   |
-| 23  | 공지사항 + 후보자 랜딩 + 공유 URL | 공지 목록/상세, 프로필 슬러그                    | P18, P20, P22 | ⬜   |
+| 23  | 공지사항 + 후보자 랜딩 + 공유 URL | 공지 목록/상세, 프로필 슬러그                    | P18, P20, P22 | ✅   |
 | 24  | 에러 처리 + 로딩 + E2E 테스트     | error.tsx, loading.tsx, 스모크 테스트            | 전체          | ⬜   |
 
 ---
@@ -79,6 +79,6 @@
 
 ## 현재 상태
 
-- **테스트**: 408개 통과 (59 suite)
+- **테스트**: 424개 통과 (63 suite)
 - **타입 체크**: `tsc --noEmit` 클린
-- **브랜치**: `feat/prompt21-sort-query-state`
+- **브랜치**: `feat/prompt23-announcement-slug`
