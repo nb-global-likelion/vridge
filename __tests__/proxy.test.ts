@@ -50,6 +50,12 @@ describe('공개 라우트', () => {
     await proxy(makeRequest('/api/auth/sign-in'));
     expect(mockGetSession).not.toHaveBeenCalled();
   });
+
+  it('/icons/*.svg 정적 에셋은 세션 확인 없이 통과', async () => {
+    const res = await proxy(makeRequest('/icons/search.svg'));
+    expect(mockGetSession).not.toHaveBeenCalled();
+    expect(res?.status).not.toBe(307);
+  });
 });
 
 describe('보호 라우트', () => {

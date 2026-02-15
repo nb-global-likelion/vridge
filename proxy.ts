@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/infrastructure/auth';
 
+function isStaticAssetPath(pathname: string): boolean {
+  return /\.[^/]+$/.test(pathname);
+}
+
 function isPublicPath(pathname: string): boolean {
   const segments = pathname.split('/').filter(Boolean);
   const isPublicCandidatePath =
@@ -23,6 +27,10 @@ function isPublicPath(pathname: string): boolean {
 }
 
 export async function proxy(request: NextRequest) {
+  if (isStaticAssetPath(request.nextUrl.pathname)) {
+    return NextResponse.next();
+  }
+
   // 공개 경로 — 세션 확인 불필요
   if (isPublicPath(request.nextUrl.pathname)) {
     return NextResponse.next();

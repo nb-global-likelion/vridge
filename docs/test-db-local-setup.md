@@ -12,6 +12,19 @@
 
 ## 사전 준비
 
+docker가 없는 경우 설치합니다.
+
+테스트용 pg 이미지를 생성합니다.
+
+```bash
+docker run -d --name vridge-test-pg \
+  -e POSTGRES_USER=postgres \
+  -e POSTGRES_PASSWORD=postgres \
+  -e POSTGRES_DB=vridge_test \
+  -p 54329:5432 \
+  postgres:16
+```
+
 `.env.test` 파일에 테스트 DB 연결 문자열을 설정합니다.
 
 ```env
