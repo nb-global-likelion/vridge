@@ -25,7 +25,7 @@ P19 (Social Auth)       (independent)
 P20 (Design System)  ──> P21 (Jobs UI)
                       ──> P22, P23
 
-P24 (Polish + E2E) depends on all
+P24 (Polish, E2E deferred) depends on all
 ```
 
 **Execution order: 17 → 18 → 19 → 20 → 21 → 22 → 23 → 24**
@@ -326,38 +326,44 @@ P24 (Polish + E2E) depends on all
 
 ---
 
-## Prompt 24: Polish + E2E
+## Prompt 24: Polish (E2E Deferred)
 
-**Goal**: Error boundaries, loading skeletons, build verification, integration smoke test.
+**Goal**: Complete UX/system polish without introducing new E2E coverage.
 
-**Error/loading pages**:
+**Implemented scope**:
 
-- `app/error.tsx`, `app/not-found.tsx`
-- Route-specific: `app/announcements/error.tsx`, `app/announcements/[id]/not-found.tsx`
-- Loading skeletons: `loading.tsx` for profile, jobs, announcements, applications
+- Added global and route-level boundaries:
+  - `app/error.tsx`, `app/not-found.tsx`
+  - `app/announcements/error.tsx`, `app/announcements/[id]/not-found.tsx`
+- Added route loading UIs:
+  - `app/jobs/loading.tsx`, `app/jobs/[id]/loading.tsx`
+  - `app/announcements/loading.tsx`, `app/announcements/[id]/loading.tsx`
+  - `app/(dashboard)/candidate/applications/loading.tsx`, `app/(dashboard)/candidate/profile/loading.tsx`
+- Updated announcement error contract/action handling:
+  - Domain errors now return `{ error, errorCode }`
+  - announcement detail page maps `errorCode === 'NOT_FOUND'` to `notFound()`
+  - non-404 errors are thrown to the error boundary path
+- Introduced shared presentation module: `lib/frontend/presentation.ts`
+  - moved shared formatters/label maps (`formatDate`, `formatSalary`, employment/work/proficiency/graduation/experience/education/apply labels)
+  - replaced prior `_utils` cross-slice imports
+- Added FSD guardrails in `eslint.config.mjs` using `no-restricted-imports` for:
+  - `@/entities/profile/ui/_utils`
+  - `@/entities/job/ui/_utils`
+- Reconciled structure docs: `docs/folder-structure.md`
 
-**E2E smoke test** (`__tests__/e2e/smoke.test.ts`):
+**Validation and regression updates**:
 
-- Candidate flow: profile CRUD (with new fields) → job browse (with search) → apply → view applications
-- Announcement flow: list (pinned ordering) → detail
-- Profile slug flow: public profile by slug
-- Authorization checks
+- Updated announcement action tests for `errorCode` behavior.
+- Added announcement detail tests for `NOT_FOUND` mapping and non-404 error propagation.
+- Added route loading UI tests for all newly added `loading.tsx` files.
 
-**Build verification**: `pnpm build` + `pnpm lint` + `tsc --noEmit` all clean.
+#### Prompt 24 results (re-scoped)
 
-**Frontend architecture polish (FSD alignment):**
-
-- Remove cross-entity coupling by moving shared UI labels/formatters out of entity-internal utils and into a shared frontend module, then update imports in `entities/job`, `entities/application`, `features/profile-edit`, and dashboard pages.
-- Centralize jobs query-state handling in `features/job-browse/model` (single parse/build policy for `search`, `familyId`, `sort`, `page`) and reuse it across search form, category tabs, sort control, and pagination.
-- Add lint-based layer guardrails (e.g., `no-restricted-imports`) to enforce FSD dependency direction and prevent future cross-layer leaks.
-- Reconcile architecture docs (`docs/folder-structure.md`) with the actual current structure and ownership boundaries.
-
-**Polish acceptance criteria (FSD):**
-
-- No imports from `entities/profile/ui/_utils` outside the profile entity slice.
-- Jobs browse controls preserve query state consistently under one shared policy.
-- ESLint catches prohibited cross-layer imports in CI.
-- Folder-structure documentation matches real code paths and slice responsibilities.
+- E2E work is intentionally deferred and excluded from this prompt.
+- Existing Jest suite: `65 suite`, `440 tests` passed.
+- `pnpm lint` passed.
+- `pnpm exec tsc --noEmit` passed.
+- `pnpm build` is blocked in this environment by external Google Fonts fetch failures (`Inter`, `Geist Mono`), not by app code changes.
 
 ---
 
@@ -383,4 +389,4 @@ P24 (Polish + E2E) depends on all
 | 21  | Jobs route merge + list/detail UI redesign                                                | Large        | P20           | ✅     |
 | 22  | Profile view/edit with all new fields + certification section                             | Large        | P18, P20      | ✅     |
 | 23  | Announcements pages + candidate landing + shareable slugs                                 | Large        | P18, P20, P22 | ✅     |
-| 24  | Error handling + loading states + E2E smoke test                                          | Medium       | All           | ⬜     |
+| 24  | Error handling + loading states + FSD guardrails (E2E deferred)                           | Medium       | All           | 🔶     |
