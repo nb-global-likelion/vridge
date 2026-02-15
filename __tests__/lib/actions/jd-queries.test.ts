@@ -38,11 +38,15 @@ describe('getJobDescriptions', () => {
     });
   });
 
-  it('유효하지 않은 입력 (Zod 오류) → { error: ... }', async () => {
+  it('유효하지 않은 입력 (Zod 오류) → 코드/키 에러 반환', async () => {
     const result = await getJobDescriptions({ page: -1, pageSize: 100 });
 
     expect(result).toEqual(
-      expect.objectContaining({ error: expect.any(String) })
+      expect.objectContaining({
+        errorCode: 'FILTER_INVALID',
+        errorKey: 'error.filterInvalid',
+        errorMessage: expect.any(String),
+      })
     );
     expect(jdQueriesUC.getJobDescriptions).not.toHaveBeenCalled();
   });
@@ -109,7 +113,11 @@ describe('getJobDescriptions', () => {
     });
 
     expect(result).toEqual(
-      expect.objectContaining({ error: expect.any(String) })
+      expect.objectContaining({
+        errorCode: 'FILTER_INVALID',
+        errorKey: 'error.filterInvalid',
+        errorMessage: expect.any(String),
+      })
     );
     expect(jdQueriesUC.getJobDescriptions).not.toHaveBeenCalled();
   });
@@ -128,10 +136,11 @@ describe('getJobDescriptionById', () => {
     expect(jdQueriesUC.getJobDescriptionById).toHaveBeenCalledWith('jd-1');
   });
 
-  it('DomainError NOT_FOUND → { error: message }', async () => {
+  it('DomainError NOT_FOUND → 코드/키/메시지 에러 반환', async () => {
     const domainErr = new DomainError(
       'NOT_FOUND',
-      '채용공고을(를) 찾을 수 없습니다'
+      '채용공고을(를) 찾을 수 없습니다',
+      'error.notFound.jobDescription'
     );
     (
       jdQueriesUC.getJobDescriptionById as unknown as jest.Mock
@@ -139,6 +148,10 @@ describe('getJobDescriptionById', () => {
 
     const result = await getJobDescriptionById('nonexistent');
 
-    expect(result).toEqual({ error: '채용공고을(를) 찾을 수 없습니다' });
+    expect(result).toEqual({
+      errorCode: 'NOT_FOUND',
+      errorKey: 'error.notFound.jobDescription',
+      errorMessage: '채용공고을(를) 찾을 수 없습니다',
+    });
   });
 });

@@ -1,4 +1,5 @@
 import { Icon } from './icon';
+import { useI18n } from '@/lib/i18n/client';
 
 type PostStatusProps = {
   status: 'recruiting' | 'done';
@@ -10,12 +11,12 @@ const CONFIG = {
   recruiting: {
     icon: 'status-recruiting',
     color: 'text-[#00a600]',
-    defaultLabel: 'Recruiting',
+    defaultLabelKey: 'jobs.status.recruiting',
   },
   done: {
     icon: 'status-done',
     color: 'text-[#e50000]',
-    defaultLabel: 'Done',
+    defaultLabelKey: 'jobs.status.done',
   },
 } as const;
 
@@ -25,8 +26,9 @@ const SIZE_CLASS = {
 } as const;
 
 export function PostStatus({ status, size = 'sm', label }: PostStatusProps) {
+  const { t } = useI18n();
   const config = CONFIG[status];
-  const displayLabel = label ?? config.defaultLabel;
+  const displayLabel = label ?? t(config.defaultLabelKey);
 
   return (
     <span className="inline-flex items-center justify-center">

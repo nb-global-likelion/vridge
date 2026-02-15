@@ -1,31 +1,32 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import { JobCategoryTabs } from '@/features/job-browse/ui/job-category-tabs';
+import { renderWithI18n } from '@/__tests__/test-utils/render-with-i18n';
 
 const families = [
-  { id: 'engineering', displayNameEn: 'Engineering' },
-  { id: 'design', displayNameEn: 'Design' },
+  { id: 'engineering', displayName: 'Engineering' },
+  { id: 'design', displayName: 'Design' },
 ];
 
 describe('JobCategoryTabs', () => {
   it('"All" 탭이 항상 렌더링된다', () => {
-    render(<JobCategoryTabs families={families} query={{}} />);
+    renderWithI18n(<JobCategoryTabs families={families} query={{}} />);
     expect(screen.getByText('All')).toBeInTheDocument();
   });
 
   it('패밀리 이름이 모두 렌더링된다', () => {
-    render(<JobCategoryTabs families={families} query={{}} />);
+    renderWithI18n(<JobCategoryTabs families={families} query={{}} />);
     expect(screen.getByText('Engineering')).toBeInTheDocument();
     expect(screen.getByText('Design')).toBeInTheDocument();
   });
 
   it('activeFamilyId 미전달 시 "All" 탭이 활성 상태', () => {
-    render(<JobCategoryTabs families={families} query={{}} />);
+    renderWithI18n(<JobCategoryTabs families={families} query={{}} />);
     const allTab = screen.getByText('All').closest('a');
     expect(allTab?.className).toContain('ff6000');
   });
 
   it('activeFamilyId 전달 시 해당 탭이 활성 상태', () => {
-    render(
+    renderWithI18n(
       <JobCategoryTabs
         families={families}
         activeFamilyId="design"
@@ -40,7 +41,7 @@ describe('JobCategoryTabs', () => {
   });
 
   it('탭 href에 familyId가 포함된다', () => {
-    render(
+    renderWithI18n(
       <JobCategoryTabs
         families={families}
         query={{ search: 'react', sort: 'created_desc', page: 3 }}
@@ -54,7 +55,7 @@ describe('JobCategoryTabs', () => {
   });
 
   it('"All" 탭 href는 search/sort 유지 + familyId/page 제거', () => {
-    render(
+    renderWithI18n(
       <JobCategoryTabs
         families={families}
         query={{

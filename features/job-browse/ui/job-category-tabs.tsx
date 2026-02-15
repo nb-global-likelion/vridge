@@ -6,25 +6,31 @@ import {
   buildJobsHref,
   type JobsQueryState,
 } from '@/features/job-browse/model/query-state';
+import { useI18n } from '@/lib/i18n/client';
 
 type Props = {
-  families: { id: string; displayNameEn: string }[];
+  families: { id: string; displayName: string }[];
   activeFamilyId?: string;
   query: JobsQueryState;
 };
 
 export function JobCategoryTabs({ families, activeFamilyId, query }: Props) {
+  const { t } = useI18n();
   const allHref = buildJobsHref(
     applyJobsQueryPatch(query, { familyId: undefined }, { resetPage: true })
   );
 
   return (
     <div className="flex gap-2">
-      <TabItem label="All" isActive={!activeFamilyId} href={allHref} />
+      <TabItem
+        label={t('jobs.all')}
+        isActive={!activeFamilyId}
+        href={allHref}
+      />
       {families.map((f) => (
         <TabItem
           key={f.id}
-          label={f.displayNameEn}
+          label={f.displayName}
           isActive={activeFamilyId === f.id}
           href={buildJobsHref(
             applyJobsQueryPatch(query, { familyId: f.id }, { resetPage: true })

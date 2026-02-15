@@ -1,7 +1,5 @@
 'use server';
 
-import { ZodError } from 'zod';
-import { DomainError } from '@/lib/domain/errors';
 import { requireRole } from '@/lib/infrastructure/auth-utils';
 import { applySchema } from '@/lib/validations/application';
 import { revalidatePath } from 'next/cache';
@@ -11,17 +9,12 @@ import {
   getUserApplications,
   getApplicationsForJd as ucGetApplicationsForJd,
 } from '@/lib/use-cases/applications';
+import { handleActionError, type ActionError } from './_shared';
 
-type MutationResult = { success: true } | { error: string };
-type QueryResult<T> = { success: true; data: T } | { error: string };
+type MutationResult = { success: true } | ActionError;
+type QueryResult<T> = { success: true; data: T } | ActionError;
 
 const APPLICATIONS_PATH = '/candidate/applications';
-
-function handleError(e: unknown): { error: string } {
-  if (e instanceof DomainError) return { error: e.message };
-  if (e instanceof ZodError) return { error: '입력값이 유효하지 않습니다' };
-  throw e;
-}
 
 export async function createApply(input: unknown): Promise<MutationResult> {
   try {
@@ -31,7 +24,7 @@ export async function createApply(input: unknown): Promise<MutationResult> {
     revalidatePath(APPLICATIONS_PATH);
     return { success: true };
   } catch (e) {
-    return handleError(e);
+    return handleActionError(e, { zodErrorKey: 'error.inputInvalid' });
   }
 }
 
@@ -42,7 +35,7 @@ export async function withdrawApply(applyId: string): Promise<MutationResult> {
     revalidatePath(APPLICATIONS_PATH);
     return { success: true };
   } catch (e) {
-    return handleError(e);
+    return handleActionError(e, { zodErrorKey: 'error.inputInvalid' });
   }
 }
 
@@ -54,7 +47,7 @@ export async function getMyApplications(): Promise<
     const data = await getUserApplications(user.userId);
     return { success: true, data };
   } catch (e) {
-    return handleError(e);
+    return handleActionError(e);
   }
 }
 
@@ -66,6 +59,6 @@ export async function getApplicationsForJd(
     const data = await ucGetApplicationsForJd(jdId);
     return { success: true, data };
   } catch (e) {
-    return handleError(e);
+    return handleActionError(e);
   }
 }

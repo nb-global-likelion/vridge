@@ -1,8 +1,9 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import CandidateSlugPage from '@/app/candidate/[slug]/page';
 import { getProfileBySlug } from '@/lib/actions/profile';
 import { getCurrentUser } from '@/lib/infrastructure/auth-utils';
 import { getMyApplications } from '@/lib/actions/applications';
+import { renderWithI18n } from '@/__tests__/test-utils/render-with-i18n';
 
 jest.mock('@/lib/actions/profile', () => ({
   getProfileBySlug: jest.fn(),
@@ -15,6 +16,16 @@ jest.mock('@/lib/infrastructure/auth-utils', () => ({
 jest.mock('@/lib/actions/applications', () => ({
   getMyApplications: jest.fn(),
 }));
+jest.mock('@/lib/i18n/server', () => {
+  const { enMessages } = jest.requireActual('@/lib/i18n/messages/en');
+  return {
+    getServerI18n: jest.fn(async () => ({
+      locale: 'en',
+      messages: enMessages,
+      t: (key: string) => enMessages[key] ?? key,
+    })),
+  };
+});
 
 const mockGetProfileBySlug = getProfileBySlug as unknown as jest.Mock;
 const mockGetCurrentUser = getCurrentUser as unknown as jest.Mock;
@@ -72,7 +83,7 @@ describe('CandidateSlugPage', () => {
     const ui = await CandidateSlugPage({
       params: Promise.resolve({ slug: 'lion-park' }),
     });
-    render(ui);
+    renderWithI18n(ui);
 
     expect(screen.getByText('My Jobs')).toBeInTheDocument();
     expect(screen.getByText('Applied')).toBeInTheDocument();
@@ -85,7 +96,7 @@ describe('CandidateSlugPage', () => {
     const ui = await CandidateSlugPage({
       params: Promise.resolve({ slug: 'lion-park' }),
     });
-    render(ui);
+    renderWithI18n(ui);
 
     expect(screen.queryByText('My Jobs')).not.toBeInTheDocument();
     expect(mockGetMyApplications).not.toHaveBeenCalled();

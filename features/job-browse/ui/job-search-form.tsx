@@ -8,6 +8,7 @@ import {
   buildJobsHref,
   parseJobsQueryFromSearchParams,
 } from '@/features/job-browse/model/query-state';
+import { useI18n } from '@/lib/i18n/client';
 
 type Props = {
   initialSearch?: string;
@@ -17,6 +18,7 @@ export function JobSearchForm({ initialSearch = '' }: Props) {
   const [value, setValue] = useState(initialSearch);
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { t } = useI18n();
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -35,7 +37,7 @@ export function JobSearchForm({ initialSearch = '' }: Props) {
         variant="main"
         value={value}
         onChange={setValue}
-        placeholder="검색어를 입력하세요"
+        placeholder={t('jobs.searchPlaceholder')}
       />
     </form>
   );

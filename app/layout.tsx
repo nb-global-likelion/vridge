@@ -8,6 +8,7 @@ import MainNav from '@/widgets/nav/ui/main-nav';
 import { LoginModal } from '@/features/auth/ui/login-modal';
 import { SignupModal } from '@/features/auth/ui/signup-modal';
 import { AuthRedirectHandler } from '@/features/auth/ui/auth-redirect-handler';
+import { getServerI18n } from '@/lib/i18n/server';
 
 const inter = Inter({
   variable: '--font-inter',
@@ -19,20 +20,26 @@ const geistMono = Geist_Mono({
   subsets: ['latin'],
 });
 
-export const metadata: Metadata = {
-  title: 'Vridge',
-  description: '베트남 인재와 한국 기업을 연결하는 글로벌 채용 플랫폼',
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { t } = await getServerI18n();
 
-export default function RootLayout({
+  return {
+    title: t('meta.title'),
+    description: t('meta.description'),
+  };
+}
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const { locale, messages } = await getServerI18n();
+
   return (
-    <html lang="en">
+    <html lang={locale}>
       <body className={`${inter.variable} ${geistMono.variable} antialiased`}>
-        <Providers>
+        <Providers locale={locale} messages={messages}>
           <MainNav />
           {children}
           <LoginModal />

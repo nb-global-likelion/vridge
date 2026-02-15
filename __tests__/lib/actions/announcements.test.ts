@@ -35,13 +35,16 @@ describe('getAnnouncements', () => {
     });
   });
 
-  it('유효하지 않은 입력 (Zod 오류) → { error: ... }', async () => {
+  it('유효하지 않은 입력 (Zod 오류) → 코드/키 에러 반환', async () => {
     const result = await getAnnouncements({ page: -1, pageSize: 100 });
 
     expect(result).toEqual(
-      expect.objectContaining({ error: expect.any(String) })
+      expect.objectContaining({
+        errorCode: 'FILTER_INVALID',
+        errorKey: 'error.filterInvalid',
+        errorMessage: expect.any(String),
+      })
     );
-    expect(result).not.toHaveProperty('errorCode');
     expect(announcementsUC.getAnnouncements).not.toHaveBeenCalled();
   });
 
@@ -77,10 +80,11 @@ describe('getAnnouncementById', () => {
     expect(announcementsUC.getAnnouncementById).toHaveBeenCalledWith('ann-1');
   });
 
-  it('DomainError NOT_FOUND → { error, errorCode }', async () => {
+  it('DomainError NOT_FOUND → 코드/키/메시지 에러 반환', async () => {
     const domainErr = new DomainError(
       'NOT_FOUND',
-      '공지사항을(를) 찾을 수 없습니다'
+      '공지사항을(를) 찾을 수 없습니다',
+      'error.notFound.announcement'
     );
     (
       announcementsUC.getAnnouncementById as unknown as jest.Mock
@@ -89,8 +93,9 @@ describe('getAnnouncementById', () => {
     const result = await getAnnouncementById('nonexistent');
 
     expect(result).toEqual({
-      error: '공지사항을(를) 찾을 수 없습니다',
       errorCode: 'NOT_FOUND',
+      errorKey: 'error.notFound.announcement',
+      errorMessage: '공지사항을(를) 찾을 수 없습니다',
     });
   });
 });
@@ -113,18 +118,23 @@ describe('getAnnouncementNeighbors', () => {
     );
   });
 
-  it('DomainError → { error, errorCode }', async () => {
+  it('DomainError → 코드/키/메시지 에러 반환', async () => {
     (
       announcementsUC.getAnnouncementNeighbors as unknown as jest.Mock
     ).mockRejectedValue(
-      new DomainError('NOT_FOUND', '공지사항을 찾을 수 없습니다')
+      new DomainError(
+        'NOT_FOUND',
+        '공지사항을 찾을 수 없습니다',
+        'error.notFound.announcement'
+      )
     );
 
     const result = await getAnnouncementNeighbors('ann-unknown');
 
     expect(result).toEqual({
-      error: '공지사항을 찾을 수 없습니다',
       errorCode: 'NOT_FOUND',
+      errorKey: 'error.notFound.announcement',
+      errorMessage: '공지사항을 찾을 수 없습니다',
     });
   });
 });

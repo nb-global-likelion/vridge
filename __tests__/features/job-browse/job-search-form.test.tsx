@@ -1,5 +1,6 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { screen, fireEvent } from '@testing-library/react';
 import { JobSearchForm } from '@/features/job-browse/ui/job-search-form';
+import { renderWithI18n } from '@/__tests__/test-utils/render-with-i18n';
 
 const mockPush = jest.fn();
 let mockSearchParams = new URLSearchParams();
@@ -16,17 +17,17 @@ beforeEach(() => {
 
 describe('JobSearchForm', () => {
   it('SearchBar를 렌더링한다', () => {
-    render(<JobSearchForm />);
+    renderWithI18n(<JobSearchForm />);
     expect(screen.getByRole('textbox')).toBeInTheDocument();
   });
 
   it('initialSearch가 input 초기값으로 반영된다', () => {
-    render(<JobSearchForm initialSearch="프론트엔드" />);
+    renderWithI18n(<JobSearchForm initialSearch="프론트엔드" />);
     expect(screen.getByRole('textbox')).toHaveValue('프론트엔드');
   });
 
   it('폼 제출 시 router.push 호출 (search 파라미터 포함)', () => {
-    render(<JobSearchForm initialSearch="백엔드" />);
+    renderWithI18n(<JobSearchForm initialSearch="백엔드" />);
 
     fireEvent.submit(screen.getByRole('form'));
 
@@ -36,7 +37,7 @@ describe('JobSearchForm', () => {
   });
 
   it('빈 검색어 제출 시 search 파라미터 미포함', () => {
-    render(<JobSearchForm />);
+    renderWithI18n(<JobSearchForm />);
 
     fireEvent.submit(screen.getByRole('form'));
 
@@ -48,7 +49,7 @@ describe('JobSearchForm', () => {
       'familyId=engineering&sort=created_desc&page=3'
     );
 
-    render(<JobSearchForm initialSearch="백엔드" />);
+    renderWithI18n(<JobSearchForm initialSearch="백엔드" />);
     fireEvent.submit(screen.getByRole('form'));
 
     expect(mockPush).toHaveBeenCalledWith(

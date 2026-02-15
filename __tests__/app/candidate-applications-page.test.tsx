@@ -1,7 +1,8 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import MyApplicationsPage from '@/app/(dashboard)/candidate/applications/page';
 import { requireUser } from '@/lib/infrastructure/auth-utils';
 import { getMyApplications } from '@/lib/actions/applications';
+import { renderWithI18n } from '@/__tests__/test-utils/render-with-i18n';
 
 jest.mock('@/lib/infrastructure/auth-utils', () => ({
   requireUser: jest.fn(),
@@ -11,6 +12,16 @@ jest.mock('@/lib/infrastructure/auth-utils', () => ({
 jest.mock('@/lib/actions/applications', () => ({
   getMyApplications: jest.fn(),
 }));
+jest.mock('@/lib/i18n/server', () => {
+  const { enMessages } = jest.requireActual('@/lib/i18n/messages/en');
+  return {
+    getServerI18n: jest.fn(async () => ({
+      locale: 'en',
+      messages: enMessages,
+      t: (key: string) => enMessages[key] ?? key,
+    })),
+  };
+});
 
 const mockRequireUser = requireUser as unknown as jest.Mock;
 const mockGetMyApplications = getMyApplications as unknown as jest.Mock;
@@ -70,7 +81,7 @@ describe('MyApplicationsPage', () => {
     });
 
     const ui = await MyApplicationsPage();
-    render(ui);
+    renderWithI18n(ui);
 
     expect(screen.getByText('My Jobs')).toBeInTheDocument();
     expect(screen.getByText('Applied')).toBeInTheDocument();

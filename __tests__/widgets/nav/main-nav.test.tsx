@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import MainNav from '@/widgets/nav/ui/main-nav';
 
 jest.mock('@/hooks/use-session', () => ({
@@ -6,6 +7,11 @@ jest.mock('@/hooks/use-session', () => ({
 }));
 jest.mock('next/navigation', () => ({
   usePathname: jest.fn(() => '/jobs'),
+  useRouter: jest.fn(() => ({ refresh: jest.fn() })),
+}));
+jest.mock('@/lib/i18n/client', () => ({
+  useI18n: jest.fn(),
+  serializeLocaleCookie: jest.fn(() => 'vridge_locale=ko; path=/; max-age=1'),
 }));
 // UserMenu는 별도 테스트 — 여기서는 렌더링 여부만 확인
 jest.mock('@/widgets/nav/ui/user-menu', () => ({
@@ -14,14 +20,33 @@ jest.mock('@/widgets/nav/ui/user-menu', () => ({
 }));
 
 import { useSession } from '@/hooks/use-session';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import { useI18n } from '@/lib/i18n/client';
 
 const mockUseSession = useSession as unknown as jest.Mock;
 const mockUsePathname = usePathname as unknown as jest.Mock;
+const mockUseRouter = useRouter as unknown as jest.Mock;
+const mockUseI18n = useI18n as unknown as jest.Mock;
+const mockRefresh = jest.fn();
+
+const translations: Record<string, string> = {
+  'nav.jobs': 'Jobs',
+  'nav.announcements': 'Announcement',
+  'nav.login': 'Log in',
+  'nav.signup': 'Sign Up',
+  'locale.en': 'EN',
+  'locale.ko': 'KR',
+  'locale.vi': 'VN',
+};
 
 beforeEach(() => {
   jest.clearAllMocks();
   mockUsePathname.mockReturnValue('/jobs');
+  mockUseRouter.mockReturnValue({ refresh: mockRefresh });
+  mockUseI18n.mockReturnValue({
+    locale: 'en',
+    t: (key: string) => translations[key] ?? key,
+  });
 });
 
 describe('MainNav', () => {
@@ -103,5 +128,16 @@ describe('MainNav', () => {
     render(<MainNav />);
 
     expect(screen.getByText('|')).toBeInTheDocument();
+  });
+
+  it('언어 변경 시 refresh 호출', async () => {
+    const user = userEvent.setup();
+    mockUseSession.mockReturnValue({ data: null });
+    render(<MainNav />);
+
+    await user.click(screen.getByRole('button', { name: /EN/i }));
+    await user.click(screen.getByRole('button', { name: 'KR' }));
+
+    expect(mockRefresh).toHaveBeenCalled();
   });
 });

@@ -7,12 +7,16 @@ import { PostingTitle } from '@/entities/job/ui/posting-title';
 import { SummaryCard } from '@/entities/job/ui/summary-card';
 import { ApplyButton } from '@/features/apply/ui/apply-button';
 import { LoginToApplyCta } from './_login-to-apply-cta';
+import { getServerI18n } from '@/lib/i18n/server';
+import { getActionErrorMessage } from '@/lib/i18n/action-error';
+import { getLocalizedCatalogName } from '@/lib/i18n/catalog';
 
 export default async function JobDetailPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
+  const { locale, t } = await getServerI18n();
   const { id } = await params;
 
   const session = await auth.api.getSession({
@@ -24,13 +28,17 @@ export default async function JobDetailPage({
     session ? getMyApplications() : Promise.resolve(null),
   ]);
 
-  if ('error' in jdResult) {
-    return <p className="p-6 text-destructive">{jdResult.error}</p>;
+  if ('errorCode' in jdResult) {
+    return (
+      <p className="p-6 text-destructive">
+        {getActionErrorMessage(jdResult, t)}
+      </p>
+    );
   }
 
   const jd = jdResult.data;
   const myApply =
-    myAppsResult && !('error' in myAppsResult)
+    myAppsResult && !('errorCode' in myAppsResult)
       ? myAppsResult.data.find((a) => a.jdId === id)
       : undefined;
 
@@ -58,7 +66,7 @@ export default async function JobDetailPage({
 
       <div className="sticky top-6 hidden self-start lg:block">
         <SummaryCard
-          jobDisplayNameEn={jd.job.displayNameEn}
+          jobDisplayName={getLocalizedCatalogName(jd.job, locale)}
           employmentType={jd.employmentType}
           workArrangement={jd.workArrangement}
           skills={jd.skills}

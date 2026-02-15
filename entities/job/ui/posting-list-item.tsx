@@ -1,18 +1,21 @@
+'use client';
+
 import Link from 'next/link';
 import { PostStatus } from '@/components/ui/post-status';
 import { Chip } from '@/components/ui/chip';
 import { Icon } from '@/components/ui/icon';
 import {
-  EMPLOYMENT_TYPE_LABELS,
+  getEmploymentTypeLabel,
   formatDate,
-  WORK_ARRANGEMENT_LABELS,
+  getWorkArrangementLabel,
 } from '@/lib/frontend/presentation';
+import { useI18n } from '@/lib/i18n/client';
 
 type Props = {
   id: string;
   title: string;
   orgName?: string | null;
-  jobDisplayNameEn: string;
+  jobDisplayName: string;
   employmentType: string;
   workArrangement: string;
   skills: { skill: { displayNameEn: string } }[];
@@ -24,7 +27,7 @@ type Props = {
 export function PostingListItem({
   title,
   orgName,
-  jobDisplayNameEn,
+  jobDisplayName,
   employmentType,
   workArrangement,
   skills,
@@ -32,6 +35,8 @@ export function PostingListItem({
   status,
   href,
 }: Props) {
+  const { t } = useI18n();
+
   return (
     <Link href={href} className="block">
       <div className="rounded-[20px] border border-[#ffefe5] bg-white px-[40px] py-[20px]">
@@ -54,15 +59,13 @@ export function PostingListItem({
             <div className="flex flex-wrap items-center gap-3 text-[14px] text-[#4c4c4c]">
               <span className="inline-flex items-center gap-1">
                 <Icon name="jobs" size={16} />
-                {jobDisplayNameEn}
+                {jobDisplayName}
               </span>
               <span className="inline-flex items-center gap-1">
                 <Icon name="location" size={16} />
-                {WORK_ARRANGEMENT_LABELS[workArrangement] ?? workArrangement}
+                {getWorkArrangementLabel(workArrangement, t)}
               </span>
-              <span>
-                {EMPLOYMENT_TYPE_LABELS[employmentType] ?? employmentType}
-              </span>
+              <span>{getEmploymentTypeLabel(employmentType, t)}</span>
             </div>
 
             {skills.length > 0 && (

@@ -11,12 +11,16 @@ import {
   getEffectiveJobsSort,
   parseJobsQueryFromRecord,
 } from '@/features/job-browse/model/query-state';
+import { getServerI18n } from '@/lib/i18n/server';
+import { getActionErrorMessage } from '@/lib/i18n/action-error';
+import { getLocalizedCatalogName } from '@/lib/i18n/catalog';
 
 export default async function JobsPage({
   searchParams,
 }: {
   searchParams: Promise<Record<string, string>>;
 }) {
+  const { locale, t } = await getServerI18n();
   const params = await searchParams;
   const query = parseJobsQueryFromRecord(params);
   const search = query.search;
@@ -29,12 +33,22 @@ export default async function JobsPage({
     getJobFamilies(),
   ]);
 
-  if ('error' in jdResult) {
-    return <p className="p-6 text-destructive">{jdResult.error}</p>;
+  if ('errorCode' in jdResult) {
+    return (
+      <p className="p-6 text-destructive">
+        {getActionErrorMessage(jdResult, t)}
+      </p>
+    );
   }
 
   const { items, total, pageSize } = jdResult.data;
-  const jobFamilies = 'error' in familiesResult ? [] : familiesResult.data;
+  const jobFamilies =
+    'errorCode' in familiesResult
+      ? []
+      : familiesResult.data.map((family) => ({
+          ...family,
+          displayName: getLocalizedCatalogName(family, locale),
+        }));
   const totalPages = Math.ceil(total / pageSize);
 
   function buildHref(p: number) {
@@ -54,7 +68,7 @@ export default async function JobsPage({
       </div>
 
       {items.length === 0 ? (
-        <p className="text-muted-foreground">채용공고가 없습니다.</p>
+        <p className="text-muted-foreground">{t('jobs.empty')}</p>
       ) : (
         <div className="flex flex-col gap-4">
           {items.map((jd) => (
@@ -63,7 +77,7 @@ export default async function JobsPage({
               id={jd.id}
               title={jd.title}
               orgName={jd.org?.name}
-              jobDisplayNameEn={jd.job.displayNameEn}
+              jobDisplayName={getLocalizedCatalogName(jd.job, locale)}
               employmentType={jd.employmentType}
               workArrangement={jd.workArrangement}
               skills={jd.skills}
@@ -79,6 +93,8 @@ export default async function JobsPage({
         currentPage={page}
         totalPages={totalPages}
         buildHref={buildHref}
+        prevAriaLabel={t('jobs.pagination.prevAria')}
+        nextAriaLabel={t('jobs.pagination.nextAria')}
       />
     </div>
   );

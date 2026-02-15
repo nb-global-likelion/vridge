@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import type { ReactNode } from 'react';
 import AnnouncementDetailPage from '@/app/announcements/[id]/page';
 import {
@@ -6,6 +6,7 @@ import {
   getAnnouncementNeighbors,
 } from '@/lib/actions/announcements';
 import { notFound } from 'next/navigation';
+import { renderWithI18n } from '@/__tests__/test-utils/render-with-i18n';
 
 jest.mock('react-markdown', () => ({
   __esModule: true,
@@ -19,6 +20,16 @@ jest.mock('@/lib/actions/announcements', () => ({
 jest.mock('next/navigation', () => ({
   notFound: jest.fn(),
 }));
+jest.mock('@/lib/i18n/server', () => {
+  const { enMessages } = jest.requireActual('@/lib/i18n/messages/en');
+  return {
+    getServerI18n: jest.fn(async () => ({
+      locale: 'en',
+      messages: enMessages,
+      t: (key: string) => enMessages[key] ?? key,
+    })),
+  };
+});
 
 const mockGetAnnouncementById = getAnnouncementById as unknown as jest.Mock;
 const mockGetAnnouncementNeighbors =
@@ -63,7 +74,7 @@ describe('AnnouncementDetailPage', () => {
     const ui = await AnnouncementDetailPage({
       params: Promise.resolve({ id: 'ann-1' }),
     });
-    render(ui);
+    renderWithI18n(ui);
 
     expect(screen.getByText('About Vridge')).toBeInTheDocument();
     expect(screen.getByText('(Pinned)')).toBeInTheDocument();
@@ -76,14 +87,15 @@ describe('AnnouncementDetailPage', () => {
       '/announcements/ann-0'
     );
     expect(
-      screen.getByRole('link', { name: /announcement 목록/i })
+      screen.getByRole('link', { name: /back to announcement list/i })
     ).toHaveAttribute('href', '/announcements');
   });
 
   it('NOT_FOUND 에러 코드면 notFound를 호출한다', async () => {
     mockGetAnnouncementById.mockResolvedValue({
-      error: '공지사항을 찾을 수 없습니다',
       errorCode: 'NOT_FOUND',
+      errorKey: 'error.notFound.announcement',
+      errorMessage: '공지사항을 찾을 수 없습니다',
     });
     mockGetAnnouncementNeighbors.mockResolvedValue({
       success: true,
@@ -101,8 +113,9 @@ describe('AnnouncementDetailPage', () => {
 
   it('NOT_FOUND가 아닌 에러는 에러 바운더리로 전파한다', async () => {
     mockGetAnnouncementById.mockResolvedValue({
-      error: '일시적인 오류입니다',
       errorCode: 'CONFLICT',
+      errorKey: 'error.conflict.unknown',
+      errorMessage: '일시적인 오류입니다',
     });
     mockGetAnnouncementNeighbors.mockResolvedValue({
       success: true,

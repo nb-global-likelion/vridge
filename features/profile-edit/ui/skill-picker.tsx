@@ -31,7 +31,7 @@ export function SkillPicker({
         return;
       }
       const r = await searchSkills(query);
-      if (!('error' in r)) setResults(r.data);
+      if (!('errorCode' in r)) setResults(r.data);
     }, 300);
     return () => clearTimeout(t);
   }, [query]);

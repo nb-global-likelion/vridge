@@ -2,16 +2,23 @@ import { requireUser } from '@/lib/infrastructure/auth-utils';
 import { getMyProfile } from '@/lib/actions/profile';
 import { getJobFamilies } from '@/lib/actions/catalog';
 import { ProfileEditPageClient } from '@/features/profile-edit/ui/profile-edit-page-client';
+import { getServerI18n } from '@/lib/i18n/server';
+import { getActionErrorMessage } from '@/lib/i18n/action-error';
 
 export default async function CandidateProfileEditPage() {
+  const { t } = await getServerI18n();
   const user = await requireUser();
   const [profileResult, familiesResult] = await Promise.all([
     getMyProfile(),
     getJobFamilies(),
   ]);
 
-  if ('error' in profileResult) {
-    return <p className="text-destructive">{profileResult.error}</p>;
+  if ('errorCode' in profileResult) {
+    return (
+      <p className="text-destructive">
+        {getActionErrorMessage(profileResult, t)}
+      </p>
+    );
   }
 
   const {
@@ -24,7 +31,7 @@ export default async function CandidateProfileEditPage() {
     profileSkills,
     certifications: rawCertifications,
   } = profileResult.data;
-  const jobFamilies = 'error' in familiesResult ? [] : familiesResult.data;
+  const jobFamilies = 'errorCode' in familiesResult ? [] : familiesResult.data;
 
   const careers = rawCareers.map((c) => ({
     id: c.id,

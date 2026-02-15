@@ -2,6 +2,8 @@ import Link from 'next/link';
 import { NumberedPagination } from '@/components/ui/numbered-pagination';
 import { SectionTitle } from '@/components/ui/section-title';
 import { getAnnouncements } from '@/lib/actions/announcements';
+import { getServerI18n } from '@/lib/i18n/server';
+import { getActionErrorMessage } from '@/lib/i18n/action-error';
 
 function parsePage(input: string | string[] | undefined): number {
   if (Array.isArray(input)) return parsePage(input[0]);
@@ -21,12 +23,15 @@ export default async function AnnouncementsPage({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
+  const { t } = await getServerI18n();
   const params = await searchParams;
   const page = parsePage(params.page);
   const result = await getAnnouncements({ page });
 
-  if ('error' in result) {
-    return <p className="p-6 text-destructive">{result.error}</p>;
+  if ('errorCode' in result) {
+    return (
+      <p className="p-6 text-destructive">{getActionErrorMessage(result, t)}</p>
+    );
   }
 
   const { items, total, pageSize } = result.data;
@@ -39,13 +44,13 @@ export default async function AnnouncementsPage({
 
   return (
     <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-6 px-6 py-10">
-      <SectionTitle title="Announcement" />
+      <SectionTitle title={t('announcements.title')} />
 
       <div className="flex flex-col border-t-2 border-black">
         <div className="grid grid-cols-[96px_1fr_192px] border-b border-black py-4 text-center text-xl font-medium">
-          <span>No</span>
-          <span>Title</span>
-          <span>Time</span>
+          <span>{t('announcements.no')}</span>
+          <span>{t('announcements.tableTitle')}</span>
+          <span>{t('announcements.time')}</span>
         </div>
 
         {items.map((item, index) => {
@@ -56,7 +61,7 @@ export default async function AnnouncementsPage({
               className="grid grid-cols-[96px_1fr_192px] items-center gap-4 border-b border-black py-5 text-lg font-medium text-[#333]"
             >
               <span className="text-center">
-                {item.isPinned ? '📍' : rowNumber}
+                {item.isPinned ? `📍 ${t('announcements.pinned')}` : rowNumber}
               </span>
               <Link
                 href={`/announcements/${item.id}`}
@@ -74,6 +79,8 @@ export default async function AnnouncementsPage({
         currentPage={page}
         totalPages={totalPages}
         buildHref={buildHref}
+        prevAriaLabel={t('jobs.pagination.prevAria')}
+        nextAriaLabel={t('jobs.pagination.nextAria')}
       />
     </div>
   );

@@ -1,14 +1,9 @@
 'use server';
 
-import { DomainError } from '@/lib/domain/errors';
 import * as catalogUC from '@/lib/use-cases/catalog';
+import { handleActionError, type ActionError } from './_shared';
 
-type QueryResult<T> = { success: true; data: T } | { error: string };
-
-function handleError(e: unknown): { error: string } {
-  if (e instanceof DomainError) return { error: e.message };
-  throw e;
-}
+type QueryResult<T> = { success: true; data: T } | ActionError;
 
 export async function getJobFamilies(): Promise<
   QueryResult<Awaited<ReturnType<typeof catalogUC.getJobFamilies>>>
@@ -17,7 +12,7 @@ export async function getJobFamilies(): Promise<
     const data = await catalogUC.getJobFamilies();
     return { success: true, data };
   } catch (e) {
-    return handleError(e);
+    return handleActionError(e);
   }
 }
 
@@ -28,7 +23,7 @@ export async function getJobs(
     const data = await catalogUC.getJobs(familyId);
     return { success: true, data };
   } catch (e) {
-    return handleError(e);
+    return handleActionError(e);
   }
 }
 
@@ -39,7 +34,7 @@ export async function searchSkills(
     const data = await catalogUC.searchSkills(query);
     return { success: true, data };
   } catch (e) {
-    return handleError(e);
+    return handleActionError(e);
   }
 }
 
@@ -50,6 +45,6 @@ export async function getSkillById(
     const data = await catalogUC.getSkillById(id);
     return { success: true, data };
   } catch (e) {
-    return handleError(e);
+    return handleActionError(e);
   }
 }

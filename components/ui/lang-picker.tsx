@@ -2,16 +2,24 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { Icon } from './icon';
+import type { AppLocale } from '@/lib/i18n/types';
 
 type LangPickerProps = {
-  value: string;
-  onChange: (lang: string) => void;
-  options: string[];
+  value: AppLocale;
+  onChange: (lang: AppLocale) => void;
+  options: ReadonlyArray<{ value: AppLocale; label: string }>;
+  ariaLabel?: string;
 };
 
-export function LangPicker({ value, onChange, options }: LangPickerProps) {
+export function LangPicker({
+  value,
+  onChange,
+  options,
+  ariaLabel,
+}: LangPickerProps) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const selected = options.find((option) => option.value === value);
 
   useEffect(() => {
     function handleOutside(e: MouseEvent) {
@@ -27,25 +35,26 @@ export function LangPicker({ value, onChange, options }: LangPickerProps) {
     <div ref={ref} className="relative">
       <button
         type="button"
+        aria-label={ariaLabel ?? selected?.label ?? value}
         className="flex items-center gap-1 text-[18px]"
         onClick={() => setOpen(!open)}
       >
-        <span>{value}</span>
+        <span>{selected?.label ?? value.toUpperCase()}</span>
         <Icon name="chevron-down" size={14} />
       </button>
       {open && (
         <div className="absolute right-0 z-10 mt-1 w-[80px] rounded-[10px] bg-white shadow-[0_0_10px_rgba(0,0,0,0.05)]">
-          {options.map((opt) => (
+          {options.map((option) => (
             <button
-              key={opt}
+              key={option.value}
               type="button"
               className="w-full px-3 py-2 text-left text-[16px] text-[#333] hover:bg-[#fbfbfb]"
               onClick={() => {
-                onChange(opt);
+                onChange(option.value);
                 setOpen(false);
               }}
             >
-              {opt}
+              {option.label}
             </button>
           ))}
         </div>

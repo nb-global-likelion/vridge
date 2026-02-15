@@ -419,7 +419,7 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
         return;
       }
       const response = await searchSkills(searchQuery);
-      if (!('error' in response)) {
+      if (!('errorCode' in response)) {
         setSearchResults(response.data);
       }
     }, 250);

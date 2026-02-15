@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { useCreateApply, useWithdrawApply } from '../model/use-apply-mutations';
+import { useI18n } from '@/lib/i18n/client';
 
 type Props = {
   jdId: string;
@@ -13,6 +14,7 @@ type Props = {
 
 export function ApplyButton({ jdId, initialApplied, applyId }: Props) {
   const router = useRouter();
+  const { t } = useI18n();
   const [applied, setApplied] = useState(initialApplied);
   const [currentApplyId, setCurrentApplyId] = useState(applyId);
 
@@ -49,7 +51,7 @@ export function ApplyButton({ jdId, initialApplied, applyId }: Props) {
       {applied ? (
         <div className="flex items-center gap-2">
           <Button variant="outline" disabled>
-            지원완료 ✓
+            {t('jobs.applied')}
           </Button>
           <Button
             variant="ghost"
@@ -57,12 +59,12 @@ export function ApplyButton({ jdId, initialApplied, applyId }: Props) {
             disabled={isPending}
             onClick={handleWithdraw}
           >
-            철회
+            {t('jobs.withdraw')}
           </Button>
         </div>
       ) : (
         <Button disabled={isPending} onClick={handleApply}>
-          {createApply.isPending ? '지원 중...' : '지원하기'}
+          {createApply.isPending ? t('jobs.applying') : t('jobs.apply')}
         </Button>
       )}
       {createApply.isError && (

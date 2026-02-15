@@ -6,6 +6,8 @@ import {
   getAnnouncementById,
   getAnnouncementNeighbors,
 } from '@/lib/actions/announcements';
+import { getServerI18n } from '@/lib/i18n/server';
+import type { ActionError } from '@/lib/actions/_shared';
 
 function formatDate(date: Date): string {
   const year = date.getUTCFullYear();
@@ -14,14 +16,11 @@ function formatDate(date: Date): string {
   return `${year}.${month}.${day}`;
 }
 
-function handleAnnouncementError(result: {
-  error: string;
-  errorCode?: string;
-}): never {
+function handleAnnouncementError(result: ActionError): never {
   if (result.errorCode === 'NOT_FOUND') {
     notFound();
   }
-  throw new Error(result.error);
+  throw new Error(result.errorMessage ?? result.errorKey);
 }
 
 export default async function AnnouncementDetailPage({
@@ -29,6 +28,7 @@ export default async function AnnouncementDetailPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  const { t } = await getServerI18n();
   const { id } = await params;
 
   const [detailResult, neighborsResult] = await Promise.all([
@@ -36,11 +36,11 @@ export default async function AnnouncementDetailPage({
     getAnnouncementNeighbors(id),
   ]);
 
-  if ('error' in detailResult) {
+  if ('errorCode' in detailResult) {
     handleAnnouncementError(detailResult);
   }
 
-  if ('error' in neighborsResult) {
+  if ('errorCode' in neighborsResult) {
     handleAnnouncementError(neighborsResult);
   }
 
@@ -51,7 +51,7 @@ export default async function AnnouncementDetailPage({
     <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-7 px-6 py-10">
       <Link
         href="/announcements"
-        aria-label="announcement 목록"
+        aria-label={t('announcements.backAria')}
         className="inline-flex w-fit items-center text-black hover:text-brand"
       >
         <Icon name="arrow-left" size={24} />
@@ -60,7 +60,7 @@ export default async function AnnouncementDetailPage({
       <div className="flex flex-col gap-2">
         <h1 className="text-3xl font-bold">{announcement.title}</h1>
         <div className="inline-flex items-center gap-2 text-sm font-medium text-[#666]">
-          {announcement.isPinned && <span>(Pinned)</span>}
+          {announcement.isPinned && <span>({t('announcements.pinned')})</span>}
           <span>{formatDate(announcement.createdAt)}</span>
         </div>
       </div>
@@ -73,7 +73,7 @@ export default async function AnnouncementDetailPage({
 
       <div className="flex flex-col border-y border-black">
         <div className="grid grid-cols-[96px_1fr_192px] items-center gap-4 border-b border-black py-5 text-sm font-medium text-[#666]">
-          <span className="text-center">Next</span>
+          <span className="text-center">{t('announcements.next')}</span>
           {neighbors.next ? (
             <Link
               href={`/announcements/${neighbors.next.id}`}
@@ -82,7 +82,7 @@ export default async function AnnouncementDetailPage({
               {neighbors.next.title}
             </Link>
           ) : (
-            <span className="text-[#999]">다음 공지 없음</span>
+            <span className="text-[#999]">{t('announcements.noneNext')}</span>
           )}
           <span className="text-center">
             {neighbors.next ? formatDate(neighbors.next.createdAt) : '-'}
@@ -90,7 +90,7 @@ export default async function AnnouncementDetailPage({
         </div>
 
         <div className="grid grid-cols-[96px_1fr_192px] items-center gap-4 py-5 text-sm font-medium text-[#666]">
-          <span className="text-center">Before</span>
+          <span className="text-center">{t('announcements.before')}</span>
           {neighbors.before ? (
             <Link
               href={`/announcements/${neighbors.before.id}`}
@@ -99,7 +99,7 @@ export default async function AnnouncementDetailPage({
               {neighbors.before.title}
             </Link>
           ) : (
-            <span className="text-[#999]">이전 공지 없음</span>
+            <span className="text-[#999]">{t('announcements.noneBefore')}</span>
           )}
           <span className="text-center">
             {neighbors.before ? formatDate(neighbors.before.createdAt) : '-'}

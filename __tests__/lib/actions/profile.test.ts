@@ -66,19 +66,27 @@ describe('updateProfilePublic', () => {
     expect(result).toEqual({ success: true });
   });
 
-  it('Zod 검증 실패 → { error: ... } 반환', async () => {
+  it('Zod 검증 실패 → 코드/키 에러 반환', async () => {
     (authUtils.requireUser as unknown as jest.Mock).mockResolvedValue(mockUser);
 
     const result = await updateProfilePublic({ firstName: '' });
 
     expect(result).toEqual(
-      expect.objectContaining({ error: expect.any(String) })
+      expect.objectContaining({
+        errorCode: 'INVALID_INPUT',
+        errorKey: 'error.inputInvalid',
+        errorMessage: expect.any(String),
+      })
     );
   });
 
-  it('DomainError → { error: message } 반환', async () => {
+  it('DomainError → 코드/키/메시지 에러 반환', async () => {
     (authUtils.requireUser as unknown as jest.Mock).mockResolvedValue(mockUser);
-    const domainErr = new DomainError('NOT_FOUND', '프로필을 찾을 수 없습니다');
+    const domainErr = new DomainError(
+      'NOT_FOUND',
+      '프로필을 찾을 수 없습니다',
+      'error.notFound.profile'
+    );
     (
       profileUseCases.updatePublicProfile as unknown as jest.Mock
     ).mockRejectedValue(domainErr);
@@ -88,7 +96,11 @@ describe('updateProfilePublic', () => {
       lastName: '철수',
     });
 
-    expect(result).toEqual({ error: '프로필을 찾을 수 없습니다' });
+    expect(result).toEqual({
+      errorCode: 'NOT_FOUND',
+      errorKey: 'error.notFound.profile',
+      errorMessage: '프로필을 찾을 수 없습니다',
+    });
   });
 
   it('미인증 → 에러 재throw', async () => {
@@ -135,7 +147,7 @@ describe('addProfileCareer', () => {
     expect(result).toEqual({ success: true });
   });
 
-  it('종료일 < 시작일 → { error: ... }', async () => {
+  it('종료일 < 시작일 → 코드/키 에러 반환', async () => {
     (authUtils.requireUser as unknown as jest.Mock).mockResolvedValue(mockUser);
 
     const result = await addProfileCareer({
@@ -144,15 +156,23 @@ describe('addProfileCareer', () => {
     });
 
     expect(result).toEqual(
-      expect.objectContaining({ error: expect.any(String) })
+      expect.objectContaining({
+        errorCode: 'INVALID_INPUT',
+        errorKey: 'error.inputInvalid',
+        errorMessage: expect.any(String),
+      })
     );
   });
 });
 
 describe('updateProfileCareer', () => {
-  it('존재하지 않는 경력 → { error: ... }', async () => {
+  it('존재하지 않는 경력 → 코드/키/메시지 에러 반환', async () => {
     (authUtils.requireUser as unknown as jest.Mock).mockResolvedValue(mockUser);
-    const domainErr = new DomainError('NOT_FOUND', '경력을 찾을 수 없습니다');
+    const domainErr = new DomainError(
+      'NOT_FOUND',
+      '경력을 찾을 수 없습니다',
+      'error.notFound.career'
+    );
     (profileUseCases.updateCareer as unknown as jest.Mock).mockRejectedValue(
       domainErr
     );
@@ -166,7 +186,11 @@ describe('updateProfileCareer', () => {
       sortOrder: 0,
     });
 
-    expect(result).toEqual({ error: '경력을 찾을 수 없습니다' });
+    expect(result).toEqual({
+      errorCode: 'NOT_FOUND',
+      errorKey: 'error.notFound.career',
+      errorMessage: '경력을 찾을 수 없습니다',
+    });
   });
 });
 
@@ -195,16 +219,24 @@ describe('addProfileSkill', () => {
     expect(result).toEqual({ success: true });
   });
 
-  it('중복 스킬 → { error: ... }', async () => {
+  it('중복 스킬 → 코드/키/메시지 에러 반환', async () => {
     (authUtils.requireUser as unknown as jest.Mock).mockResolvedValue(mockUser);
-    const domainErr = new DomainError('CONFLICT', '이미 추가된 스킬입니다');
+    const domainErr = new DomainError(
+      'CONFLICT',
+      '이미 추가된 스킬입니다',
+      'error.conflict.skillExists'
+    );
     (profileUseCases.addSkill as unknown as jest.Mock).mockRejectedValue(
       domainErr
     );
 
     const result = await addProfileSkill('typescript');
 
-    expect(result).toEqual({ error: '이미 추가된 스킬입니다' });
+    expect(result).toEqual({
+      errorCode: 'CONFLICT',
+      errorKey: 'error.conflict.skillExists',
+      errorMessage: '이미 추가된 스킬입니다',
+    });
   });
 });
 
@@ -239,23 +271,28 @@ describe('addProfileCertification', () => {
     expect(result).toEqual({ success: true });
   });
 
-  it('Zod 검증 실패 → { error: ... }', async () => {
+  it('Zod 검증 실패 → 코드/키 에러 반환', async () => {
     (authUtils.requireUser as unknown as jest.Mock).mockResolvedValue(mockUser);
 
     const result = await addProfileCertification({ name: '', date: 'bad' });
 
     expect(result).toEqual(
-      expect.objectContaining({ error: expect.any(String) })
+      expect.objectContaining({
+        errorCode: 'INVALID_INPUT',
+        errorKey: 'error.inputInvalid',
+        errorMessage: expect.any(String),
+      })
     );
   });
 });
 
 describe('updateProfileCertification', () => {
-  it('존재하지 않는 자격증 → { error: ... }', async () => {
+  it('존재하지 않는 자격증 → 코드/키/메시지 에러 반환', async () => {
     (authUtils.requireUser as unknown as jest.Mock).mockResolvedValue(mockUser);
     const domainErr = new DomainError(
       'NOT_FOUND',
-      '자격증을(를) 찾을 수 없습니다'
+      '자격증을(를) 찾을 수 없습니다',
+      'error.notFound.certification'
     );
     (
       profileUseCases.updateCertification as unknown as jest.Mock
@@ -267,7 +304,11 @@ describe('updateProfileCertification', () => {
       sortOrder: 0,
     });
 
-    expect(result).toEqual({ error: '자격증을(를) 찾을 수 없습니다' });
+    expect(result).toEqual({
+      errorCode: 'NOT_FOUND',
+      errorKey: 'error.notFound.certification',
+      errorMessage: '자격증을(를) 찾을 수 없습니다',
+    });
   });
 });
 
@@ -327,16 +368,24 @@ describe('getProfileBySlug', () => {
     );
   });
 
-  it('존재하지 않는 slug → { error: ... }', async () => {
+  it('존재하지 않는 slug → 코드/키/메시지 에러 반환', async () => {
     (
       profileUseCases.getProfileBySlug as unknown as jest.Mock
     ).mockRejectedValue(
-      new DomainError('NOT_FOUND', '프로필을(를) 찾을 수 없습니다')
+      new DomainError(
+        'NOT_FOUND',
+        '프로필을(를) 찾을 수 없습니다',
+        'error.notFound.profile'
+      )
     );
 
     const result = await getProfileBySlug('missing-slug');
 
-    expect(result).toEqual({ error: '프로필을(를) 찾을 수 없습니다' });
+    expect(result).toEqual({
+      errorCode: 'NOT_FOUND',
+      errorKey: 'error.notFound.profile',
+      errorMessage: '프로필을(를) 찾을 수 없습니다',
+    });
   });
 });
 
@@ -361,17 +410,25 @@ describe('getProfileForRecruiter', () => {
     expect(result).toEqual({ success: true, data: profileData });
   });
 
-  it('접근 권한 없음 → { error: ... }', async () => {
+  it('접근 권한 없음 → 코드/키/메시지 에러 반환', async () => {
     (authUtils.requireUser as unknown as jest.Mock).mockResolvedValue(
       mockRecruiter
     );
-    const domainErr = new DomainError('FORBIDDEN', '접근 권한이 없습니다');
+    const domainErr = new DomainError(
+      'FORBIDDEN',
+      '접근 권한이 없습니다',
+      'error.forbidden'
+    );
     (
       domainAuth.assertCanViewCandidate as unknown as jest.Mock
     ).mockRejectedValue(domainErr);
 
     const result = await getProfileForRecruiter('candidate-1');
 
-    expect(result).toEqual({ error: '접근 권한이 없습니다' });
+    expect(result).toEqual({
+      errorCode: 'FORBIDDEN',
+      errorKey: 'error.forbidden',
+      errorMessage: '접근 권한이 없습니다',
+    });
   });
 });

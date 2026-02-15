@@ -1,13 +1,16 @@
+'use client';
+
 import { Icon } from '@/components/ui/icon';
 import { Chip } from '@/components/ui/chip';
 import { Button } from '@/components/ui/button';
 import {
-  EMPLOYMENT_TYPE_LABELS,
-  WORK_ARRANGEMENT_LABELS,
+  getEmploymentTypeLabel,
+  getWorkArrangementLabel,
 } from '@/lib/frontend/presentation';
+import { useI18n } from '@/lib/i18n/client';
 
 type Props = {
-  jobDisplayNameEn: string;
+  jobDisplayName: string;
   employmentType: string;
   workArrangement: string;
   skills: { skill: { displayNameEn: string } }[];
@@ -16,28 +19,30 @@ type Props = {
 };
 
 export function SummaryCard({
-  jobDisplayNameEn,
+  jobDisplayName,
   employmentType,
   workArrangement,
   skills,
   onApply,
   cta,
 }: Props) {
+  const { t } = useI18n();
+
   return (
     <div className="w-[300px] rounded-[20px] border border-[#b3b3b3] bg-white px-[20px] py-[40px]">
       <div className="flex flex-col gap-4">
         <div className="flex flex-col gap-2 text-[14px] text-[#4c4c4c]">
           <span className="inline-flex items-center gap-2">
             <Icon name="jobs" size={16} />
-            {jobDisplayNameEn}
+            {jobDisplayName}
           </span>
           <span className="inline-flex items-center gap-2">
             <Icon name="location" size={16} />
-            {WORK_ARRANGEMENT_LABELS[workArrangement] ?? workArrangement}
+            {getWorkArrangementLabel(workArrangement, t)}
           </span>
           <span className="inline-flex items-center gap-2">
             <Icon name="experience" size={16} />
-            {EMPLOYMENT_TYPE_LABELS[employmentType] ?? employmentType}
+            {getEmploymentTypeLabel(employmentType, t)}
           </span>
         </div>
 
@@ -61,7 +66,7 @@ export function SummaryCard({
             className="w-full"
             onClick={onApply}
           >
-            Apply Now
+            {t('jobs.applyNow')}
           </Button>
         )}
       </div>

@@ -2,6 +2,9 @@ import { SectionTitle } from '@/components/ui/section-title';
 import { PostingListItem } from '@/entities/job/ui/posting-list-item';
 import { getMyApplications } from '@/lib/actions/applications';
 import { requireUser } from '@/lib/infrastructure/auth-utils';
+import { getServerI18n } from '@/lib/i18n/server';
+import { getActionErrorMessage } from '@/lib/i18n/action-error';
+import { getLocalizedCatalogName } from '@/lib/i18n/catalog';
 
 function toPostingStatus(status: string): 'recruiting' | 'done' {
   if (status === 'rejected' || status === 'withdrawn') return 'done';
@@ -9,11 +12,14 @@ function toPostingStatus(status: string): 'recruiting' | 'done' {
 }
 
 export default async function MyApplicationsPage() {
+  const { locale, t } = await getServerI18n();
   await requireUser();
   const result = await getMyApplications();
 
-  if ('error' in result) {
-    return <p className="p-6 text-destructive">{result.error}</p>;
+  if ('errorCode' in result) {
+    return (
+      <p className="p-6 text-destructive">{getActionErrorMessage(result, t)}</p>
+    );
   }
 
   const applications = result.data;
@@ -26,26 +32,28 @@ export default async function MyApplicationsPage() {
 
   return (
     <div className="flex w-full flex-col gap-6 p-6">
-      <SectionTitle title="My Jobs" />
+      <SectionTitle title={t('profile.myJobs')} />
 
       <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
         <div className="bg-neutral-50 rounded-[20px] px-10 py-8 text-center">
-          <p className="text-xl font-bold text-[#1a1a1a]">Applied</p>
+          <p className="text-xl font-bold text-[#1a1a1a]">
+            {t('profile.applied')}
+          </p>
           <p className="text-xl font-bold text-[#1a1a1a]">{appliedCount}</p>
         </div>
         <div className="bg-neutral-50 rounded-[20px] px-10 py-8 text-center">
-          <p className="text-xl font-bold text-[#4c4c4c]">In progress</p>
+          <p className="text-xl font-bold text-[#4c4c4c]">
+            {t('profile.inProgress')}
+          </p>
           <p className="text-xl font-bold text-[#4c4c4c]">{inProgressCount}</p>
         </div>
       </div>
 
       <div className="flex flex-col gap-4">
-        <SectionTitle title="List" />
+        <SectionTitle title={t('profile.list')} />
 
         {applications.length === 0 ? (
-          <p className="text-muted-foreground">
-            아직 지원한 채용공고가 없습니다.
-          </p>
+          <p className="text-muted-foreground">{t('jobs.empty')}</p>
         ) : (
           <div className="flex flex-col gap-4">
             {applications.map((apply) => (
@@ -54,7 +62,7 @@ export default async function MyApplicationsPage() {
                 id={apply.jd.id}
                 title={apply.jd.title}
                 orgName={apply.jd.org?.name}
-                jobDisplayNameEn={apply.jd.job.displayNameEn}
+                jobDisplayName={getLocalizedCatalogName(apply.jd.job, locale)}
                 employmentType={apply.jd.employmentType}
                 workArrangement={apply.jd.workArrangement}
                 skills={apply.jd.skills}

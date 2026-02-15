@@ -5,6 +5,8 @@ type NumberedPaginationProps = {
   currentPage: number;
   totalPages: number;
   buildHref: (page: number) => string;
+  prevAriaLabel?: string;
+  nextAriaLabel?: string;
 };
 
 function getPageNumbers(current: number, total: number): (number | '...')[] {
@@ -36,6 +38,8 @@ export function NumberedPagination({
   currentPage,
   totalPages,
   buildHref,
+  prevAriaLabel = '이전 페이지',
+  nextAriaLabel = '다음 페이지',
 }: NumberedPaginationProps) {
   if (totalPages <= 1) return null;
 
@@ -44,11 +48,11 @@ export function NumberedPagination({
   return (
     <nav className="flex items-center justify-center gap-2">
       {currentPage > 1 ? (
-        <Link href={buildHref(currentPage - 1)} aria-label="이전 페이지">
+        <Link href={buildHref(currentPage - 1)} aria-label={prevAriaLabel}>
           <Icon name="chevron-left" size={20} />
         </Link>
       ) : (
-        <span aria-label="이전 페이지" className="opacity-30">
+        <span aria-label={prevAriaLabel} className="opacity-30">
           <Icon name="chevron-left" size={20} />
         </span>
       )}
@@ -77,11 +81,11 @@ export function NumberedPagination({
       )}
 
       {currentPage < totalPages ? (
-        <Link href={buildHref(currentPage + 1)} aria-label="다음 페이지">
+        <Link href={buildHref(currentPage + 1)} aria-label={nextAriaLabel}>
           <Icon name="chevron-right" size={20} />
         </Link>
       ) : (
-        <span aria-label="다음 페이지" className="opacity-30">
+        <span aria-label={nextAriaLabel} className="opacity-30">
           <Icon name="chevron-right" size={20} />
         </span>
       )}

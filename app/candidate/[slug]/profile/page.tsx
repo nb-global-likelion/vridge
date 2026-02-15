@@ -8,17 +8,22 @@ import { CertificationList } from '@/entities/profile/ui/certification-list';
 import { LanguageList } from '@/entities/profile/ui/language-list';
 import { UrlList } from '@/entities/profile/ui/url-list';
 import { getProfileBySlug } from '@/lib/actions/profile';
+import { getServerI18n } from '@/lib/i18n/server';
+import { getActionErrorMessage } from '@/lib/i18n/action-error';
 
 export default async function CandidatePublicProfilePage({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }) {
+  const { t } = await getServerI18n();
   const { slug } = await params;
   const result = await getProfileBySlug(slug);
 
-  if ('error' in result) {
-    return <p className="p-6 text-destructive">{result.error}</p>;
+  if ('errorCode' in result) {
+    return (
+      <p className="p-6 text-destructive">{getActionErrorMessage(result, t)}</p>
+    );
   }
 
   const {
@@ -36,7 +41,7 @@ export default async function CandidatePublicProfilePage({
     <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-6 px-6 py-8">
       <Card>
         <CardHeader>
-          <SectionTitle title="Basic Profile" />
+          <SectionTitle title={t('profile.basicProfile')} />
         </CardHeader>
         <CardContent>
           <ProfileCard
@@ -55,7 +60,7 @@ export default async function CandidatePublicProfilePage({
 
       <Card>
         <CardHeader>
-          <SectionTitle title="Education" />
+          <SectionTitle title={t('profile.education')} />
         </CardHeader>
         <CardContent>
           <EducationList educations={educations} />
@@ -64,7 +69,7 @@ export default async function CandidatePublicProfilePage({
 
       <Card>
         <CardHeader>
-          <SectionTitle title="Skills" />
+          <SectionTitle title={t('profile.skills')} />
         </CardHeader>
         <CardContent>
           <SkillBadges skills={profileSkills} />
@@ -73,7 +78,7 @@ export default async function CandidatePublicProfilePage({
 
       <Card>
         <CardHeader>
-          <SectionTitle title="Experience" />
+          <SectionTitle title={t('profile.experience')} />
         </CardHeader>
         <CardContent>
           <CareerList careers={careers} />
@@ -82,7 +87,7 @@ export default async function CandidatePublicProfilePage({
 
       <Card>
         <CardHeader>
-          <SectionTitle title="Certification" />
+          <SectionTitle title={t('profile.certification')} />
         </CardHeader>
         <CardContent>
           <CertificationList certifications={certifications} />
@@ -91,7 +96,7 @@ export default async function CandidatePublicProfilePage({
 
       <Card>
         <CardHeader>
-          <SectionTitle title="Languages" />
+          <SectionTitle title={t('profile.languages')} />
         </CardHeader>
         <CardContent>
           <LanguageList languages={languages} />
@@ -100,7 +105,7 @@ export default async function CandidatePublicProfilePage({
 
       <Card>
         <CardHeader>
-          <SectionTitle title="Portfolio" />
+          <SectionTitle title={t('profile.portfolio')} />
         </CardHeader>
         <CardContent>
           <UrlList urls={urls} />

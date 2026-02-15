@@ -76,14 +76,22 @@ describe('getSkillById', () => {
     expect(result).toEqual({ success: true, data: mockSkill });
   });
 
-  it('DomainError → { error: message }', async () => {
-    const domainErr = new DomainError('NOT_FOUND', '스킬을 찾을 수 없습니다');
+  it('DomainError → 코드/키/메시지 에러 반환', async () => {
+    const domainErr = new DomainError(
+      'NOT_FOUND',
+      '스킬을 찾을 수 없습니다',
+      'error.notFound.skill'
+    );
     (catalogUC.getSkillById as unknown as jest.Mock).mockRejectedValue(
       domainErr
     );
 
     const result = await getSkillById('nonexistent');
 
-    expect(result).toEqual({ error: '스킬을 찾을 수 없습니다' });
+    expect(result).toEqual({
+      errorCode: 'NOT_FOUND',
+      errorKey: 'error.notFound.skill',
+      errorMessage: '스킬을 찾을 수 없습니다',
+    });
   });
 });

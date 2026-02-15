@@ -1,22 +1,37 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useSession } from '@/hooks/use-session';
 import { useAuthModal } from '@/features/auth/model/use-auth-modal';
 import { LangPicker } from '@/components/ui/lang-picker';
+import { useI18n, serializeLocaleCookie } from '@/lib/i18n/client';
+import type { AppLocale } from '@/lib/i18n/types';
 import UserMenu from './user-menu';
-
-const NAV_LINKS = [
-  { label: 'Jobs', href: '/jobs' },
-  { label: 'Announcement', href: '/announcements' },
-];
 
 export default function MainNav() {
   const pathname = usePathname();
+  const router = useRouter();
   const { data: session } = useSession();
   const user = session?.user;
   const { openLogin, openSignup } = useAuthModal();
+  const { locale, t } = useI18n();
+
+  const navLinks = [
+    { label: t('nav.jobs'), href: '/jobs' },
+    { label: t('nav.announcements'), href: '/announcements' },
+  ];
+
+  const languageOptions = [
+    { value: 'en', label: t('locale.en') },
+    { value: 'ko', label: t('locale.ko') },
+    { value: 'vi', label: t('locale.vi') },
+  ] as const;
+
+  function handleLocaleChange(nextLocale: AppLocale) {
+    document.cookie = serializeLocaleCookie(nextLocale);
+    router.refresh();
+  }
 
   return (
     <nav className="flex items-center justify-between bg-white px-[45px] py-[10px] shadow-[0_4px_13px_rgba(0,0,0,0.04)]">
@@ -30,7 +45,7 @@ export default function MainNav() {
 
       {/* 탭 네비게이션 */}
       <div className="flex items-center gap-[50px]">
-        {NAV_LINKS.map(({ label, href }) => {
+        {navLinks.map(({ label, href }) => {
           const isActive = pathname === href || pathname.startsWith(href + '/');
           return (
             <Link
@@ -50,9 +65,9 @@ export default function MainNav() {
       {/* 우측 영역 */}
       <div className="flex items-center gap-4">
         <LangPicker
-          value="EN"
-          onChange={() => {}}
-          options={['EN', 'KR', 'VN']}
+          value={locale}
+          onChange={handleLocaleChange}
+          options={languageOptions}
         />
 
         {user ? (
@@ -68,7 +83,7 @@ export default function MainNav() {
               onClick={openLogin}
               className="font-medium text-[#333] hover:text-brand"
             >
-              Log in
+              {t('nav.login')}
             </button>
             <span className="mx-2 text-[#ccc]">|</span>
             <button
@@ -76,7 +91,7 @@ export default function MainNav() {
               onClick={openSignup}
               className="font-medium text-[#333] hover:text-brand"
             >
-              Sign Up
+              {t('nav.signup')}
             </button>
           </div>
         )}

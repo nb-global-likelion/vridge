@@ -23,10 +23,16 @@ import {
   deleteProfileCertification,
 } from '@/lib/actions/profile';
 
-async function unwrap<T>(p: Promise<{ error: string } | T>): Promise<T> {
+async function unwrap<T>(
+  p: Promise<{ errorCode: string; errorKey: string; errorMessage?: string } | T>
+): Promise<T> {
   const r = await p;
-  if (typeof r === 'object' && r !== null && 'error' in r) {
-    throw new Error((r as { error: string }).error);
+  if (typeof r === 'object' && r !== null && 'errorCode' in r) {
+    const actionError = r as {
+      errorKey: string;
+      errorMessage?: string;
+    };
+    throw new Error(actionError.errorMessage ?? actionError.errorKey);
   }
   return r as T;
 }

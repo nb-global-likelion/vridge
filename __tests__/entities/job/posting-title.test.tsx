@@ -1,9 +1,10 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import { PostingTitle } from '@/entities/job/ui/posting-title';
+import { renderWithI18n } from '@/__tests__/test-utils/render-with-i18n';
 
 describe('PostingTitle', () => {
   it('타이틀 렌더링', () => {
-    render(
+    renderWithI18n(
       <PostingTitle
         title="TechCo Frontend Engineer / Full-time / 3+ years"
         status="recruiting"
@@ -16,7 +17,7 @@ describe('PostingTitle', () => {
   });
 
   it('뒤로가기 화살표 렌더링', () => {
-    const { container } = render(
+    const { container } = renderWithI18n(
       <PostingTitle
         title="Test"
         status="recruiting"
@@ -29,7 +30,7 @@ describe('PostingTitle', () => {
   });
 
   it('PostStatus 렌더링', () => {
-    render(
+    renderWithI18n(
       <PostingTitle
         title="Test"
         status="done"
@@ -40,7 +41,7 @@ describe('PostingTitle', () => {
   });
 
   it('타이틀 스타일: text-[30px] font-bold', () => {
-    render(
+    renderWithI18n(
       <PostingTitle
         title="Test Title"
         status="recruiting"

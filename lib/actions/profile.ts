@@ -1,8 +1,6 @@
 'use server';
 
-import { ZodError } from 'zod';
 import { revalidatePath } from 'next/cache';
-import { DomainError } from '@/lib/domain/errors';
 import {
   assertCanViewCandidate,
   type AppRole,
@@ -43,15 +41,10 @@ import {
   updateCertification,
   deleteCertification,
 } from '@/lib/use-cases/profile';
+import { handleActionError, type ActionError } from './_shared';
 
-type MutationResult = { success: true } | { error: string };
-type QueryResult<T> = { success: true; data: T } | { error: string };
-
-function handleError(e: unknown): { error: string } {
-  if (e instanceof DomainError) return { error: e.message };
-  if (e instanceof ZodError) return { error: '입력값이 유효하지 않습니다' };
-  throw e;
-}
+type MutationResult = { success: true } | ActionError;
+type QueryResult<T> = { success: true; data: T } | ActionError;
 
 const PROFILE_PATH = '/candidate/profile';
 
@@ -65,7 +58,7 @@ export async function updateProfilePublic(
     revalidatePath(PROFILE_PATH);
     return { success: true };
   } catch (e) {
-    return handleError(e);
+    return handleActionError(e, { zodErrorKey: 'error.inputInvalid' });
   }
 }
 
@@ -79,7 +72,7 @@ export async function updateProfilePrivate(
     revalidatePath(PROFILE_PATH);
     return { success: true };
   } catch (e) {
-    return handleError(e);
+    return handleActionError(e, { zodErrorKey: 'error.inputInvalid' });
   }
 }
 
@@ -93,7 +86,7 @@ export async function addProfileCareer(
     revalidatePath(PROFILE_PATH);
     return { success: true };
   } catch (e) {
-    return handleError(e);
+    return handleActionError(e, { zodErrorKey: 'error.inputInvalid' });
   }
 }
 
@@ -108,7 +101,7 @@ export async function updateProfileCareer(
     revalidatePath(PROFILE_PATH);
     return { success: true };
   } catch (e) {
-    return handleError(e);
+    return handleActionError(e, { zodErrorKey: 'error.inputInvalid' });
   }
 }
 
@@ -119,7 +112,7 @@ export async function deleteProfileCareer(id: string): Promise<MutationResult> {
     revalidatePath(PROFILE_PATH);
     return { success: true };
   } catch (e) {
-    return handleError(e);
+    return handleActionError(e);
   }
 }
 
@@ -133,7 +126,7 @@ export async function addProfileEducation(
     revalidatePath(PROFILE_PATH);
     return { success: true };
   } catch (e) {
-    return handleError(e);
+    return handleActionError(e, { zodErrorKey: 'error.inputInvalid' });
   }
 }
 
@@ -148,7 +141,7 @@ export async function updateProfileEducation(
     revalidatePath(PROFILE_PATH);
     return { success: true };
   } catch (e) {
-    return handleError(e);
+    return handleActionError(e, { zodErrorKey: 'error.inputInvalid' });
   }
 }
 
@@ -161,7 +154,7 @@ export async function deleteProfileEducation(
     revalidatePath(PROFILE_PATH);
     return { success: true };
   } catch (e) {
-    return handleError(e);
+    return handleActionError(e);
   }
 }
 
@@ -175,7 +168,7 @@ export async function addProfileLanguage(
     revalidatePath(PROFILE_PATH);
     return { success: true };
   } catch (e) {
-    return handleError(e);
+    return handleActionError(e, { zodErrorKey: 'error.inputInvalid' });
   }
 }
 
@@ -190,7 +183,7 @@ export async function updateProfileLanguage(
     revalidatePath(PROFILE_PATH);
     return { success: true };
   } catch (e) {
-    return handleError(e);
+    return handleActionError(e, { zodErrorKey: 'error.inputInvalid' });
   }
 }
 
@@ -203,7 +196,7 @@ export async function deleteProfileLanguage(
     revalidatePath(PROFILE_PATH);
     return { success: true };
   } catch (e) {
-    return handleError(e);
+    return handleActionError(e);
   }
 }
 
@@ -215,7 +208,7 @@ export async function addProfileUrl(input: unknown): Promise<MutationResult> {
     revalidatePath(PROFILE_PATH);
     return { success: true };
   } catch (e) {
-    return handleError(e);
+    return handleActionError(e, { zodErrorKey: 'error.inputInvalid' });
   }
 }
 
@@ -230,7 +223,7 @@ export async function updateProfileUrl(
     revalidatePath(PROFILE_PATH);
     return { success: true };
   } catch (e) {
-    return handleError(e);
+    return handleActionError(e, { zodErrorKey: 'error.inputInvalid' });
   }
 }
 
@@ -241,7 +234,7 @@ export async function deleteProfileUrl(id: string): Promise<MutationResult> {
     revalidatePath(PROFILE_PATH);
     return { success: true };
   } catch (e) {
-    return handleError(e);
+    return handleActionError(e);
   }
 }
 
@@ -254,7 +247,7 @@ export async function addProfileSkill(
     revalidatePath(PROFILE_PATH);
     return { success: true };
   } catch (e) {
-    return handleError(e);
+    return handleActionError(e);
   }
 }
 
@@ -267,7 +260,7 @@ export async function deleteProfileSkill(
     revalidatePath(PROFILE_PATH);
     return { success: true };
   } catch (e) {
-    return handleError(e);
+    return handleActionError(e);
   }
 }
 
@@ -281,7 +274,7 @@ export async function addProfileCertification(
     revalidatePath(PROFILE_PATH);
     return { success: true };
   } catch (e) {
-    return handleError(e);
+    return handleActionError(e, { zodErrorKey: 'error.inputInvalid' });
   }
 }
 
@@ -296,7 +289,7 @@ export async function updateProfileCertification(
     revalidatePath(PROFILE_PATH);
     return { success: true };
   } catch (e) {
-    return handleError(e);
+    return handleActionError(e, { zodErrorKey: 'error.inputInvalid' });
   }
 }
 
@@ -309,7 +302,7 @@ export async function deleteProfileCertification(
     revalidatePath(PROFILE_PATH);
     return { success: true };
   } catch (e) {
-    return handleError(e);
+    return handleActionError(e);
   }
 }
 
@@ -321,7 +314,7 @@ export async function getMyProfile(): Promise<
     const data = await getFullProfile(user.userId);
     return { success: true, data };
   } catch (e) {
-    return handleError(e);
+    return handleActionError(e);
   }
 }
 
@@ -338,7 +331,7 @@ export async function getProfileForRecruiter(
     const data = await getProfileForViewer(candidateId, 'full');
     return { success: true, data };
   } catch (e) {
-    return handleError(e);
+    return handleActionError(e);
   }
 }
 
@@ -349,6 +342,6 @@ export async function getProfileBySlug(
     const data = await ucGetProfileBySlug(slug);
     return { success: true, data };
   } catch (e) {
-    return handleError(e);
+    return handleActionError(e);
   }
 }

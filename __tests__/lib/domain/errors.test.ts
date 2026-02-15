@@ -6,11 +6,16 @@ import {
 } from '@/lib/domain/errors';
 
 describe('DomainError', () => {
-  it('code와 message를 가진 인스턴스 생성', () => {
-    const err = new DomainError('NOT_FOUND', '찾을 수 없습니다');
+  it('code, message, key를 가진 인스턴스 생성', () => {
+    const err = new DomainError(
+      'NOT_FOUND',
+      '찾을 수 없습니다',
+      'error.notFound.unknown'
+    );
     expect(err).toBeInstanceOf(Error);
     expect(err.code).toBe('NOT_FOUND');
     expect(err.message).toBe('찾을 수 없습니다');
+    expect(err.key).toBe('error.notFound.unknown');
   });
 });
 

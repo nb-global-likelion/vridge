@@ -1,10 +1,21 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import AnnouncementsPage from '@/app/announcements/page';
 import { getAnnouncements } from '@/lib/actions/announcements';
+import { renderWithI18n } from '@/__tests__/test-utils/render-with-i18n';
 
 jest.mock('@/lib/actions/announcements', () => ({
   getAnnouncements: jest.fn(),
 }));
+jest.mock('@/lib/i18n/server', () => {
+  const { enMessages } = jest.requireActual('@/lib/i18n/messages/en');
+  return {
+    getServerI18n: jest.fn(async () => ({
+      locale: 'en',
+      messages: enMessages,
+      t: (key: string) => enMessages[key] ?? key,
+    })),
+  };
+});
 
 const mockGetAnnouncements = getAnnouncements as unknown as jest.Mock;
 
@@ -40,10 +51,10 @@ describe('AnnouncementsPage', () => {
     const ui = await AnnouncementsPage({
       searchParams: Promise.resolve({ page: '1' }),
     });
-    render(ui);
+    renderWithI18n(ui);
 
     expect(screen.getByText('Announcement')).toBeInTheDocument();
-    expect(screen.getByText('📍')).toBeInTheDocument();
+    expect(screen.getByText(/📍/)).toBeInTheDocument();
     expect(screen.getByRole('link', { name: '일반 공지' })).toHaveAttribute(
       'href',
       '/announcements/ann-normal'

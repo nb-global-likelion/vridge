@@ -58,7 +58,7 @@ describe('createApply', () => {
     );
   });
 
-  it('유효하지 않은 입력 (UUID 아닌 jdId) → { error: ... }', async () => {
+  it('유효하지 않은 입력 (UUID 아닌 jdId) → 코드/키 에러 반환', async () => {
     (authUtils.requireRole as unknown as jest.Mock).mockResolvedValue(
       mockCandidate
     );
@@ -66,16 +66,24 @@ describe('createApply', () => {
     const result = await createApply({ jdId: 'not-a-uuid' });
 
     expect(result).toEqual(
-      expect.objectContaining({ error: expect.any(String) })
+      expect.objectContaining({
+        errorCode: 'INVALID_INPUT',
+        errorKey: 'error.inputInvalid',
+        errorMessage: expect.any(String),
+      })
     );
     expect(applicationsUC.createApplication).not.toHaveBeenCalled();
   });
 
-  it('CONFLICT → { error: message }', async () => {
+  it('CONFLICT → 코드/키/메시지 에러 반환', async () => {
     (authUtils.requireRole as unknown as jest.Mock).mockResolvedValue(
       mockCandidate
     );
-    const err = new DomainError('CONFLICT', '이미 지원한 채용공고입니다');
+    const err = new DomainError(
+      'CONFLICT',
+      '이미 지원한 채용공고입니다',
+      'error.conflict.alreadyApplied'
+    );
     (
       applicationsUC.createApplication as unknown as jest.Mock
     ).mockRejectedValue(err);
@@ -84,7 +92,11 @@ describe('createApply', () => {
       jdId: '123e4567-e89b-12d3-a456-426614174000',
     });
 
-    expect(result).toEqual({ error: '이미 지원한 채용공고입니다' });
+    expect(result).toEqual({
+      errorCode: 'CONFLICT',
+      errorKey: 'error.conflict.alreadyApplied',
+      errorMessage: '이미 지원한 채용공고입니다',
+    });
   });
 });
 
@@ -106,18 +118,26 @@ describe('withdrawApply', () => {
     );
   });
 
-  it('FORBIDDEN → { error: message }', async () => {
+  it('FORBIDDEN → 코드/키/메시지 에러 반환', async () => {
     (authUtils.requireRole as unknown as jest.Mock).mockResolvedValue(
       mockCandidate
     );
-    const err = new DomainError('FORBIDDEN', '접근 권한이 없습니다');
+    const err = new DomainError(
+      'FORBIDDEN',
+      '접근 권한이 없습니다',
+      'error.forbidden'
+    );
     (
       applicationsUC.withdrawApplication as unknown as jest.Mock
     ).mockRejectedValue(err);
 
     const result = await withdrawApply('apply-1');
 
-    expect(result).toEqual({ error: '접근 권한이 없습니다' });
+    expect(result).toEqual({
+      errorCode: 'FORBIDDEN',
+      errorKey: 'error.forbidden',
+      errorMessage: '접근 권한이 없습니다',
+    });
   });
 });
 
