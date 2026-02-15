@@ -10,6 +10,7 @@ type Props = {
   workArrangement: string;
   skills: { skill: { displayNameEn: string } }[];
   onApply?: () => void;
+  cta?: React.ReactNode;
 };
 
 export function SummaryCard({
@@ -18,6 +19,7 @@ export function SummaryCard({
   workArrangement,
   skills,
   onApply,
+  cta,
 }: Props) {
   return (
     <div className="w-[300px] rounded-[20px] border border-[#b3b3b3] bg-white px-[20px] py-[40px]">
@@ -50,14 +52,16 @@ export function SummaryCard({
           </div>
         )}
 
-        <Button
-          variant="brand"
-          size="brand-md"
-          className="w-full"
-          onClick={onApply}
-        >
-          Apply Now
-        </Button>
+        {cta ?? (
+          <Button
+            variant="brand"
+            size="brand-md"
+            className="w-full"
+            onClick={onApply}
+          >
+            Apply Now
+          </Button>
+        )}
       </div>
     </div>
   );

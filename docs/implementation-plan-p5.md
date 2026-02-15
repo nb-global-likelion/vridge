@@ -210,6 +210,16 @@ P24 (Polish + E2E) depends on all
 
 **Tests**: Updated card/filter tests, search filter validation, route merge verification.
 
+### Prompt 21 결과
+
+- 백엔드: jobDescriptionFilterSchema + use-case에 search/familyId 필터 추가
+- 신규 컴포넌트: JobSearchForm (SearchBar 래핑), JobCategoryTabs (TabItem 래핑)
+- SummaryCard에 cta 슬롯 prop 추가 (ApplyButton/LoginToApplyCta 주입 가능)
+- 목록 페이지: PostingListItem + NumberedPagination + 검색/카테고리 탭 적용
+- 상세 페이지: 2컬럼 레이아웃 (PostingTitle+마크다운 / SummaryCard), 조건부 인증 CTA
+- 중복 제거: /candidate/jobs 라우트 삭제, JdFilters 삭제, 인라인 PaginationRow/mapJd 삭제
+- 377개 테스트 통과 (52 suite), `tsc --noEmit` 클린
+
 ---
 
 ## Prompt 22: Profile View + Edit Redesign

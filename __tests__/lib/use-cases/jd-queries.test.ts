@@ -94,6 +94,42 @@ describe('getJobDescriptions', () => {
     expect(callArg.where).not.toHaveProperty('workArrangement');
   });
 
+  it('search → where.title.contains (insensitive)', async () => {
+    await getJobDescriptions({
+      search: '프론트엔드',
+      page: 1,
+      pageSize: 20,
+    });
+
+    const callArg = (prisma.jobDescription.findMany as unknown as jest.Mock)
+      .mock.calls[0][0];
+    expect(callArg.where.title).toEqual({
+      contains: '프론트엔드',
+      mode: 'insensitive',
+    });
+  });
+
+  it('familyId → where.job.familyId', async () => {
+    await getJobDescriptions({
+      familyId: 'engineering',
+      page: 1,
+      pageSize: 20,
+    });
+
+    const callArg = (prisma.jobDescription.findMany as unknown as jest.Mock)
+      .mock.calls[0][0];
+    expect(callArg.where.job).toEqual({ is: { jobFamilyId: 'engineering' } });
+  });
+
+  it('search, familyId 미전달 시 where에 포함되지 않음', async () => {
+    await getJobDescriptions({ page: 1, pageSize: 20 });
+
+    const callArg = (prisma.jobDescription.findMany as unknown as jest.Mock)
+      .mock.calls[0][0];
+    expect(callArg.where).not.toHaveProperty('title');
+    expect(callArg.where).not.toHaveProperty('job');
+  });
+
   it('page 2 — skip: pageSize', async () => {
     await getJobDescriptions({ page: 2, pageSize: 10 });
 

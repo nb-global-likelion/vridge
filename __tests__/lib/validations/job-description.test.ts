@@ -38,4 +38,19 @@ describe('jobDescriptionFilterSchema', () => {
       jobDescriptionFilterSchema.safeParse({ workArrangement: 'wfh' }).success
     ).toBe(false);
   });
+  it('search 문자열 필터 통과', () => {
+    const result = jobDescriptionFilterSchema.parse({ search: '프론트엔드' });
+    expect(result.search).toBe('프론트엔드');
+  });
+  it('familyId 문자열 필터 통과', () => {
+    const result = jobDescriptionFilterSchema.parse({
+      familyId: 'engineering',
+    });
+    expect(result.familyId).toBe('engineering');
+  });
+  it('search, familyId 미전달 시 undefined', () => {
+    const result = jobDescriptionFilterSchema.parse({});
+    expect(result.search).toBeUndefined();
+    expect(result.familyId).toBeUndefined();
+  });
 });

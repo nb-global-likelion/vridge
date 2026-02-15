@@ -42,6 +42,21 @@ describe('getJobDescriptions', () => {
     expect(jdQueriesUC.getJobDescriptions).not.toHaveBeenCalled();
   });
 
+  it('search 파라미터가 use-case에 전달됨', async () => {
+    (jdQueriesUC.getJobDescriptions as unknown as jest.Mock).mockResolvedValue({
+      items: [],
+      total: 0,
+      page: 1,
+      pageSize: 20,
+    });
+
+    await getJobDescriptions({ search: '프론트엔드', page: 1, pageSize: 20 });
+
+    expect(jdQueriesUC.getJobDescriptions).toHaveBeenCalledWith(
+      expect.objectContaining({ search: '프론트엔드' })
+    );
+  });
+
   it('입력 없음 (undefined) → 기본값으로 use-case 호출', async () => {
     (jdQueriesUC.getJobDescriptions as unknown as jest.Mock).mockResolvedValue({
       items: [],
