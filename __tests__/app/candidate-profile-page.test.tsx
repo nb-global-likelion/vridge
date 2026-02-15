@@ -119,7 +119,7 @@ describe('CandidateProfilePage', () => {
     });
 
     const ui = await CandidateProfilePage();
-    renderWithI18n(ui);
+    const { container } = renderWithI18n(ui);
 
     expect(screen.getByText('Basic Profile')).toBeInTheDocument();
     expect(screen.getByText('Education')).toBeInTheDocument();
@@ -134,6 +134,11 @@ describe('CandidateProfilePage', () => {
     expect(screen.getByText('Lion Park')).toBeInTheDocument();
     expect(screen.getByText('lion@vridge.net')).toBeInTheDocument();
     expect(screen.getByText('+84 1234 5678')).toBeInTheDocument();
+    expect(screen.getByText('Industrial Design')).toBeInTheDocument();
+    expect(screen.getByText('Graduated')).toBeInTheDocument();
+    expect(screen.getByText('Senior')).toBeInTheDocument();
+    expect(screen.getByText('Professional')).toBeInTheDocument();
+    expect(container.querySelectorAll('[data-slot="chip"]')).toHaveLength(1);
 
     expect(screen.getByRole('link', { name: 'Edit Profile' })).toHaveAttribute(
       'href',
