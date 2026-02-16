@@ -15,19 +15,42 @@ import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/ui/icon';
 import { LoginField } from '@/components/ui/login-field';
 import { SocialLs } from '@/components/ui/social-ls';
+import { useI18n } from '@/lib/i18n/client';
 import { signIn } from '@/lib/infrastructure/auth-client';
+import { cn } from '@/lib/utils';
 import { useAuthModal } from '../model/use-auth-modal';
 import { PasswordInput } from './password-input';
 
-const loginSchema = z.object({
-  email: z.string().email('유효한 이메일을 입력하세요'),
-  password: z.string().min(8, '비밀번호는 8자 이상이어야 합니다'),
-});
+function getFirstFieldError(errors: unknown[]) {
+  if (errors.length === 0) {
+    return null;
+  }
+
+  const firstError = errors[0];
+  if (typeof firstError === 'string') {
+    return firstError;
+  }
+
+  if (
+    typeof firstError === 'object' &&
+    firstError !== null &&
+    'message' in firstError
+  ) {
+    return String(firstError.message);
+  }
+
+  return String(firstError);
+}
 
 export function LoginModal() {
   const { isLoginOpen, closeAll, openSignup } = useAuthModal();
   const router = useRouter();
+  const { t } = useI18n();
   const [serverError, setServerError] = useState<string | null>(null);
+  const loginSchema = z.object({
+    email: z.string().email(t('auth.validation.email')),
+    password: z.string().min(8, t('auth.validation.passwordMin')),
+  });
 
   const form = useForm({
     defaultValues: { email: '', password: '' },
@@ -45,7 +68,7 @@ export function LoginModal() {
           onError: (ctx) => {
             setServerError(
               (ctx.error as { message?: string })?.message ??
-                '로그인에 실패했습니다'
+                t('auth.login.invalidCredentials')
             );
           },
         },
@@ -62,19 +85,19 @@ export function LoginModal() {
         <div className="flex flex-col items-center gap-10 px-5 pt-5 pb-20">
           <div className="flex w-full items-center justify-between">
             <p className="text-sm text-[#666]">
-              Don&apos;t have an account yet?{' '}
+              {t('auth.login.noAccount')}{' '}
               <button
                 type="button"
                 onClick={openSignup}
                 className="underline underline-offset-2"
               >
-                Sign up
+                {t('auth.login.signupLink')}
               </button>
             </p>
             <button
               type="button"
               onClick={closeAll}
-              aria-label="Close login modal"
+              aria-label={t('auth.login.closeAria')}
               className="rounded-sm p-1 text-[#1a1a1a] hover:bg-[#f5f5f5]"
             >
               <Icon name="close" size={16} />
@@ -82,8 +105,8 @@ export function LoginModal() {
           </div>
 
           <div className="flex w-full max-w-[520px] flex-col items-center gap-10">
-            <DialogTitle className="text-2xl font-bold text-[#1f1f1f]">
-              Login
+            <DialogTitle className="text-[26px] leading-[1.5] font-bold text-[#313131]">
+              {t('auth.login.title')}
             </DialogTitle>
             <DialogDescription className="sr-only">
               Log in to access your account.
@@ -92,7 +115,7 @@ export function LoginModal() {
             <div className="flex w-full flex-col gap-5">
               <SocialLs
                 provider="google"
-                actionLabel="Log in"
+                label={t('auth.login.withGoogle')}
                 onClick={() =>
                   signIn.social({
                     provider: 'google',
@@ -102,7 +125,7 @@ export function LoginModal() {
               />
               <SocialLs
                 provider="facebook"
-                actionLabel="Log in"
+                label={t('auth.login.withFacebook')}
                 onClick={() =>
                   signIn.social({
                     provider: 'facebook',
@@ -114,7 +137,9 @@ export function LoginModal() {
 
             <div className="flex w-full items-center gap-2.5 overflow-hidden">
               <div className="h-px flex-1 bg-[#b3b3b3]" />
-              <span className="text-sm font-medium text-[#999]">or</span>
+              <span className="text-sm font-medium text-[#999]">
+                {t('common.or')}
+              </span>
               <div className="h-px flex-1 bg-[#b3b3b3]" />
             </div>
 
@@ -123,86 +148,90 @@ export function LoginModal() {
                 e.preventDefault();
                 form.handleSubmit();
               }}
-              className="flex w-full flex-col gap-5"
+              className="flex w-full flex-col"
             >
-              <form.Field name="email">
-                {(field) => (
-                  <div className="flex flex-col gap-1.5">
-                    <Label htmlFor="login-email" className="sr-only">
-                      Email
-                    </Label>
-                    <LoginField
-                      id="login-email"
-                      type="email"
-                      autoComplete="email"
-                      value={field.state.value}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                      onBlur={field.handleBlur}
-                      placeholder="Vridge1234@gmail.com"
-                      leftIconName="mail"
-                      leftIconAlt="mail"
-                      filled={field.state.value.length > 0}
-                    />
-                    {field.state.meta.isTouched &&
-                      field.state.meta.errors.length > 0 && (
-                        <p className="text-xs text-destructive">
-                          {String(
-                            field.state.meta.errors[0] instanceof Object
-                              ? (
-                                  field.state.meta.errors[0] as {
-                                    message: string;
-                                  }
-                                ).message
-                              : field.state.meta.errors[0]
+              <div className="flex w-full flex-col gap-5">
+                <form.Field name="email">
+                  {(field) => (
+                    <div className="flex flex-col gap-1.5">
+                      <Label htmlFor="login-email" className="sr-only">
+                        {t('auth.login.emailPlaceholder')}
+                      </Label>
+                      <LoginField
+                        id="login-email"
+                        type="email"
+                        autoComplete="email"
+                        value={field.state.value}
+                        onChange={(e) => {
+                          field.handleChange(e.target.value);
+                          if (serverError) {
+                            setServerError(null);
+                          }
+                        }}
+                        onBlur={field.handleBlur}
+                        placeholder={t('auth.login.emailPlaceholder')}
+                        leftIconName="mail"
+                        leftIconAlt="mail"
+                        filled={field.state.value.length > 0}
+                      />
+                      {field.state.meta.isTouched &&
+                        field.state.meta.errors.length > 0 && (
+                          <p className="text-xs text-destructive">
+                            {getFirstFieldError(field.state.meta.errors)}
+                          </p>
+                        )}
+                    </div>
+                  )}
+                </form.Field>
+
+                <form.Field name="password">
+                  {(field) => (
+                    <div
+                      className={cn(
+                        'flex flex-col',
+                        serverError ? 'gap-[5px]' : 'gap-5'
+                      )}
+                    >
+                      <div className="flex flex-col gap-1.5">
+                        <Label htmlFor="login-password" className="sr-only">
+                          {t('auth.login.passwordPlaceholder')}
+                        </Label>
+                        <PasswordInput
+                          id="login-password"
+                          autoComplete="current-password"
+                          value={field.state.value}
+                          onChange={(e) => {
+                            field.handleChange(e.target.value);
+                            if (serverError) {
+                              setServerError(null);
+                            }
+                          }}
+                          onBlur={field.handleBlur}
+                          placeholder={t('auth.login.passwordPlaceholder')}
+                        />
+                        {field.state.meta.isTouched &&
+                          field.state.meta.errors.length > 0 && (
+                            <p className="text-xs text-destructive">
+                              {getFirstFieldError(field.state.meta.errors)}
+                            </p>
                           )}
+                      </div>
+                      {serverError && (
+                        <p className="flex items-center text-sm leading-[1.5] font-medium text-[#e50000]">
+                          <Icon name="error" size={24} alt="error" />
+                          {serverError}
                         </p>
                       )}
-                  </div>
-                )}
-              </form.Field>
-
-              <form.Field name="password">
-                {(field) => (
-                  <div className="flex flex-col gap-1.5">
-                    <Label htmlFor="login-password" className="sr-only">
-                      Password
-                    </Label>
-                    <PasswordInput
-                      id="login-password"
-                      autoComplete="current-password"
-                      value={field.state.value}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                      onBlur={field.handleBlur}
-                      placeholder="Password"
-                    />
-                    {field.state.meta.isTouched &&
-                      field.state.meta.errors.length > 0 && (
-                        <p className="text-xs text-destructive">
-                          {String(
-                            field.state.meta.errors[0] instanceof Object
-                              ? (
-                                  field.state.meta.errors[0] as {
-                                    message: string;
-                                  }
-                                ).message
-                              : field.state.meta.errors[0]
-                          )}
-                        </p>
-                      )}
-                  </div>
-                )}
-              </form.Field>
-
-              <button
-                type="button"
-                className="self-end text-right text-sm font-medium text-[#666] hover:underline"
-              >
-                Forgot password?
-              </button>
-
-              {serverError && (
-                <p className="text-sm text-destructive">{serverError}</p>
-              )}
+                      <button
+                        type="button"
+                        className="text-right text-sm font-medium text-[#666] hover:underline"
+                      >
+                        {t('auth.login.forgotPassword')}
+                      </button>
+                    </div>
+                  )}
+                </form.Field>
+              </div>
 
               <form.Subscribe
                 selector={(s) => ({
@@ -219,9 +248,11 @@ export function LoginModal() {
                       variant={disabled ? 'brand-disabled' : 'brand'}
                       size="brand-lg"
                       disabled={disabled}
-                      className="w-full"
+                      className="mt-10 w-full"
                     >
-                      {isSubmitting ? '로그인 중...' : 'Continue'}
+                      {isSubmitting
+                        ? t('auth.login.submitting')
+                        : t('auth.login.submit')}
                     </Button>
                   );
                 }}

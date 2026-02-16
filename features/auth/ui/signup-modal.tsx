@@ -14,29 +14,68 @@ import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/ui/icon';
 import { LoginField } from '@/components/ui/login-field';
 import { SocialLs } from '@/components/ui/social-ls';
+import { useI18n } from '@/lib/i18n/client';
 import { signIn, signUp } from '@/lib/infrastructure/auth-client';
+import { cn } from '@/lib/utils';
 import { useAuthModal } from '../model/use-auth-modal';
 import { PasswordInput } from './password-input';
 
 type Step = 'method' | 'form' | 'success';
 
-const signupSchema = z.object({
-  email: z.string().email('유효한 이메일을 입력하세요'),
-  password: z.string().min(8, '비밀번호는 8자 이상이어야 합니다'),
-});
+function getFirstFieldError(errors: unknown[]) {
+  if (errors.length === 0) {
+    return null;
+  }
+
+  const firstError = errors[0];
+  if (typeof firstError === 'string') {
+    return firstError;
+  }
+
+  if (
+    typeof firstError === 'object' &&
+    firstError !== null &&
+    'message' in firstError
+  ) {
+    return String(firstError.message);
+  }
+
+  return String(firstError);
+}
+
+function isDuplicateEmailError(message?: string) {
+  if (!message) {
+    return false;
+  }
+
+  const normalized = message.toLowerCase();
+  const emailMentioned = /mail|email|e-mail/.test(normalized);
+  const duplicateHint = /already|exist|duplicate|same|used|중복|이미|đã/.test(
+    normalized
+  );
+
+  return emailMentioned && duplicateHint;
+}
 
 export function SignupModal() {
   const { isSignupOpen, closeAll, openLogin } = useAuthModal();
+  const { t } = useI18n();
   const [step, setStep] = useState<Step>('method');
   const [privacyChecked, setPrivacyChecked] = useState(false);
-  const [serverError, setServerError] = useState<string | null>(null);
+  const [emailError, setEmailError] = useState<string | null>(null);
+  const [formError, setFormError] = useState<string | null>(null);
+  const signupSchema = z.object({
+    email: z.string().email(t('auth.validation.email')),
+    password: z.string().min(8, t('auth.validation.passwordMin')),
+  });
 
   useEffect(() => {
     if (!isSignupOpen) {
       setTimeout(() => {
         setStep('method');
         setPrivacyChecked(false);
-        setServerError(null);
+        setEmailError(null);
+        setFormError(null);
       });
     }
   }, [isSignupOpen]);
@@ -45,7 +84,8 @@ export function SignupModal() {
     defaultValues: { email: '', password: '' },
     validators: { onSubmit: signupSchema },
     onSubmit: async ({ value }) => {
-      setServerError(null);
+      setEmailError(null);
+      setFormError(null);
       await signUp.email({
         name: value.email.split('@')[0],
         email: value.email,
@@ -53,10 +93,14 @@ export function SignupModal() {
         fetchOptions: {
           onSuccess: () => setStep('success'),
           onError: (ctx) => {
-            setServerError(
-              (ctx.error as { message?: string })?.message ??
-                '회원가입에 실패했습니다'
-            );
+            const errorMessage = (ctx.error as { message?: string })?.message;
+
+            if (isDuplicateEmailError(errorMessage)) {
+              setEmailError(t('auth.signup.duplicateEmail'));
+              return;
+            }
+
+            setFormError(errorMessage ?? t('auth.signup.failed'));
           },
         },
       });
@@ -69,27 +113,34 @@ export function SignupModal() {
         showCloseButton={false}
         className="w-[712px] max-w-[calc(100vw-2rem)] overflow-hidden rounded-[20px] border-0 bg-white p-0 shadow-[0_0_15px_7px_rgba(255,149,84,0.07)]"
       >
-        <div className="flex flex-col items-center gap-10 px-5 pt-5 pb-20">
-          <div className="flex w-full items-center justify-between">
-            <p className="text-sm text-[#666]">
-              Have an account?{' '}
+        <div
+          className={cn(
+            'flex flex-col items-center px-5',
+            step === 'success' ? 'pt-20 pb-20' : 'gap-10 pt-5 pb-20'
+          )}
+        >
+          {step !== 'success' && (
+            <div className="flex w-full items-center justify-between">
+              <p className="text-sm text-[#666]">
+                {t('auth.signup.haveAccount')}{' '}
+                <button
+                  type="button"
+                  onClick={openLogin}
+                  className="underline underline-offset-2"
+                >
+                  {t('auth.signup.loginLink')}
+                </button>
+              </p>
               <button
                 type="button"
-                onClick={openLogin}
-                className="underline underline-offset-2"
+                onClick={closeAll}
+                aria-label={t('auth.signup.closeAria')}
+                className="rounded-sm p-1 text-[#1a1a1a] hover:bg-[#f5f5f5]"
               >
-                Log in
+                <Icon name="close" size={16} />
               </button>
-            </p>
-            <button
-              type="button"
-              onClick={closeAll}
-              aria-label="Close signup modal"
-              className="rounded-sm p-1 text-[#1a1a1a] hover:bg-[#f5f5f5]"
-            >
-              <Icon name="close" size={16} />
-            </button>
-          </div>
+            </div>
+          )}
 
           <div className="flex w-full max-w-[520px] flex-col items-center gap-10">
             <DialogDescription className="sr-only">
@@ -97,14 +148,14 @@ export function SignupModal() {
             </DialogDescription>
             {step === 'method' && (
               <>
-                <DialogTitle className="text-2xl font-bold text-[#1f1f1f]">
-                  Sign Up
+                <DialogTitle className="text-[26px] leading-[1.5] font-bold text-[#313131]">
+                  {t('auth.signup.title')}
                 </DialogTitle>
 
                 <div className="flex w-full flex-col gap-5">
                   <SocialLs
                     provider="google"
-                    actionLabel="Sign up"
+                    label={t('auth.signup.withGoogle')}
                     onClick={() =>
                       signIn.social({
                         provider: 'google',
@@ -115,7 +166,7 @@ export function SignupModal() {
 
                   <SocialLs
                     provider="facebook"
-                    actionLabel="Sign up"
+                    label={t('auth.signup.withFacebook')}
                     onClick={() =>
                       signIn.social({
                         provider: 'facebook',
@@ -127,13 +178,15 @@ export function SignupModal() {
 
                 <div className="flex w-full items-center gap-2.5 overflow-hidden">
                   <div className="h-px flex-1 bg-[#b3b3b3]" />
-                  <span className="text-sm font-medium text-[#999]">or</span>
+                  <span className="text-sm font-medium text-[#999]">
+                    {t('common.or')}
+                  </span>
                   <div className="h-px flex-1 bg-[#b3b3b3]" />
                 </div>
 
                 <SocialLs
                   provider="email"
-                  actionLabel="Sign up"
+                  label={t('auth.signup.withEmail')}
                   onClick={() => setStep('form')}
                 />
               </>
@@ -141,8 +194,8 @@ export function SignupModal() {
 
             {step === 'form' && (
               <>
-                <DialogTitle className="text-2xl font-bold text-[#1f1f1f]">
-                  Sign Up
+                <DialogTitle className="text-[26px] leading-[1.5] font-bold text-[#313131]">
+                  {t('auth.signup.title')}
                 </DialogTitle>
 
                 <form
@@ -150,112 +203,190 @@ export function SignupModal() {
                     e.preventDefault();
                     form.handleSubmit();
                   }}
-                  className="flex w-full flex-col gap-5"
+                  className="flex w-full flex-col gap-10"
                 >
-                  <form.Field name="email">
-                    {(field) => (
-                      <div className="flex flex-col gap-1.5">
-                        <Label htmlFor="signup-email" className="sr-only">
-                          Email
-                        </Label>
-                        <LoginField
-                          id="signup-email"
-                          type="email"
-                          autoComplete="email"
-                          value={field.state.value}
-                          onChange={(e) => field.handleChange(e.target.value)}
-                          onBlur={field.handleBlur}
-                          placeholder="E-mail"
-                          leftIconName="mail"
-                          leftIconAlt="mail"
-                          filled={field.state.value.length > 0}
-                        />
-                        {field.state.meta.isTouched &&
-                          field.state.meta.errors.length > 0 && (
-                            <p className="text-xs text-destructive">
-                              {String(
-                                field.state.meta.errors[0] instanceof Object
-                                  ? (
-                                      field.state.meta.errors[0] as {
-                                        message: string;
-                                      }
-                                    ).message
-                                  : field.state.meta.errors[0]
+                  <div className="flex w-full flex-col gap-5">
+                    <form.Field name="email">
+                      {(field) => (
+                        <div
+                          className={cn(
+                            'flex flex-col',
+                            emailError ? 'gap-[5px]' : 'gap-5'
+                          )}
+                        >
+                          <div className="flex flex-col gap-1.5">
+                            <Label htmlFor="signup-email" className="sr-only">
+                              {t('auth.signup.emailPlaceholder')}
+                            </Label>
+                            <LoginField
+                              id="signup-email"
+                              type="email"
+                              autoComplete="email"
+                              value={field.state.value}
+                              onChange={(e) => {
+                                field.handleChange(e.target.value);
+                                if (emailError) {
+                                  setEmailError(null);
+                                }
+                                if (formError) {
+                                  setFormError(null);
+                                }
+                              }}
+                              onBlur={field.handleBlur}
+                              placeholder={t('auth.signup.emailPlaceholder')}
+                              leftIconName="mail"
+                              leftIconAlt="mail"
+                              filled={field.state.value.length > 0}
+                            />
+                            {field.state.meta.isTouched &&
+                              field.state.meta.errors.length > 0 && (
+                                <p className="text-xs text-destructive">
+                                  {getFirstFieldError(field.state.meta.errors)}
+                                </p>
                               )}
+                          </div>
+                          {emailError && (
+                            <p className="flex items-center text-sm leading-[1.5] font-medium text-[#e50000]">
+                              <Icon name="error" size={24} alt="error" />
+                              {emailError}
                             </p>
                           )}
-                      </div>
-                    )}
-                  </form.Field>
+                        </div>
+                      )}
+                    </form.Field>
 
-                  <form.Field name="password">
-                    {(field) => (
-                      <div className="flex flex-col gap-1.5">
-                        <Label htmlFor="signup-password" className="sr-only">
-                          Password
-                        </Label>
-                        <PasswordInput
-                          id="signup-password"
-                          autoComplete="new-password"
-                          value={field.state.value}
-                          onChange={(e) => field.handleChange(e.target.value)}
-                          onBlur={field.handleBlur}
-                          placeholder="Password"
-                        />
-                        <p
-                          className={`text-xs ${
-                            field.state.value.length >= 8
-                              ? 'text-green-600'
-                              : 'text-muted-foreground'
-                          }`}
+                    <form.Field name="password">
+                      {(field) => {
+                        const showPasswordState = field.state.value.length > 0;
+                        const passwordValid = field.state.value.length >= 8;
+
+                        return (
+                          <div
+                            className={cn(
+                              'flex flex-col',
+                              showPasswordState ? 'gap-[5px]' : 'gap-5'
+                            )}
+                          >
+                            <Label
+                              htmlFor="signup-password"
+                              className="sr-only"
+                            >
+                              {t('auth.signup.passwordPlaceholder')}
+                            </Label>
+                            <PasswordInput
+                              id="signup-password"
+                              autoComplete="new-password"
+                              value={field.state.value}
+                              onChange={(e) => {
+                                field.handleChange(e.target.value);
+                                if (formError) {
+                                  setFormError(null);
+                                }
+                              }}
+                              onBlur={field.handleBlur}
+                              placeholder={t('auth.signup.passwordPlaceholder')}
+                            />
+                            {showPasswordState && (
+                              <p
+                                className={cn(
+                                  'flex items-center text-sm leading-[1.5] font-medium',
+                                  passwordValid
+                                    ? 'text-[#00a600]'
+                                    : 'text-[#e50000]'
+                                )}
+                              >
+                                <Icon
+                                  name={passwordValid ? 'success' : 'error'}
+                                  size={24}
+                                  alt={passwordValid ? 'success' : 'error'}
+                                />
+                                {passwordValid
+                                  ? t('auth.signup.passwordValid')
+                                  : t('auth.validation.passwordMin')}
+                              </p>
+                            )}
+                          </div>
+                        );
+                      }}
+                    </form.Field>
+                  </div>
+
+                  <div className="flex w-full flex-col gap-[10px]">
+                    <label className="flex h-[24px] w-full cursor-pointer items-center gap-[5px] text-sm leading-[1.5] font-medium text-[#666]">
+                      <input
+                        type="checkbox"
+                        className="sr-only"
+                        checked={privacyChecked}
+                        onChange={(e) => setPrivacyChecked(e.target.checked)}
+                      />
+                      <Icon
+                        name={privacyChecked ? 'checked' : 'unchecked'}
+                        size={24}
+                        alt={privacyChecked ? 'checked' : 'unchecked'}
+                      />
+                      {t('auth.signup.privacyAgreement')}
+                    </label>
+
+                    {formError && (
+                      <p className="flex items-center text-sm leading-[1.5] font-medium text-[#e50000]">
+                        <Icon name="error" size={24} alt="error" />
+                        {formError}
+                      </p>
+                    )}
+                  </div>
+
+                  <form.Subscribe
+                    selector={(s) => ({
+                      isSubmitting: s.isSubmitting,
+                      email: s.values.email,
+                      password: s.values.password,
+                    })}
+                  >
+                    {({ isSubmitting, email, password }) => {
+                      const disabled =
+                        isSubmitting ||
+                        !privacyChecked ||
+                        !email ||
+                        !password ||
+                        password.length < 8 ||
+                        Boolean(emailError);
+
+                      return (
+                        <Button
+                          type="submit"
+                          variant={disabled ? 'brand-disabled' : 'brand'}
+                          size="brand-lg"
+                          disabled={disabled}
+                          className="w-full"
                         >
-                          {field.state.value.length >= 8 ? '✓' : '✗'} 8자 이상
-                        </p>
-                      </div>
-                    )}
-                  </form.Field>
-
-                  <label className="flex items-center gap-2 text-sm">
-                    <input
-                      type="checkbox"
-                      checked={privacyChecked}
-                      onChange={(e) => setPrivacyChecked(e.target.checked)}
-                    />
-                    개인정보 처리방침에 동의합니다
-                  </label>
-
-                  {serverError && (
-                    <p className="text-sm text-destructive">{serverError}</p>
-                  )}
-
-                  <form.Subscribe selector={(s) => s.isSubmitting}>
-                    {(isSubmitting) => (
-                      <Button
-                        type="submit"
-                        variant={
-                          isSubmitting || !privacyChecked
-                            ? 'brand-disabled'
-                            : 'brand'
-                        }
-                        size="brand-lg"
-                        disabled={isSubmitting || !privacyChecked}
-                        className="w-full"
-                      >
-                        {isSubmitting ? '가입 중...' : 'Sign Up'}
-                      </Button>
-                    )}
+                          {isSubmitting
+                            ? t('auth.signup.submitting')
+                            : t('auth.signup.submit')}
+                        </Button>
+                      );
+                    }}
                   </form.Subscribe>
                 </form>
               </>
             )}
 
             {step === 'success' && (
-              <div className="flex w-full flex-col items-center gap-4 py-6">
-                <DialogTitle className="text-lg font-semibold">
-                  가입 완료!
-                </DialogTitle>
-                <p className="text-sm text-muted-foreground">
-                  회원가입이 완료되었습니다.
+              <div className="flex w-full flex-col items-center gap-10">
+                <div className="flex flex-col items-center gap-5">
+                  <div className="flex size-[150px] items-center justify-center rounded-full bg-[#ff6000]">
+                    <span
+                      aria-hidden
+                      className="text-[72px] leading-none font-bold text-white"
+                    >
+                      ✓
+                    </span>
+                  </div>
+                  <DialogTitle className="text-[22px] leading-[1.5] font-bold text-black">
+                    {t('auth.signup.successTitle')}
+                  </DialogTitle>
+                </div>
+                <p className="text-center text-[20px] leading-[1.5] font-medium text-[#666]">
+                  {t('auth.signup.successDescription')}
                 </p>
                 <Button
                   onClick={closeAll}
@@ -263,7 +394,7 @@ export function SignupModal() {
                   size="brand-lg"
                   className="w-full"
                 >
-                  닫기
+                  {t('auth.signup.submit')}
                 </Button>
               </div>
             )}

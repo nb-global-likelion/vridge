@@ -6,28 +6,25 @@ type SocialProvider = 'google' | 'facebook' | 'email';
 
 type SocialLsProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'type'> & {
   provider: SocialProvider;
-  actionLabel: string;
+  label: string;
 };
 
 const PROVIDER_META: Record<
   SocialProvider,
-  { iconName: string; suffix: string; iconSize: number; circle: boolean }
+  { iconName: string; iconSize: number; circle: boolean }
 > = {
   google: {
     iconName: 'google',
-    suffix: 'with Google',
     iconSize: 32,
     circle: true,
   },
   facebook: {
     iconName: 'facebook',
-    suffix: 'with Facebook',
     iconSize: 32,
     circle: true,
   },
   email: {
     iconName: 'email-at',
-    suffix: 'with E-mail',
     iconSize: 32,
     circle: false,
   },
@@ -35,7 +32,7 @@ const PROVIDER_META: Record<
 
 export function SocialLs({
   provider,
-  actionLabel,
+  label,
   className,
   ...props
 }: SocialLsProps) {
@@ -58,9 +55,8 @@ export function SocialLs({
         ) : (
           <Icon name={meta.iconName} size={meta.iconSize} alt={provider} />
         )}
-        <span className="flex items-center gap-[5px] text-center text-[18px] leading-[1.5] font-medium text-[#333]">
-          <span>{actionLabel}</span>
-          <span>{meta.suffix}</span>
+        <span className="text-center text-[18px] leading-[1.5] font-medium text-[#333]">
+          {label}
         </span>
       </span>
     </button>
