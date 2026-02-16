@@ -6,6 +6,8 @@ const baseProps = {
   jobDisplayName: 'Frontend Engineer',
   employmentType: 'full_time',
   workArrangement: 'remote',
+  minYearsExperience: 3,
+  minEducation: 'higher_bachelor',
   skills: [
     { skill: { displayNameEn: 'React' } },
     { skill: { displayNameEn: 'TypeScript' } },
@@ -16,6 +18,12 @@ describe('SummaryCard', () => {
   it('직무명 렌더링', () => {
     renderWithI18n(<SummaryCard {...baseProps} />);
     expect(screen.getByText('Frontend Engineer')).toBeInTheDocument();
+  });
+
+  it('추가 메타 정보 렌더링(경력/학력)', () => {
+    renderWithI18n(<SummaryCard {...baseProps} />);
+    expect(screen.getByText('3+ years')).toBeInTheDocument();
+    expect(screen.getByText("Bachelor's")).toBeInTheDocument();
   });
 
   it('스킬 칩 렌더링', () => {
@@ -37,6 +45,16 @@ describe('SummaryCard', () => {
     );
     expect(screen.getByText('커스텀 CTA')).toBeInTheDocument();
     expect(screen.queryByText('Apply Now')).not.toBeInTheDocument();
+  });
+
+  it('secondaryAction 전달 시 기본 보조 액션 대신 커스텀 액션 렌더링', () => {
+    renderWithI18n(
+      <SummaryCard
+        {...baseProps}
+        secondaryAction={<button>보조 액션</button>}
+      />
+    );
+    expect(screen.getByText('보조 액션')).toBeInTheDocument();
   });
 
   it('컨테이너 스타일: w-[300px] rounded-[20px]', () => {

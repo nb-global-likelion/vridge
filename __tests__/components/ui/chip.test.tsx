@@ -11,6 +11,7 @@ describe('Chip', () => {
         'border-[#b3b3b3]'
       );
       expect(chip.closest('[data-slot="chip"]')).toHaveClass('bg-white');
+      expect(chip.closest('[data-slot="chip"]')).toHaveClass('text-[#666]');
     });
 
     it('close 아이콘 없음', () => {
@@ -27,6 +28,9 @@ describe('Chip', () => {
         <Chip label="React" variant="searched" onRemove={() => {}} />
       );
       expect(container.querySelector('img[src*="close"]')).toBeInTheDocument();
+      expect(
+        screen.getByText('React').closest('[data-slot="chip"]')
+      ).toHaveClass('gap-[10px]');
     });
 
     it('onRemove 콜백 호출', async () => {
@@ -50,6 +54,9 @@ describe('Chip', () => {
       expect(
         container.querySelector('img[src*="checked"]')
       ).toBeInTheDocument();
+      expect(
+        screen.getByText('React').closest('[data-slot="chip"]')
+      ).toHaveClass('gap-[10px]');
     });
 
     it('onSelect 콜백 호출', async () => {
@@ -67,17 +74,21 @@ describe('Chip', () => {
     it('sm: 작은 사이즈', () => {
       render(<Chip label="React" variant="displayed" size="sm" />);
       const chip = screen.getByText('React').closest('[data-slot="chip"]');
+      expect(chip).toHaveClass('border-[0.5px]');
       expect(chip).toHaveClass('px-[8px]');
       expect(chip).toHaveClass('py-[6px]');
       expect(chip).toHaveClass('text-[14px]');
+      expect(chip).toHaveClass('text-[#666]');
     });
 
     it('md: 중간 사이즈', () => {
       render(<Chip label="React" variant="displayed" size="md" />);
       const chip = screen.getByText('React').closest('[data-slot="chip"]');
+      expect(chip).toHaveClass('border');
       expect(chip).toHaveClass('px-[10px]');
       expect(chip).toHaveClass('py-[8px]');
       expect(chip).toHaveClass('text-[16px]');
+      expect(chip).toHaveClass('text-[#4c4c4c]');
     });
   });
 });

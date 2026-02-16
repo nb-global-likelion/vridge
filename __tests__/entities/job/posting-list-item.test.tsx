@@ -9,6 +9,8 @@ const baseProps = {
   jobDisplayName: 'Frontend Engineer',
   employmentType: 'full_time',
   workArrangement: 'remote',
+  minYearsExperience: 3,
+  minEducation: 'higher_bachelor',
   skills: [
     { skill: { displayNameEn: 'React' } },
     { skill: { displayNameEn: 'TypeScript' } },
@@ -34,6 +36,12 @@ describe('PostingListItem', () => {
     expect(screen.getByText('Frontend Engineer')).toBeInTheDocument();
   });
 
+  it('추가 메타 정보 렌더링(경력/학력)', () => {
+    renderWithI18n(<PostingListItem {...baseProps} />);
+    expect(screen.getByText('3+ years')).toBeInTheDocument();
+    expect(screen.getByText("Bachelor's")).toBeInTheDocument();
+  });
+
   it('스킬 칩 렌더링', () => {
     renderWithI18n(<PostingListItem {...baseProps} />);
     expect(screen.getByText('React')).toBeInTheDocument();
@@ -55,5 +63,10 @@ describe('PostingListItem', () => {
     renderWithI18n(<PostingListItem {...baseProps} />);
     const link = screen.getByRole('link');
     expect(link.firstChild).toHaveClass('rounded-[20px]');
+  });
+
+  it('cta 전달 시 커스텀 CTA 렌더링', () => {
+    renderWithI18n(<PostingListItem {...baseProps} cta={<span>지원</span>} />);
+    expect(screen.getByText('지원')).toBeInTheDocument();
   });
 });

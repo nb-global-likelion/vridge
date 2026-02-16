@@ -20,20 +20,21 @@ const buttonVariants = cva(
           'hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50',
         link: 'text-primary underline-offset-4 hover:underline',
         brand:
-          'rounded-[60px] bg-[#ff6000] text-white font-medium hover:bg-orange-600',
+          'rounded-[60px] bg-[#ff6000] text-white font-medium hover:bg-[#e55600]',
         'brand-outline':
-          'rounded-[60px] border border-[#ff6000] bg-white text-[#ff6000] font-medium hover:bg-orange-50',
+          'rounded-[60px] border border-[#ff6000] bg-white text-[#ff6000] font-medium hover:bg-[#fff5ef]',
         'brand-disabled':
-          'rounded-[60px] bg-[#ccc] text-white font-medium cursor-not-allowed',
+          'rounded-[60px] bg-[#ccc] text-white font-medium cursor-not-allowed hover:bg-[#ccc]',
       },
       size: {
         default: 'h-9 px-4 py-2 has-[>svg]:px-3',
         xs: "h-6 gap-1 rounded-md px-2 text-xs has-[>svg]:px-1.5 [&_svg:not([class*='size-'])]:size-3",
         sm: 'h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5',
         lg: 'h-10 rounded-md px-6 has-[>svg]:px-4',
-        'brand-sm': 'h-[34px] px-[10px] text-[16px]',
-        'brand-md': 'h-[45px] px-[20px] text-[20px]',
-        'brand-lg': 'h-[60px] px-[40px] text-[20px] font-bold',
+        'brand-sm': 'h-[34px] gap-[5px] px-[10px] py-[5px] text-[16px]',
+        'brand-md': 'h-[45px] gap-[5px] px-[20px] py-[5px] text-[20px]',
+        'brand-lg':
+          'h-[60px] gap-[5px] px-[40px] py-[5px] text-[20px] font-bold',
         icon: 'size-9',
         'icon-xs': "size-6 rounded-md [&_svg:not([class*='size-'])]:size-3",
         'icon-sm': 'size-8',

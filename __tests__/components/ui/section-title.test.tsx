@@ -17,7 +17,9 @@ describe('SectionTitle', () => {
 
   it('하단 구분선 렌더링', () => {
     const { container } = render(<SectionTitle title="Experience" />);
-    expect(container.querySelector('.border-b')).toBeInTheDocument();
+    const divider = container.querySelector('.h-px');
+    expect(divider).toBeInTheDocument();
+    expect(divider).toHaveClass('bg-[#b3b3b3]');
   });
 
   it('onAdd 없을 때 추가 버튼 미표시', () => {
@@ -27,7 +29,9 @@ describe('SectionTitle', () => {
 
   it('onAdd 있을 때 추가 버튼 표시', () => {
     render(<SectionTitle title="Experience" onAdd={() => {}} />);
-    expect(screen.getByRole('button')).toBeInTheDocument();
+    const button = screen.getByRole('button');
+    expect(button).toBeInTheDocument();
+    expect(button).toHaveClass('size-[32px]');
   });
 
   it('추가 버튼 클릭 시 onAdd 호출', async () => {
