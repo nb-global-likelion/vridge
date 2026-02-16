@@ -55,6 +55,7 @@ describe('AnnouncementsPage', () => {
 
     expect(screen.getByText('Announcement')).toBeInTheDocument();
     expect(screen.getByText(/📍/)).toBeInTheDocument();
+    expect(screen.queryByText('Pinned')).not.toBeInTheDocument();
     expect(screen.getByRole('link', { name: '일반 공지' })).toHaveAttribute(
       'href',
       '/announcements/ann-normal'

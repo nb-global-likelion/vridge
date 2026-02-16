@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import { NumberedPagination } from '@/components/ui/numbered-pagination';
-import { SectionTitle } from '@/components/ui/section-title';
 import { getAnnouncements } from '@/lib/actions/announcements';
 import { getServerI18n } from '@/lib/i18n/server';
 import { getActionErrorMessage } from '@/lib/i18n/action-error';
@@ -44,35 +43,41 @@ export default async function AnnouncementsPage({
 
   return (
     <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-6 px-6 py-10">
-      <SectionTitle title={t('announcements.title')} />
+      <div className="flex flex-col gap-[25px]">
+        <h2 className="text-[22px] font-bold text-[#1a1a1a]">
+          {t('announcements.title')}
+        </h2>
 
-      <div className="flex flex-col border-t-2 border-black">
-        <div className="grid grid-cols-[96px_1fr_192px] border-b border-black py-4 text-center text-xl font-medium">
-          <span>{t('announcements.no')}</span>
-          <span>{t('announcements.tableTitle')}</span>
-          <span>{t('announcements.time')}</span>
-        </div>
+        <div className="flex flex-col border-t-2 border-black">
+          <div className="grid grid-cols-[96px_1fr_192px] border-b border-black py-4 text-center text-xl font-medium">
+            <span>{t('announcements.no')}</span>
+            <span>{t('announcements.tableTitle')}</span>
+            <span>{t('announcements.time')}</span>
+          </div>
 
-        {items.map((item, index) => {
-          const rowNumber = total - (offset + index);
-          return (
-            <div
-              key={item.id}
-              className="grid grid-cols-[96px_1fr_192px] items-center gap-4 border-b border-black py-5 text-lg font-medium text-[#333]"
-            >
-              <span className="text-center">
-                {item.isPinned ? `📍 ${t('announcements.pinned')}` : rowNumber}
-              </span>
-              <Link
-                href={`/announcements/${item.id}`}
-                className="hover:text-brand"
+          {items.map((item, index) => {
+            const rowNumber = total - (offset + index);
+            return (
+              <div
+                key={item.id}
+                className="grid grid-cols-[96px_1fr_192px] items-center gap-[30px] border-b border-black py-5 text-lg font-medium text-[#333]"
               >
-                {item.title}
-              </Link>
-              <span className="text-center">{formatDate(item.createdAt)}</span>
-            </div>
-          );
-        })}
+                <span className="text-center">
+                  {item.isPinned ? '📍' : rowNumber}
+                </span>
+                <Link
+                  href={`/announcements/${item.id}`}
+                  className="hover:text-brand"
+                >
+                  {item.title}
+                </Link>
+                <span className="text-center">
+                  {formatDate(item.createdAt)}
+                </span>
+              </div>
+            );
+          })}
+        </div>
       </div>
 
       <NumberedPagination
