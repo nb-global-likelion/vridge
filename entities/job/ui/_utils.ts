@@ -1,5 +1,5 @@
 export {
-  WORK_ARRANGEMENT_LABELS,
-  APPLY_STATUS_LABELS,
+  getWorkArrangementLabel,
+  getApplyStatusLabel,
   formatSalary,
 } from '@/lib/frontend/presentation';

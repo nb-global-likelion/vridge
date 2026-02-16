@@ -22,7 +22,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { PROFICIENCY_LABELS } from '@/lib/frontend/presentation';
+import {
+  getProficiencyLabel,
+  getProficiencyOptions,
+} from '@/lib/frontend/presentation';
+import { useI18n } from '@/lib/i18n/client';
 import {
   useAddLanguage,
   useUpdateLanguage,
@@ -51,6 +55,7 @@ export function LanguageForm({
   languageId,
   initialData,
 }: LanguageFormProps) {
+  const { t } = useI18n();
   const addLanguage = useAddLanguage();
   const updateLanguage = useUpdateLanguage();
   const [serverError, setServerError] = useState<string | null>(null);
@@ -95,7 +100,7 @@ export function LanguageForm({
       <form.Field name="language">
         {(field) => (
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="lang-language">언어</Label>
+            <Label htmlFor="lang-language">{t('form.language')}</Label>
             <Input
               id="lang-language"
               value={field.state.value}
@@ -112,7 +117,7 @@ export function LanguageForm({
       <form.Field name="proficiency">
         {(field) => (
           <div className="flex flex-col gap-1.5">
-            <Label>숙련도</Label>
+            <Label>{t('form.proficiencyLevel')}</Label>
             <Select
               value={field.state.value}
               onValueChange={(value) =>
@@ -120,10 +125,10 @@ export function LanguageForm({
               }
             >
               <SelectTrigger>
-                <SelectValue placeholder="숙련도 선택" />
+                <SelectValue placeholder={t('form.select')} />
               </SelectTrigger>
               <SelectContent>
-                {Object.entries(PROFICIENCY_LABELS).map(([value, label]) => (
+                {getProficiencyOptions(t).map(({ value, label }) => (
                   <SelectItem key={value} value={value}>
                     {label}
                   </SelectItem>
@@ -140,7 +145,7 @@ export function LanguageForm({
       <form.Field name="testName">
         {(field) => (
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="lang-test-name">시험명 (선택)</Label>
+            <Label htmlFor="lang-test-name">{t('form.testNameOptional')}</Label>
             <FormInput
               id="lang-test-name"
               value={field.state.value ?? ''}
@@ -155,7 +160,7 @@ export function LanguageForm({
       <form.Field name="testScore">
         {(field) => (
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="lang-test-score">점수 (선택)</Label>
+            <Label htmlFor="lang-test-score">{t('form.scoreOptional')}</Label>
             <FormInput
               id="lang-test-score"
               value={field.state.value ?? ''}
@@ -172,7 +177,9 @@ export function LanguageForm({
       <form.Subscribe selector={(s) => s.isSubmitting}>
         {(isSubmitting) => (
           <Button type="submit" disabled={isSubmitting || mutation.isPending}>
-            {isSubmitting || mutation.isPending ? '저장 중...' : '저장'}
+            {isSubmitting || mutation.isPending
+              ? t('common.actions.saving')
+              : t('common.actions.save')}
           </Button>
         )}
       </form.Subscribe>
@@ -183,6 +190,7 @@ export function LanguageForm({
 type Language = LanguageData & { id: string };
 
 export function LanguageSection({ languages }: { languages: Language[] }) {
+  const { t } = useI18n();
   const router = useRouter();
   const deleteLanguage = useDeleteLanguage();
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -205,7 +213,7 @@ export function LanguageSection({ languages }: { languages: Language[] }) {
               <div>
                 <p className="font-medium">{lang.language}</p>
                 <p className="text-sm text-muted-foreground">
-                  {PROFICIENCY_LABELS[lang.proficiency] ?? lang.proficiency}
+                  {getProficiencyLabel(lang.proficiency, t)}
                 </p>
                 {lang.testName && lang.testScore && (
                   <p className="text-sm text-muted-foreground">
@@ -222,7 +230,7 @@ export function LanguageSection({ languages }: { languages: Language[] }) {
                     setDialogOpen(true);
                   }}
                 >
-                  편집
+                  {t('common.actions.edit')}
                 </Button>
                 <Button
                   variant="destructive"
@@ -233,7 +241,7 @@ export function LanguageSection({ languages }: { languages: Language[] }) {
                     })
                   }
                 >
-                  삭제
+                  {t('common.actions.delete')}
                 </Button>
               </div>
             </li>
@@ -247,13 +255,19 @@ export function LanguageSection({ languages }: { languages: Language[] }) {
           setDialogOpen(true);
         }}
       >
-        + 언어 추가
+        {t('profile.actions.addLanguage')}
       </Button>
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
             <DialogTitle>
-              {editingLanguage ? '언어 편집' : '언어 추가'}
+              {editingLanguage
+                ? t('profile.dialog.editSection', {
+                    section: t('profile.languages'),
+                  })
+                : t('profile.dialog.addSection', {
+                    section: t('profile.languages'),
+                  })}
             </DialogTitle>
           </DialogHeader>
           <LanguageForm

@@ -1,9 +1,10 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import { CertificationForm } from '@/features/profile-edit/ui/certification-form';
 import {
   useAddCertification,
   useUpdateCertification,
 } from '@/features/profile-edit/model/use-profile-mutations';
+import { renderWithI18n } from '@/__tests__/test-utils/render-with-i18n';
 
 jest.mock('@/features/profile-edit/model/use-profile-mutations', () => ({
   useAddCertification: jest.fn(),
@@ -30,14 +31,14 @@ describe('CertificationForm', () => {
   });
 
   it('추가 모드에서 필드 렌더링', () => {
-    render(<CertificationForm onSuccess={jest.fn()} />);
-    expect(screen.getByLabelText(/자격증명/i)).toHaveValue('');
-    expect(screen.getByLabelText(/발급 기관/i)).toHaveValue('');
-    expect(screen.getByLabelText(/설명/i)).toHaveValue('');
+    renderWithI18n(<CertificationForm onSuccess={jest.fn()} />);
+    expect(screen.getByLabelText(/Certification\/License/i)).toHaveValue('');
+    expect(screen.getByLabelText(/Institution/i)).toHaveValue('');
+    expect(screen.getByLabelText(/Description/i)).toHaveValue('');
   });
 
   it('편집 모드에서 초기값 렌더링', () => {
-    render(
+    renderWithI18n(
       <CertificationForm
         onSuccess={jest.fn()}
         certificationId="cert-1"
@@ -51,11 +52,13 @@ describe('CertificationForm', () => {
       />
     );
 
-    expect(screen.getByLabelText(/자격증명/i)).toHaveValue(
+    expect(screen.getByLabelText(/Certification\/License/i)).toHaveValue(
       'AWS Certified Developer'
     );
-    expect(screen.getByLabelText(/발급 기관/i)).toHaveValue('AWS');
-    expect(screen.getByLabelText(/설명/i)).toHaveValue('Cloud certificate');
+    expect(screen.getByLabelText(/Institution/i)).toHaveValue('AWS');
+    expect(screen.getByLabelText(/Description/i)).toHaveValue(
+      'Cloud certificate'
+    );
   });
 
   it('mutation pending 시 저장 버튼 비활성화', () => {
@@ -64,9 +67,7 @@ describe('CertificationForm', () => {
       isPending: true,
     });
 
-    render(<CertificationForm onSuccess={jest.fn()} />);
-    expect(
-      screen.getByRole('button', { name: /저장|저장 중/i })
-    ).toBeDisabled();
+    renderWithI18n(<CertificationForm onSuccess={jest.fn()} />);
+    expect(screen.getByRole('button', { name: /Save|Saving/i })).toBeDisabled();
   });
 });

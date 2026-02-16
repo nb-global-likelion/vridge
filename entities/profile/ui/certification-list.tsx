@@ -1,4 +1,7 @@
+'use client';
+
 import { formatDate } from './_utils';
+import { useI18n } from '@/lib/i18n/client';
 
 type Certification = {
   id: string;
@@ -14,8 +17,14 @@ type Props = {
 };
 
 export function CertificationList({ certifications }: Props) {
+  const { locale, t } = useI18n();
+
   if (certifications.length === 0) {
-    return <p className="text-muted-foreground">자격증 없음</p>;
+    return (
+      <p className="text-muted-foreground">
+        {t('profile.empty.certifications')}
+      </p>
+    );
   }
 
   return (
@@ -25,7 +34,7 @@ export function CertificationList({ certifications }: Props) {
           <div className="flex items-center gap-2">
             <span className="font-semibold">{certification.name}</span>
             <span className="text-xs text-muted-foreground">
-              {formatDate(certification.date)}
+              {formatDate(certification.date, locale)}
             </span>
           </div>
           {certification.institutionName && (

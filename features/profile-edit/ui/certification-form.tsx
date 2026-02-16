@@ -20,6 +20,7 @@ import {
   useUpdateCertification,
   useDeleteCertification,
 } from '../model/use-profile-mutations';
+import { useI18n } from '@/lib/i18n/client';
 
 type CertificationData = z.infer<typeof profileCertificationSchema>;
 
@@ -43,6 +44,7 @@ export function CertificationForm({
   certificationId,
   initialData,
 }: CertificationFormProps) {
+  const { t } = useI18n();
   const addCertification = useAddCertification();
   const updateCertification = useUpdateCertification();
   const [serverError, setServerError] = useState<string | null>(null);
@@ -87,7 +89,7 @@ export function CertificationForm({
       <form.Field name="name">
         {(field) => (
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="cert-name">자격증명</Label>
+            <Label htmlFor="cert-name">{t('form.certification')}</Label>
             <FormInput
               id="cert-name"
               value={field.state.value}
@@ -105,7 +107,7 @@ export function CertificationForm({
       <form.Field name="date">
         {(field) => (
           <div className="flex flex-col gap-1.5">
-            <Label>취득일</Label>
+            <Label>{t('form.acquiredDate')}</Label>
             <DatePicker
               type="full"
               value={
@@ -127,7 +129,9 @@ export function CertificationForm({
       <form.Field name="institutionName">
         {(field) => (
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="cert-institution">발급 기관 (선택)</Label>
+            <Label htmlFor="cert-institution">
+              {t('form.institutionOptional')}
+            </Label>
             <FormInput
               id="cert-institution"
               value={field.state.value ?? ''}
@@ -142,7 +146,9 @@ export function CertificationForm({
       <form.Field name="description">
         {(field) => (
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="cert-description">설명 (선택)</Label>
+            <Label htmlFor="cert-description">
+              {t('form.descriptionOptional')}
+            </Label>
             <FormInput
               id="cert-description"
               size="lg"
@@ -160,7 +166,9 @@ export function CertificationForm({
       <form.Subscribe selector={(s) => s.isSubmitting}>
         {(isSubmitting) => (
           <Button type="submit" disabled={isSubmitting || mutation.isPending}>
-            {isSubmitting || mutation.isPending ? '저장 중...' : '저장'}
+            {isSubmitting || mutation.isPending
+              ? t('common.actions.saving')
+              : t('common.actions.save')}
           </Button>
         )}
       </form.Subscribe>
@@ -175,6 +183,7 @@ export function CertificationSection({
 }: {
   certifications: Certification[];
 }) {
+  const { t } = useI18n();
   const router = useRouter();
   const deleteCertification = useDeleteCertification();
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -210,7 +219,7 @@ export function CertificationSection({
                     setDialogOpen(true);
                   }}
                 >
-                  편집
+                  {t('common.actions.edit')}
                 </Button>
                 <Button
                   variant="destructive"
@@ -221,7 +230,7 @@ export function CertificationSection({
                     })
                   }
                 >
-                  삭제
+                  {t('common.actions.delete')}
                 </Button>
               </div>
             </li>
@@ -236,14 +245,20 @@ export function CertificationSection({
           setDialogOpen(true);
         }}
       >
-        + 자격증 추가
+        {t('profile.actions.addCertification')}
       </Button>
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
             <DialogTitle>
-              {editingCertification ? '자격증 편집' : '자격증 추가'}
+              {editingCertification
+                ? t('profile.dialog.editSection', {
+                    section: t('profile.certification'),
+                  })
+                : t('profile.dialog.addSection', {
+                    section: t('profile.certification'),
+                  })}
             </DialogTitle>
           </DialogHeader>
           <CertificationForm

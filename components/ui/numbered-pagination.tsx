@@ -5,8 +5,8 @@ type NumberedPaginationProps = {
   currentPage: number;
   totalPages: number;
   buildHref: (page: number) => string;
-  prevAriaLabel?: string;
-  nextAriaLabel?: string;
+  prevAriaLabel: string;
+  nextAriaLabel: string;
 };
 
 function getPageNumbers(current: number, total: number): (number | '...')[] {
@@ -38,8 +38,8 @@ export function NumberedPagination({
   currentPage,
   totalPages,
   buildHref,
-  prevAriaLabel = '이전 페이지',
-  nextAriaLabel = '다음 페이지',
+  prevAriaLabel,
+  nextAriaLabel,
 }: NumberedPaginationProps) {
   if (totalPages <= 1) return null;
 

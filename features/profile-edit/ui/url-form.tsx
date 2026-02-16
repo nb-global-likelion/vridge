@@ -18,6 +18,7 @@ import {
   useUpdateUrl,
   useDeleteUrl,
 } from '../model/use-profile-mutations';
+import { useI18n } from '@/lib/i18n/client';
 
 type UrlData = {
   label: string;
@@ -41,6 +42,7 @@ function FieldError({ errors }: { errors: unknown[] }) {
 }
 
 export function UrlForm({ onSuccess, urlId, initialData }: UrlFormProps) {
+  const { t } = useI18n();
   const addUrl = useAddUrl();
   const updateUrl = useUpdateUrl();
   const [serverError, setServerError] = useState<string | null>(null);
@@ -81,7 +83,7 @@ export function UrlForm({ onSuccess, urlId, initialData }: UrlFormProps) {
       <form.Field name="label">
         {(field) => (
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="url-label">레이블</Label>
+            <Label htmlFor="url-label">{t('form.label')}</Label>
             <Input
               id="url-label"
               value={field.state.value}
@@ -98,11 +100,11 @@ export function UrlForm({ onSuccess, urlId, initialData }: UrlFormProps) {
       <form.Field name="url">
         {(field) => (
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="url-url">URL</Label>
+            <Label htmlFor="url-url">{t('profile.url')}</Label>
             <Input
               id="url-url"
               type="url"
-              placeholder="https://"
+              placeholder={t('form.url')}
               value={field.state.value}
               onChange={(e) => field.handleChange(e.target.value)}
               onBlur={field.handleBlur}
@@ -119,7 +121,9 @@ export function UrlForm({ onSuccess, urlId, initialData }: UrlFormProps) {
       <form.Subscribe selector={(s) => s.isSubmitting}>
         {(isSubmitting) => (
           <Button type="submit" disabled={isSubmitting || mutation.isPending}>
-            {isSubmitting || mutation.isPending ? '저장 중...' : '저장'}
+            {isSubmitting || mutation.isPending
+              ? t('common.actions.saving')
+              : t('common.actions.save')}
           </Button>
         )}
       </form.Subscribe>
@@ -130,6 +134,7 @@ export function UrlForm({ onSuccess, urlId, initialData }: UrlFormProps) {
 type Url = UrlData & { id: string };
 
 export function UrlSection({ urls }: { urls: Url[] }) {
+  const { t } = useI18n();
   const router = useRouter();
   const deleteUrl = useDeleteUrl();
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -164,7 +169,7 @@ export function UrlSection({ urls }: { urls: Url[] }) {
                     setDialogOpen(true);
                   }}
                 >
-                  편집
+                  {t('common.actions.edit')}
                 </Button>
                 <Button
                   variant="destructive"
@@ -175,7 +180,7 @@ export function UrlSection({ urls }: { urls: Url[] }) {
                     })
                   }
                 >
-                  삭제
+                  {t('common.actions.delete')}
                 </Button>
               </div>
             </li>
@@ -189,12 +194,18 @@ export function UrlSection({ urls }: { urls: Url[] }) {
           setDialogOpen(true);
         }}
       >
-        + 링크 추가
+        {t('profile.actions.addUrl')}
       </Button>
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
-            <DialogTitle>{editingUrl ? '링크 편집' : '링크 추가'}</DialogTitle>
+            <DialogTitle>
+              {editingUrl
+                ? t('profile.dialog.editSection', { section: t('profile.url') })
+                : t('profile.dialog.addSection', {
+                    section: t('profile.url'),
+                  })}
+            </DialogTitle>
           </DialogHeader>
           <UrlForm
             onSuccess={handleSuccess}

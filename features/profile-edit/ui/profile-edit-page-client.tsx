@@ -22,11 +22,12 @@ import { SearchBar } from '@/components/ui/search-bar';
 import { ToggleSwitch } from '@/components/ui/toggle-switch';
 import { searchSkills } from '@/lib/actions/catalog';
 import {
-  EDUCATION_TYPE_LABELS,
-  EMPLOYMENT_TYPE_LABELS,
-  EXPERIENCE_LEVEL_LABELS,
-  PROFICIENCY_LABELS,
+  getEducationTypeOptions,
+  getEmploymentTypeOptions,
+  getExperienceLevelOptions,
+  getProficiencyOptions,
 } from '@/lib/frontend/presentation';
+import { useI18n } from '@/lib/i18n/client';
 import {
   useAddCareer,
   useAddCertification,
@@ -193,40 +194,31 @@ const EMPTY_URL: Omit<DraftUrl, 'id'> = {
 const BASE_SECTION_CLASS = 'w-full rounded-[20px] px-[40px] py-[20px]';
 const BASIC_SECTION_CLASS = `${BASE_SECTION_CLASS} border-2 border-[#ffefe5] bg-white`;
 
-const CORE_EDUCATION_OPTIONS = [
-  { value: 'vet_elementary', label: 'High School Diploma' },
-  { value: 'vet_college', label: 'Associate Degree' },
-  { value: 'higher_bachelor', label: "Bachelor's Degree" },
-  { value: 'higher_master', label: "Master's Degree" },
-  { value: 'higher_doctorate', label: 'Doctoral Degree' },
-  { value: 'other', label: 'Other' },
+const CORE_EDUCATION_ORDER = [
+  'vet_elementary',
+  'vet_college',
+  'higher_bachelor',
+  'higher_master',
+  'higher_doctorate',
+  'other',
 ];
 
-const EXTRA_EDUCATION_OPTIONS = Object.entries(EDUCATION_TYPE_LABELS)
-  .filter(
-    ([value]) => !CORE_EDUCATION_OPTIONS.some((item) => item.value === value)
-  )
-  .map(([value, label]) => ({ value, label }));
-
-const EDUCATION_OPTIONS = [
-  ...CORE_EDUCATION_OPTIONS,
-  ...EXTRA_EDUCATION_OPTIONS,
-];
-
-const GRADUATION_STATUS_OPTIONS = [
-  { value: 'ENROLLED', label: 'Enrolled' },
-  { value: 'ON_LEAVE', label: 'On Leave' },
-  { value: 'GRADUATED', label: 'Graduated' },
-  { value: 'EXPECTED', label: 'Expected to Graduate' },
-  { value: 'WITHDRAWN', label: 'Withdrawn' },
+const GRADUATION_STATUS_ORDER = [
+  'ENROLLED',
+  'ON_LEAVE',
+  'GRADUATED',
+  'EXPECTED',
+  'WITHDRAWN',
 ];
 
 function SectionHeader({
   title,
   onAdd,
+  addAriaLabel,
 }: {
   title: string;
   onAdd?: () => void;
+  addAriaLabel?: string;
 }) {
   return (
     <div className="flex flex-col gap-[10px]">
@@ -239,7 +231,7 @@ function SectionHeader({
             type="button"
             onClick={onAdd}
             className="flex size-[42px] items-center justify-center"
-            aria-label={`${title} add`}
+            aria-label={addAriaLabel ?? title}
           >
             <span className="text-[30px] leading-[1.5] text-[#1a1a1a]">+</span>
           </button>
@@ -431,6 +423,7 @@ async function syncCollection<T extends { id: string }, P>({
 }
 
 export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
+  const { t } = useI18n();
   const router = useRouter();
 
   const initialDraft = useMemo(() => buildInitialDraft(props), [props]);
@@ -502,6 +495,38 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
   const visibleSearchResults = searchResults.filter(
     (skill) => !selectedSkillIds.has(skill.id)
   );
+
+  const educationOptions = useMemo(() => {
+    const allOptions = getEducationTypeOptions(t);
+    const byValue = new Map(allOptions.map((option) => [option.value, option]));
+    const coreOptions = CORE_EDUCATION_ORDER.map((value) => {
+      const option = byValue.get(value);
+      return {
+        value,
+        label: option ? t(`profile.edit.educationOption.${value}`) : value,
+      };
+    });
+    const extraOptions = allOptions.filter(
+      (option) => !CORE_EDUCATION_ORDER.includes(option.value)
+    );
+
+    return [...coreOptions, ...extraOptions];
+  }, [t]);
+
+  const graduationStatusOptions = useMemo(
+    () =>
+      GRADUATION_STATUS_ORDER.map((value) => ({
+        value,
+        label: t(`profile.edit.graduationStatus.${value}`),
+      })),
+    [t]
+  );
+  const employmentTypeOptions = useMemo(() => getEmploymentTypeOptions(t), [t]);
+  const experienceLevelOptions = useMemo(
+    () => getExperienceLevelOptions(t),
+    [t]
+  );
+  const proficiencyOptions = useMemo(() => getProficiencyOptions(t), [t]);
 
   function updateDraftPublic<K extends keyof DraftPublic>(
     key: K,
@@ -666,9 +691,7 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
       router.refresh();
     } catch (error) {
       setSaveError(
-        error instanceof Error
-          ? error.message
-          : '프로필 저장 중 오류가 발생했습니다.'
+        error instanceof Error ? error.message : t('profile.save.error')
       );
     } finally {
       setIsSaving(false);
@@ -680,17 +703,21 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
       <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-[40px] px-6 py-10 pb-[140px]">
         <section className={BASIC_SECTION_CLASS}>
           <h2 className="text-[22px] leading-[1.5] font-bold text-[#1a1a1a]">
-            Basic Profile
+            {t('profile.basicProfile')}
           </h2>
 
           <div className="mt-[25px] flex flex-col gap-6 lg:flex-row lg:items-start">
             <div className="flex flex-col items-center gap-4">
               <div className="flex h-48 w-48 items-center justify-center rounded-full bg-[#ffefe5]">
-                <Icon name="profile" size={96} alt="profile placeholder" />
+                <Icon
+                  name="profile"
+                  size={96}
+                  alt={t('profile.image.placeholderAlt')}
+                />
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-sm font-medium text-[#1a1a1a]">
-                  Hiring Status
+                  {t('profile.hiringStatus')}
                 </span>
                 <ToggleSwitch
                   checked={Boolean(draft.public.isOpenToWork)}
@@ -705,7 +732,7 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
               <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
                 <FormInput
                   required
-                  placeholder="First Name"
+                  placeholder={t('form.firstName')}
                   value={draft.public.firstName}
                   onChange={(event) =>
                     updateDraftPublic('firstName', event.target.value)
@@ -714,7 +741,7 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
                 />
                 <FormInput
                   required
-                  placeholder="Last Name"
+                  placeholder={t('form.lastName')}
                   value={draft.public.lastName}
                   onChange={(event) =>
                     updateDraftPublic('lastName', event.target.value)
@@ -725,7 +752,7 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
 
               <div className="flex items-center gap-3">
                 <span className="text-sm font-medium text-[#1a1a1a]">
-                  Date of Birth
+                  {t('form.dateOfBirth')}
                 </span>
                 <DatePicker
                   type="full"
@@ -741,7 +768,7 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
                     size="sm"
                     onClick={() => updateDraftPublic('dateOfBirth', undefined)}
                   >
-                    Clear
+                    {t('common.actions.clear')}
                   </Button>
                 )}
               </div>
@@ -756,7 +783,7 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
                   <FormInput
                     className="h-11 bg-transparent"
                     required
-                    placeholder="Phone Number"
+                    placeholder={t('form.phoneNumber')}
                     value={draft.contact.phoneNumber}
                     onChange={(event) =>
                       updateDraftContact('phoneNumber', event.target.value)
@@ -769,7 +796,7 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
                   <Icon name="mail" size={20} />
                   <FormInput
                     className="h-11 bg-transparent"
-                    placeholder="E-Mail"
+                    placeholder={t('form.email')}
                     value={draft.contact.email}
                     filled
                     disabled
@@ -783,7 +810,7 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
                 <FormInput
                   required
                   className="h-11 bg-transparent"
-                  placeholder="Location (Country/Region City,State)"
+                  placeholder={t('form.location')}
                   value={draft.public.location}
                   onChange={(event) =>
                     updateDraftPublic('location', event.target.value)
@@ -795,7 +822,7 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
               <FormInput
                 required
                 size="lg"
-                placeholder="Headline"
+                placeholder={t('form.headline')}
                 value={draft.public.headline}
                 onChange={(event) =>
                   updateDraftPublic('headline', event.target.value)
@@ -805,7 +832,7 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
 
               <FormInput
                 size="lg"
-                placeholder="About Me"
+                placeholder={t('form.aboutMe')}
                 value={draft.public.aboutMe}
                 onChange={(event) =>
                   updateDraftPublic('aboutMe', event.target.value)
@@ -818,7 +845,10 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
 
         <section className={BASE_SECTION_CLASS}>
           <SectionHeader
-            title="Education"
+            title={t('profile.education')}
+            addAriaLabel={t('profile.actions.addAria', {
+              section: t('profile.education'),
+            })}
             onAdd={() =>
               setDraft((prev) => ({
                 ...prev,
@@ -847,13 +877,13 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
                       }))
                     }
                   >
-                    삭제
+                    {t('common.actions.delete')}
                   </Button>
                 </div>
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                   <FormInput
                     required
-                    placeholder="School Name"
+                    placeholder={t('form.schoolName')}
                     value={education.institutionName}
                     onChange={(event) =>
                       setDraft((prev) => ({
@@ -869,8 +899,8 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
                   />
                   <FormDropdown
                     value={education.educationType}
-                    placeholder="Level of Education"
-                    options={EDUCATION_OPTIONS}
+                    placeholder={t('form.levelOfEducation')}
+                    options={educationOptions}
                     onChange={(value) =>
                       setDraft((prev) => ({
                         ...prev,
@@ -886,7 +916,7 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
 
                 <div className="mt-4">
                   <FormInput
-                    placeholder="Field of Study"
+                    placeholder={t('form.fieldOfStudyOptional')}
                     value={education.field ?? ''}
                     onChange={(event) =>
                       setDraft((prev) => ({
@@ -937,7 +967,7 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
                           }))
                         }
                       >
-                        Clear
+                        {t('common.actions.clear')}
                       </Button>
                     )}
                   </div>
@@ -972,14 +1002,14 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
                           }))
                         }
                       >
-                        Clear
+                        {t('common.actions.clear')}
                       </Button>
                     )}
                   </div>
                   <FormDropdown
                     value={education.graduationStatus}
-                    placeholder="Graduation Status"
-                    options={GRADUATION_STATUS_OPTIONS}
+                    placeholder={t('form.graduationStatus')}
+                    options={graduationStatusOptions}
                     onChange={(value) =>
                       setDraft((prev) => ({
                         ...prev,
@@ -998,13 +1028,13 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
         </section>
 
         <section className={BASE_SECTION_CLASS}>
-          <SectionHeader title="Skills" />
+          <SectionHeader title={t('profile.skills')} />
           <div className="mt-[25px] flex flex-col gap-4">
             <SearchBar
               variant="skills"
               value={searchQuery}
               onChange={setSearchQuery}
-              placeholder="Skills"
+              placeholder={t('form.skills')}
             />
             {visibleSearchResults.length > 0 && (
               <ul className="rounded-[10px] border">
@@ -1025,7 +1055,7 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
                         }))
                       }
                     >
-                      추가
+                      {t('common.actions.add')}
                     </Button>
                   </li>
                 ))}
@@ -1054,7 +1084,10 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
 
         <section className={BASE_SECTION_CLASS}>
           <SectionHeader
-            title="Experience"
+            title={t('profile.experience')}
+            addAriaLabel={t('profile.actions.addAria', {
+              section: t('profile.experience'),
+            })}
             onAdd={() =>
               setDraft((prev) => ({
                 ...prev,
@@ -1082,13 +1115,13 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
                       }))
                     }
                   >
-                    삭제
+                    {t('common.actions.delete')}
                   </Button>
                 </div>
 
                 <div className="grid grid-cols-1 gap-4 lg:grid-cols-[1fr_auto]">
                   <FormInput
-                    placeholder="Company Name"
+                    placeholder={t('form.companyName')}
                     value={career.companyName}
                     onChange={(event) =>
                       setDraft((prev) => ({
@@ -1136,7 +1169,7 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
 
                 <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-3">
                   <FormInput
-                    placeholder="Job Role"
+                    placeholder={t('form.jobRole')}
                     value={career.positionTitle}
                     onChange={(event) =>
                       setDraft((prev) => ({
@@ -1165,7 +1198,7 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
                     }
                   >
                     <SelectTrigger className="h-[52px] rounded-[10px] bg-[#fbfbfb]">
-                      <SelectValue placeholder="Field" />
+                      <SelectValue placeholder={t('form.field')} />
                     </SelectTrigger>
                     <SelectContent>
                       {props.jobFamilies.map((family) => (
@@ -1183,10 +1216,8 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
 
                   <FormDropdown
                     value={career.experienceLevel}
-                    placeholder="Experience level"
-                    options={Object.entries(EXPERIENCE_LEVEL_LABELS).map(
-                      ([value, label]) => ({ value, label })
-                    )}
+                    placeholder={t('form.experienceLevel')}
+                    options={experienceLevelOptions}
                     onChange={(value) =>
                       setDraft((prev) => ({
                         ...prev,
@@ -1203,10 +1234,8 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
                 <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
                   <FormDropdown
                     value={career.employmentType}
-                    placeholder="Employment Type"
-                    options={Object.entries(EMPLOYMENT_TYPE_LABELS).map(
-                      ([value, label]) => ({ value, label })
-                    )}
+                    placeholder={t('form.employmentType')}
+                    options={employmentTypeOptions}
                     onChange={(value) =>
                       setDraft((prev) => ({
                         ...prev,
@@ -1233,14 +1262,14 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
                       }))
                     }
                   >
-                    종료일 비우기
+                    {t('profile.actions.clearEndDate')}
                   </Button>
                 </div>
 
                 <div className="mt-4">
                   <FormInput
                     size="lg"
-                    placeholder="Description"
+                    placeholder={t('form.descriptionOptional')}
                     value={career.description ?? ''}
                     onChange={(event) =>
                       setDraft((prev) => ({
@@ -1265,7 +1294,10 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
 
         <section className={BASE_SECTION_CLASS}>
           <SectionHeader
-            title="Certification"
+            title={t('profile.certification')}
+            addAriaLabel={t('profile.actions.addAria', {
+              section: t('profile.certification'),
+            })}
             onAdd={() =>
               setDraft((prev) => ({
                 ...prev,
@@ -1293,13 +1325,13 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
                       }))
                     }
                   >
-                    삭제
+                    {t('common.actions.delete')}
                   </Button>
                 </div>
 
                 <div className="grid grid-cols-1 gap-4 lg:grid-cols-[1fr_auto]">
                   <FormInput
-                    placeholder="Certification/License"
+                    placeholder={t('form.certification')}
                     value={certification.name}
                     onChange={(event) =>
                       setDraft((prev) => ({
@@ -1331,7 +1363,7 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
 
                 <div className="mt-4">
                   <FormInput
-                    placeholder="Institution (optional)"
+                    placeholder={t('form.institutionOptional')}
                     value={certification.institutionName ?? ''}
                     onChange={(event) =>
                       setDraft((prev) => ({
@@ -1354,7 +1386,7 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
                 <div className="mt-4">
                   <FormInput
                     size="lg"
-                    placeholder="Description"
+                    placeholder={t('form.descriptionOptional')}
                     value={certification.description ?? ''}
                     onChange={(event) =>
                       setDraft((prev) => ({
@@ -1379,7 +1411,10 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
 
         <section className={BASE_SECTION_CLASS}>
           <SectionHeader
-            title="Languages"
+            title={t('profile.languages')}
+            addAriaLabel={t('profile.actions.addAria', {
+              section: t('profile.languages'),
+            })}
             onAdd={() =>
               setDraft((prev) => ({
                 ...prev,
@@ -1407,13 +1442,13 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
                       }))
                     }
                   >
-                    삭제
+                    {t('common.actions.delete')}
                   </Button>
                 </div>
 
                 <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
                   <FormInput
-                    placeholder="Language"
+                    placeholder={t('form.language')}
                     value={language.language}
                     onChange={(event) =>
                       setDraft((prev) => ({
@@ -1429,10 +1464,8 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
                   />
                   <FormDropdown
                     value={language.proficiency}
-                    placeholder="Proficiency level"
-                    options={Object.entries(PROFICIENCY_LABELS).map(
-                      ([value, label]) => ({ value, label })
-                    )}
+                    placeholder={t('form.proficiencyLevel')}
+                    options={proficiencyOptions}
                     onChange={(value) =>
                       setDraft((prev) => ({
                         ...prev,
@@ -1448,7 +1481,7 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
 
                 <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
                   <FormInput
-                    placeholder="Test name (optional)"
+                    placeholder={t('form.testNameOptional')}
                     value={language.testName ?? ''}
                     onChange={(event) =>
                       setDraft((prev) => ({
@@ -1466,7 +1499,7 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
                     filled={Boolean(language.testName)}
                   />
                   <FormInput
-                    placeholder="Score (optional)"
+                    placeholder={t('form.scoreOptional')}
                     value={language.testScore ?? ''}
                     onChange={(event) =>
                       setDraft((prev) => ({
@@ -1490,18 +1523,18 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
         </section>
 
         <section className={BASE_SECTION_CLASS}>
-          <SectionHeader title="Portfolio" />
+          <SectionHeader title={t('profile.portfolio')} />
           <div className="mt-[25px] flex flex-col gap-[25px]">
             <button
               type="button"
               className="flex h-[52px] w-full items-center justify-center gap-1 rounded-[10px] bg-[#f8f8f8] px-[20px] text-[14px] font-medium text-[#666]"
             >
               <Icon name="plus" size={16} />
-              File Upload
+              {t('profile.upload.file')}
             </button>
             <div className="flex items-center justify-between">
               <p className="text-[18px] leading-[1.5] font-medium text-[#333]">
-                Uploaded file
+                {t('profile.upload.uploadedFile')}
               </p>
               <p className="text-[16px] leading-[1.5] font-medium text-[#808080]">
                 -
@@ -1512,7 +1545,10 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
 
         <section className={BASE_SECTION_CLASS}>
           <SectionHeader
-            title="URL"
+            title={t('profile.url')}
+            addAriaLabel={t('profile.actions.addAria', {
+              section: t('profile.url'),
+            })}
             onAdd={() =>
               setDraft((prev) => ({
                 ...prev,
@@ -1535,13 +1571,13 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
                       }))
                     }
                   >
-                    삭제
+                    {t('common.actions.delete')}
                   </Button>
                 </div>
 
                 <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
                   <FormInput
-                    placeholder="Label"
+                    placeholder={t('form.label')}
                     value={url.label}
                     onChange={(event) =>
                       setDraft((prev) => ({
@@ -1556,7 +1592,7 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
                     filled={url.label.length > 0}
                   />
                   <FormInput
-                    placeholder="https://"
+                    placeholder={t('form.url')}
                     value={url.url}
                     onChange={(event) =>
                       setDraft((prev) => ({
@@ -1591,7 +1627,7 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
             onClick={handleSave}
             disabled={!isDirty || isSaving}
           >
-            {isSaving ? 'Saving...' : 'Save'}
+            {isSaving ? t('common.actions.saving') : t('common.actions.save')}
           </Button>
         </div>
       </div>

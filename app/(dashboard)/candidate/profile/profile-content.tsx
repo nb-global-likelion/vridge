@@ -201,12 +201,18 @@ function BasicProfileCard({
                 src={profilePublic.profileImageUrl}
                 width={200}
                 height={200}
-                alt={`${firstName} ${lastName} profile image`}
+                alt={t('profile.image.userAlt', {
+                  name: `${firstName} ${lastName}`.trim(),
+                })}
                 className="h-full w-full object-cover"
                 unoptimized
               />
             ) : (
-              <Icon name="profile" size={80} alt="Profile photo" />
+              <Icon
+                name="profile"
+                size={80}
+                alt={t('profile.image.defaultAlt')}
+              />
             )}
           </div>
           <PostStatus

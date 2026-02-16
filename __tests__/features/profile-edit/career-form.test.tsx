@@ -1,9 +1,10 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import { CareerForm } from '@/features/profile-edit/ui/career-form';
 import {
   useAddCareer,
   useUpdateCareer,
 } from '@/features/profile-edit/model/use-profile-mutations';
+import { renderWithI18n } from '@/__tests__/test-utils/render-with-i18n';
 
 jest.mock('@/features/profile-edit/model/use-profile-mutations', () => ({
   useAddCareer: jest.fn(),
@@ -38,22 +39,24 @@ describe('CareerForm', () => {
   });
 
   it('renders add mode with empty companyName and 저장 button', () => {
-    render(<CareerForm jobFamilies={jobFamilies} onSuccess={jest.fn()} />);
-    const input = screen.getByLabelText(/회사명/i);
+    renderWithI18n(
+      <CareerForm jobFamilies={jobFamilies} onSuccess={jest.fn()} />
+    );
+    const input = screen.getByLabelText(/Company Name/i);
     expect(input).toHaveValue('');
-    expect(screen.getByRole('button', { name: /저장/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Save/i })).toBeInTheDocument();
   });
 
   it('renders experience level dropdown', () => {
-    render(<CareerForm jobFamilies={jobFamilies} onSuccess={jest.fn()} />);
-    expect(screen.getByText('경력 레벨 (선택)')).toBeInTheDocument();
-    expect(
-      screen.getByRole('button', { name: /레벨 선택/i })
-    ).toBeInTheDocument();
+    renderWithI18n(
+      <CareerForm jobFamilies={jobFamilies} onSuccess={jest.fn()} />
+    );
+    expect(screen.getByText('Experience level')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Select/i })).toBeInTheDocument();
   });
 
   it('renders edit mode with pre-filled companyName', () => {
-    render(
+    renderWithI18n(
       <CareerForm
         jobFamilies={jobFamilies}
         onSuccess={jest.fn()}
@@ -70,7 +73,7 @@ describe('CareerForm', () => {
         }}
       />
     );
-    expect(screen.getByLabelText(/회사명/i)).toHaveValue('삼성전자');
+    expect(screen.getByLabelText(/Company Name/i)).toHaveValue('삼성전자');
   });
 
   it('button is disabled when isPending', () => {
@@ -78,9 +81,9 @@ describe('CareerForm', () => {
       mutate: mockMutate,
       isPending: true,
     });
-    render(<CareerForm jobFamilies={jobFamilies} onSuccess={jest.fn()} />);
-    expect(
-      screen.getByRole('button', { name: /저장|저장 중/i })
-    ).toBeDisabled();
+    renderWithI18n(
+      <CareerForm jobFamilies={jobFamilies} onSuccess={jest.fn()} />
+    );
+    expect(screen.getByRole('button', { name: /Save|Saving/i })).toBeDisabled();
   });
 });

@@ -144,7 +144,7 @@ export function SignupModal() {
 
           <div className="flex w-full max-w-[520px] flex-col items-center gap-10">
             <DialogDescription className="sr-only">
-              Create an account or continue with a social login provider.
+              {t('auth.signup.description')}
             </DialogDescription>
             {step === 'method' && (
               <>
@@ -235,7 +235,7 @@ export function SignupModal() {
                               onBlur={field.handleBlur}
                               placeholder={t('auth.signup.emailPlaceholder')}
                               leftIconName="mail"
-                              leftIconAlt="mail"
+                              leftIconAlt={t('auth.icon.mailAlt')}
                               filled={field.state.value.length > 0}
                             />
                             {field.state.meta.isTouched &&
@@ -247,7 +247,11 @@ export function SignupModal() {
                           </div>
                           {emailError && (
                             <p className="flex items-center text-sm leading-[1.5] font-medium text-[#e50000]">
-                              <Icon name="error" size={24} alt="error" />
+                              <Icon
+                                name="error"
+                                size={24}
+                                alt={t('auth.icon.errorAlt')}
+                              />
                               {emailError}
                             </p>
                           )}
@@ -298,7 +302,11 @@ export function SignupModal() {
                                 <Icon
                                   name={passwordValid ? 'success' : 'error'}
                                   size={24}
-                                  alt={passwordValid ? 'success' : 'error'}
+                                  alt={
+                                    passwordValid
+                                      ? t('auth.icon.successAlt')
+                                      : t('auth.icon.errorAlt')
+                                  }
                                 />
                                 {passwordValid
                                   ? t('auth.signup.passwordValid')
@@ -322,14 +330,22 @@ export function SignupModal() {
                       <Icon
                         name={privacyChecked ? 'checked' : 'unchecked'}
                         size={24}
-                        alt={privacyChecked ? 'checked' : 'unchecked'}
+                        alt={
+                          privacyChecked
+                            ? t('auth.icon.checkedAlt')
+                            : t('auth.icon.uncheckedAlt')
+                        }
                       />
                       {t('auth.signup.privacyAgreement')}
                     </label>
 
                     {formError && (
                       <p className="flex items-center text-sm leading-[1.5] font-medium text-[#e50000]">
-                        <Icon name="error" size={24} alt="error" />
+                        <Icon
+                          name="error"
+                          size={24}
+                          alt={t('auth.icon.errorAlt')}
+                        />
                         {formError}
                       </p>
                     )}

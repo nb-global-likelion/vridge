@@ -1,4 +1,7 @@
+'use client';
+
 import { Chip } from '@/components/ui/chip';
+import { useI18n } from '@/lib/i18n/client';
 
 type Skill = {
   skill: { displayNameEn: string };
@@ -9,8 +12,10 @@ type Props = {
 };
 
 export function SkillBadges({ skills }: Props) {
+  const { t } = useI18n();
+
   if (skills.length === 0) {
-    return <p className="text-muted-foreground">등록된 스킬 없음</p>;
+    return <p className="text-muted-foreground">{t('profile.empty.skills')}</p>;
   }
 
   return (

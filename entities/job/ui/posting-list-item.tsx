@@ -45,7 +45,7 @@ export function PostingListItem({
   const { locale, t } = useI18n();
   const experienceLabel =
     minYearsExperience != null
-      ? `${minYearsExperience}+ years`
+      ? t('jobs.yearsExperience', { years: minYearsExperience })
       : getEmploymentTypeLabel(employmentType, t);
   const educationLabel = minEducation
     ? getEducationTypeLabel(minEducation, t)

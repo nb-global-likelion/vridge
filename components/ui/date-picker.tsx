@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, useMemo } from 'react';
 import { Icon } from './icon';
+import { useI18n } from '@/lib/i18n/client';
 
 type DatePickerProps = {
   type?: 'full' | 'month';
@@ -21,20 +22,6 @@ function formatDate(date: Date, type: 'full' | 'month') {
   return type === 'full' ? `${pad(d)}.${pad(m)}.${y}` : `${pad(m)}.${y}`;
 }
 
-const MONTH_LABELS = [
-  'January',
-  'February',
-  'March',
-  'April',
-  'May',
-  'June',
-  'July',
-  'August',
-  'September',
-  'October',
-  'November',
-  'December',
-];
 const MONTHS = Array.from({ length: 12 }, (_, i) => i + 1);
 const YEARS = Array.from({ length: 50 }, (_, i) => 2030 - i);
 const DAYS = Array.from({ length: 31 }, (_, i) => i + 1);
@@ -88,6 +75,7 @@ export function DatePicker({
   onChange,
   required = false,
 }: DatePickerProps) {
+  const { t } = useI18n();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -102,6 +90,14 @@ export function DatePicker({
     value ? value.getUTCFullYear() : now.getUTCFullYear()
   );
 
+  const monthLabels = useMemo(
+    () =>
+      MONTHS.map((month) => t(`datePicker.month.${month}` as const)).map(
+        String
+      ),
+    [t]
+  );
+
   useEffect(() => {
     function handleOutside(e: MouseEvent) {
       if (ref.current && !ref.current.contains(e.target as Node)) {
@@ -113,7 +109,10 @@ export function DatePicker({
   }, []);
 
   const hasValue = !!value;
-  const placeholder = type === 'full' ? 'DD.MM.YYYY' : 'MM.YYYY';
+  const placeholder =
+    type === 'full'
+      ? t('datePicker.placeholder.full')
+      : t('datePicker.placeholder.month');
   const triggerWidthClass = type === 'full' ? 'min-w-[150px]' : 'min-w-[126px]';
 
   function handleSelect() {
@@ -161,7 +160,7 @@ export function DatePicker({
               selected={selMonth}
               onSelect={setSelMonth}
               widthClass="w-[81px]"
-              format={(month) => MONTH_LABELS[month - 1]}
+              format={(month) => monthLabels[month - 1]}
             />
             <ColumnSeparator />
             <ScrollColumn
@@ -177,7 +176,7 @@ export function DatePicker({
               className="rounded-[60px] bg-[#ff6000] px-[10px] py-[5px] text-center text-[16px] font-medium text-white"
               onClick={handleSelect}
             >
-              Select
+              {t('datePicker.select')}
             </button>
           </div>
         </div>

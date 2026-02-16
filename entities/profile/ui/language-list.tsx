@@ -1,5 +1,8 @@
+'use client';
+
 import { Chip } from '@/components/ui/chip';
-import { PROFICIENCY_LABELS } from './_utils';
+import { getProficiencyLabel } from './_utils';
+import { useI18n } from '@/lib/i18n/client';
 
 type Language = {
   id: string;
@@ -15,8 +18,12 @@ type Props = {
 };
 
 export function LanguageList({ languages }: Props) {
+  const { t } = useI18n();
+
   if (languages.length === 0) {
-    return <p className="text-muted-foreground">등록된 언어 없음</p>;
+    return (
+      <p className="text-muted-foreground">{t('profile.empty.languages')}</p>
+    );
   }
 
   return (
@@ -25,7 +32,7 @@ export function LanguageList({ languages }: Props) {
         <li key={lang.id} className="flex items-center gap-2">
           <span>{lang.language}</span>
           <Chip
-            label={PROFICIENCY_LABELS[lang.proficiency] ?? lang.proficiency}
+            label={getProficiencyLabel(lang.proficiency, t)}
             variant="displayed"
             size="sm"
           />

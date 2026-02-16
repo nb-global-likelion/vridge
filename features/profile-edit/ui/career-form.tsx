@@ -25,9 +25,10 @@ import {
 } from '@/components/ui/dialog';
 import { FormDropdown } from '@/components/ui/form-dropdown';
 import {
-  EMPLOYMENT_TYPE_LABELS,
-  EXPERIENCE_LEVEL_LABELS,
+  getEmploymentTypeOptions,
+  getExperienceLevelOptions,
 } from '@/lib/frontend/presentation';
+import { useI18n } from '@/lib/i18n/client';
 import {
   useAddCareer,
   useUpdateCareer,
@@ -74,6 +75,7 @@ export function CareerForm({
   careerId,
   initialData,
 }: CareerFormProps) {
+  const { t } = useI18n();
   const addCareer = useAddCareer();
   const updateCareer = useUpdateCareer();
   const [serverError, setServerError] = useState<string | null>(null);
@@ -123,7 +125,7 @@ export function CareerForm({
       <form.Field name="companyName">
         {(field) => (
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="career-company">회사명</Label>
+            <Label htmlFor="career-company">{t('form.companyName')}</Label>
             <Input
               id="career-company"
               value={field.state.value}
@@ -140,7 +142,7 @@ export function CareerForm({
       <form.Field name="positionTitle">
         {(field) => (
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="career-position">직위</Label>
+            <Label htmlFor="career-position">{t('form.jobRole')}</Label>
             <Input
               id="career-position"
               value={field.state.value}
@@ -157,13 +159,13 @@ export function CareerForm({
       <form.Field name="jobId">
         {(field) => (
           <div className="flex flex-col gap-1.5">
-            <Label>직무</Label>
+            <Label>{t('form.field')}</Label>
             <Select
               value={field.state.value}
               onValueChange={field.handleChange}
             >
               <SelectTrigger>
-                <SelectValue placeholder="직무 선택" />
+                <SelectValue placeholder={t('form.select')} />
               </SelectTrigger>
               <SelectContent>
                 {jobFamilies.map((family) => (
@@ -188,22 +190,20 @@ export function CareerForm({
       <form.Field name="employmentType">
         {(field) => (
           <div className="flex flex-col gap-1.5">
-            <Label>고용 형태</Label>
+            <Label>{t('form.employmentType')}</Label>
             <Select
               value={field.state.value}
               onValueChange={field.handleChange}
             >
               <SelectTrigger>
-                <SelectValue placeholder="고용 형태 선택" />
+                <SelectValue placeholder={t('form.select')} />
               </SelectTrigger>
               <SelectContent>
-                {Object.entries(EMPLOYMENT_TYPE_LABELS).map(
-                  ([value, label]) => (
-                    <SelectItem key={value} value={value}>
-                      {label}
-                    </SelectItem>
-                  )
-                )}
+                {getEmploymentTypeOptions(t).map(({ value, label }) => (
+                  <SelectItem key={value} value={value}>
+                    {label}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
             {field.state.meta.isTouched && (
@@ -217,7 +217,7 @@ export function CareerForm({
         <form.Field name="startDate">
           {(field) => (
             <div className="flex flex-col gap-1.5">
-              <Label htmlFor="career-start">시작일</Label>
+              <Label htmlFor="career-start">{t('form.startDate')}</Label>
               <Input
                 id="career-start"
                 type="date"
@@ -235,7 +235,7 @@ export function CareerForm({
         <form.Field name="endDate">
           {(field) => (
             <div className="flex flex-col gap-1.5">
-              <Label htmlFor="career-end">종료일 (선택)</Label>
+              <Label htmlFor="career-end">{t('form.endDateOptional')}</Label>
               <Input
                 id="career-end"
                 type="date"
@@ -256,7 +256,7 @@ export function CareerForm({
       <form.Field name="description">
         {(field) => (
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="career-desc">설명 (선택)</Label>
+            <Label htmlFor="career-desc">{t('form.descriptionOptional')}</Label>
             <Textarea
               id="career-desc"
               rows={3}
@@ -271,16 +271,11 @@ export function CareerForm({
       <form.Field name="experienceLevel">
         {(field) => (
           <div className="flex flex-col gap-1.5">
-            <Label>경력 레벨 (선택)</Label>
+            <Label>{t('form.experienceLevel')}</Label>
             <FormDropdown
               value={field.state.value}
-              options={Object.entries(EXPERIENCE_LEVEL_LABELS).map(
-                ([value, label]) => ({
-                  value,
-                  label,
-                })
-              )}
-              placeholder="레벨 선택"
+              options={getExperienceLevelOptions(t)}
+              placeholder={t('form.select')}
               onChange={(value) => field.handleChange(value)}
             />
           </div>
@@ -292,7 +287,9 @@ export function CareerForm({
       <form.Subscribe selector={(s) => s.isSubmitting}>
         {(isSubmitting) => (
           <Button type="submit" disabled={isSubmitting || mutation.isPending}>
-            {isSubmitting || mutation.isPending ? '저장 중...' : '저장'}
+            {isSubmitting || mutation.isPending
+              ? t('common.actions.saving')
+              : t('common.actions.save')}
           </Button>
         )}
       </form.Subscribe>
@@ -308,6 +305,7 @@ type CareerSectionProps = {
 };
 
 export function CareerSection({ careers, jobFamilies }: CareerSectionProps) {
+  const { t } = useI18n();
   const router = useRouter();
   const deleteCareer = useDeleteCareer();
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -349,7 +347,7 @@ export function CareerSection({ careers, jobFamilies }: CareerSectionProps) {
                   size="sm"
                   onClick={() => openEdit(career)}
                 >
-                  편집
+                  {t('common.actions.edit')}
                 </Button>
                 <Button
                   variant="destructive"
@@ -360,7 +358,7 @@ export function CareerSection({ careers, jobFamilies }: CareerSectionProps) {
                     })
                   }
                 >
-                  삭제
+                  {t('common.actions.delete')}
                 </Button>
               </div>
             </li>
@@ -369,14 +367,20 @@ export function CareerSection({ careers, jobFamilies }: CareerSectionProps) {
       )}
 
       <Button variant="outline" onClick={openAdd}>
-        + 경력 추가
+        {t('profile.actions.addExperience')}
       </Button>
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
             <DialogTitle>
-              {editingCareer ? '경력 편집' : '경력 추가'}
+              {editingCareer
+                ? t('profile.dialog.editSection', {
+                    section: t('profile.experience'),
+                  })
+                : t('profile.dialog.addSection', {
+                    section: t('profile.experience'),
+                  })}
             </DialogTitle>
           </DialogHeader>
           <CareerForm

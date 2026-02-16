@@ -5,6 +5,9 @@ function buildHref(page: number) {
   return `/jobs?page=${page}`;
 }
 
+const prevAriaLabel = 'Previous page';
+const nextAriaLabel = 'Next page';
+
 describe('NumberedPagination', () => {
   it('totalPages <= 1이면 null 반환', () => {
     const { container } = render(
@@ -12,6 +15,8 @@ describe('NumberedPagination', () => {
         currentPage={1}
         totalPages={1}
         buildHref={buildHref}
+        prevAriaLabel={prevAriaLabel}
+        nextAriaLabel={nextAriaLabel}
       />
     );
     expect(container.firstChild).toBeNull();
@@ -23,6 +28,8 @@ describe('NumberedPagination', () => {
         currentPage={1}
         totalPages={5}
         buildHref={buildHref}
+        prevAriaLabel={prevAriaLabel}
+        nextAriaLabel={nextAriaLabel}
       />
     );
     for (let i = 1; i <= 5; i++) {
@@ -36,6 +43,8 @@ describe('NumberedPagination', () => {
         currentPage={3}
         totalPages={5}
         buildHref={buildHref}
+        prevAriaLabel={prevAriaLabel}
+        nextAriaLabel={nextAriaLabel}
       />
     );
     const active = screen.getByText('3');
@@ -51,6 +60,8 @@ describe('NumberedPagination', () => {
         currentPage={1}
         totalPages={5}
         buildHref={buildHref}
+        prevAriaLabel={prevAriaLabel}
+        nextAriaLabel={nextAriaLabel}
       />
     );
     const link = screen.getByText('2').closest('a');
@@ -63,6 +74,8 @@ describe('NumberedPagination', () => {
         currentPage={5}
         totalPages={10}
         buildHref={buildHref}
+        prevAriaLabel={prevAriaLabel}
+        nextAriaLabel={nextAriaLabel}
       />
     );
     const dots = screen.getAllByText('···');
@@ -75,6 +88,8 @@ describe('NumberedPagination', () => {
         currentPage={3}
         totalPages={5}
         buildHref={buildHref}
+        prevAriaLabel={prevAriaLabel}
+        nextAriaLabel={nextAriaLabel}
       />
     );
     const arrows = container.querySelectorAll('img[src*="chevron"]');
@@ -87,9 +102,11 @@ describe('NumberedPagination', () => {
         currentPage={1}
         totalPages={5}
         buildHref={buildHref}
+        prevAriaLabel={prevAriaLabel}
+        nextAriaLabel={nextAriaLabel}
       />
     );
-    const prevLink = screen.getByLabelText('이전 페이지');
+    const prevLink = screen.getByLabelText(prevAriaLabel);
     expect(prevLink.tagName).not.toBe('A');
   });
 
@@ -99,9 +116,11 @@ describe('NumberedPagination', () => {
         currentPage={5}
         totalPages={5}
         buildHref={buildHref}
+        prevAriaLabel={prevAriaLabel}
+        nextAriaLabel={nextAriaLabel}
       />
     );
-    const nextLink = screen.getByLabelText('다음 페이지');
+    const nextLink = screen.getByLabelText(nextAriaLabel);
     expect(nextLink.tagName).not.toBe('A');
   });
 });

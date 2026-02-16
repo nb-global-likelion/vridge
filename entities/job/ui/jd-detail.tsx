@@ -1,9 +1,12 @@
+'use client';
+
 import ReactMarkdown from 'react-markdown';
 import {
-  EMPLOYMENT_TYPE_LABELS,
-  WORK_ARRANGEMENT_LABELS,
+  getEmploymentTypeLabel,
+  getWorkArrangementLabel,
   formatSalary,
 } from '@/lib/frontend/presentation';
+import { useI18n } from '@/lib/i18n/client';
 
 type Props = {
   title: string;
@@ -38,6 +41,8 @@ export function JdDetail({
   skills,
   children,
 }: Props) {
+  const { locale, t } = useI18n();
+
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-1">
@@ -50,10 +55,10 @@ export function JdDetail({
 
       <div className="flex flex-wrap gap-2">
         <span className="rounded-full bg-secondary px-3 py-1 text-sm">
-          {EMPLOYMENT_TYPE_LABELS[employmentType] ?? employmentType}
+          {getEmploymentTypeLabel(employmentType, t)}
         </span>
         <span className="rounded-full bg-secondary px-3 py-1 text-sm">
-          {WORK_ARRANGEMENT_LABELS[workArrangement] ?? workArrangement}
+          {getWorkArrangementLabel(workArrangement, t)}
         </span>
         <span className="rounded-full bg-secondary px-3 py-1 text-sm">
           {formatSalary(
@@ -61,14 +66,16 @@ export function JdDetail({
             salaryMax,
             salaryCurrency,
             salaryPeriod,
-            salaryIsNegotiable
+            salaryIsNegotiable,
+            locale,
+            t
           )}
         </span>
       </div>
 
       {skills.length > 0 && (
         <div>
-          <p className="mb-2 text-sm font-medium">요구 스킬</p>
+          <p className="mb-2 text-sm font-medium">{t('jobs.skillsRequired')}</p>
           <div className="flex flex-wrap gap-1.5">
             {skills.map(({ skill }) => (
               <span

@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { searchSkills } from '@/lib/actions/catalog';
+import { useI18n } from '@/lib/i18n/client';
 import { useAddSkill, useDeleteSkill } from '../model/use-profile-mutations';
 
 type CurrentSkill = {
@@ -18,6 +19,7 @@ export function SkillPicker({
 }: {
   currentSkills: CurrentSkill[];
 }) {
+  const { t } = useI18n();
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<SearchResult[]>([]);
   const router = useRouter();
@@ -51,7 +53,9 @@ export function SkillPicker({
               {skill.displayNameEn}
               <button
                 type="button"
-                aria-label={`${skill.displayNameEn} 제거`}
+                aria-label={t('profile.actions.removeSkillAria', {
+                  skill: skill.displayNameEn,
+                })}
                 className="ml-1 text-muted-foreground hover:text-foreground"
                 onClick={() =>
                   deleteSkill.mutate(skill.id, {
@@ -66,7 +70,7 @@ export function SkillPicker({
         </div>
       )}
       <Input
-        placeholder="스킬 검색..."
+        placeholder={t('form.skillsSearchPlaceholder')}
         value={query}
         onChange={(e) => setQuery(e.target.value)}
       />
@@ -90,7 +94,7 @@ export function SkillPicker({
                   })
                 }
               >
-                추가
+                {t('common.actions.add')}
               </Button>
             </li>
           ))}

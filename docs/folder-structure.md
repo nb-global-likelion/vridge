@@ -163,6 +163,8 @@ lib/i18n/
     └── ko.ts
 ```
 
+- i18n 구현/검증 체크리스트는 `docs/i18n-checklist.md`를 기준으로 유지합니다.
+
 ## Storybook 구조
 
 ```text

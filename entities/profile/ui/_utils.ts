@@ -1,8 +1,8 @@
 export {
   formatDate,
-  EMPLOYMENT_TYPE_LABELS,
-  PROFICIENCY_LABELS,
-  GRADUATION_STATUS_LABELS,
-  EXPERIENCE_LEVEL_LABELS,
-  EDUCATION_TYPE_LABELS,
+  getEmploymentTypeLabel,
+  getProficiencyLabel,
+  getGraduationStatusLabel,
+  getExperienceLevelLabel,
+  getEducationTypeLabel,
 } from '@/lib/frontend/presentation';

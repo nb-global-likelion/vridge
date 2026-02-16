@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { signOut } from '@/lib/infrastructure/auth-client';
+import { useI18n } from '@/lib/i18n/client';
 
 interface UserMenuProps {
   name: string;
@@ -19,6 +20,7 @@ interface UserMenuProps {
 
 export default function UserMenu({ name, email, image }: UserMenuProps) {
   const router = useRouter();
+  const { t } = useI18n();
 
   const initials = name
     .split(' ')
@@ -44,12 +46,12 @@ export default function UserMenu({ name, email, image }: UserMenuProps) {
         </div>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => router.push('/candidate/profile')}>
-          My Profile
+          {t('nav.myProfile')}
         </DropdownMenuItem>
         <DropdownMenuItem
           onClick={() => router.push('/candidate/applications')}
         >
-          My Jobs
+          {t('nav.myJobs')}
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem
@@ -58,7 +60,7 @@ export default function UserMenu({ name, email, image }: UserMenuProps) {
           }
           className="text-destructive focus:text-destructive"
         >
-          Logout
+          {t('nav.logout')}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

@@ -1,9 +1,10 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import { CertificationList } from '@/entities/profile/ui/certification-list';
+import { renderWithI18n } from '@/__tests__/test-utils/render-with-i18n';
 
 describe('CertificationList', () => {
   it('자격증 목록 렌더링', () => {
-    render(
+    renderWithI18n(
       <CertificationList
         certifications={[
           {
@@ -15,7 +16,8 @@ describe('CertificationList', () => {
             sortOrder: 0,
           },
         ]}
-      />
+      />,
+      { locale: 'en' }
     );
 
     expect(screen.getByText('AWS Certified Developer')).toBeInTheDocument();
@@ -26,7 +28,9 @@ describe('CertificationList', () => {
   });
 
   it('빈 목록이면 empty 상태 렌더링', () => {
-    render(<CertificationList certifications={[]} />);
-    expect(screen.getByText('자격증 없음')).toBeInTheDocument();
+    renderWithI18n(<CertificationList certifications={[]} />, {
+      locale: 'en',
+    });
+    expect(screen.getByText('No certifications')).toBeInTheDocument();
   });
 });

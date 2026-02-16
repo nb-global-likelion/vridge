@@ -1,5 +1,6 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import { SkillBadges } from '@/entities/profile/ui/skill-badges';
+import { renderWithI18n } from '@/__tests__/test-utils/render-with-i18n';
 
 describe('SkillBadges', () => {
   it('renders each skill displayNameEn', () => {
@@ -7,14 +8,16 @@ describe('SkillBadges', () => {
       { skill: { displayNameEn: 'TypeScript' } },
       { skill: { displayNameEn: 'React' } },
     ];
-    const { container } = render(<SkillBadges skills={skills} />);
+    const { container } = renderWithI18n(<SkillBadges skills={skills} />, {
+      locale: 'en',
+    });
     expect(screen.getByText('TypeScript')).toBeInTheDocument();
     expect(screen.getByText('React')).toBeInTheDocument();
     expect(container.querySelectorAll('[data-slot="chip"]')).toHaveLength(2);
   });
 
   it('renders empty state when skills is empty', () => {
-    render(<SkillBadges skills={[]} />);
-    expect(screen.getByText('등록된 스킬 없음')).toBeInTheDocument();
+    renderWithI18n(<SkillBadges skills={[]} />, { locale: 'en' });
+    expect(screen.getByText('No skills added')).toBeInTheDocument();
   });
 });

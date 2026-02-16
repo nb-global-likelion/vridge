@@ -1,9 +1,12 @@
+'use client';
+
 import { Chip } from '@/components/ui/chip';
 import {
   formatDate,
-  EDUCATION_TYPE_LABELS,
-  GRADUATION_STATUS_LABELS,
+  getEducationTypeLabel,
+  getGraduationStatusLabel,
 } from './_utils';
+import { useI18n } from '@/lib/i18n/client';
 
 type Education = {
   id: string;
@@ -21,8 +24,12 @@ type Props = {
 };
 
 export function EducationList({ educations }: Props) {
+  const { locale, t } = useI18n();
+
   if (educations.length === 0) {
-    return <p className="text-muted-foreground">학력 없음</p>;
+    return (
+      <p className="text-muted-foreground">{t('profile.empty.education')}</p>
+    );
   }
 
   return (
@@ -32,17 +39,12 @@ export function EducationList({ educations }: Props) {
           <div className="flex items-center gap-2">
             <span className="font-semibold">{edu.institutionName}</span>
             <Chip
-              label={
-                EDUCATION_TYPE_LABELS[edu.educationType] ?? edu.educationType
-              }
+              label={getEducationTypeLabel(edu.educationType, t)}
               variant="displayed"
               size="sm"
             />
             <Chip
-              label={
-                GRADUATION_STATUS_LABELS[edu.graduationStatus] ??
-                edu.graduationStatus
-              }
+              label={getGraduationStatusLabel(edu.graduationStatus, t)}
               variant="displayed"
               size="sm"
             />
@@ -51,8 +53,10 @@ export function EducationList({ educations }: Props) {
             <span className="text-sm text-muted-foreground">{edu.field}</span>
           )}
           <span className="text-xs text-muted-foreground">
-            {formatDate(edu.startDate)} ~{' '}
-            {edu.endDate ? formatDate(edu.endDate) : '현재'}
+            {formatDate(edu.startDate, locale)} ~{' '}
+            {edu.endDate
+              ? formatDate(edu.endDate, locale)
+              : t('profile.empty.current')}
           </span>
         </li>
       ))}

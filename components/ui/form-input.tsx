@@ -2,6 +2,7 @@
 
 import { forwardRef, type ComponentPropsWithoutRef } from 'react';
 import { Icon } from './icon';
+import { useI18n } from '@/lib/i18n/client';
 
 type FormInputSize = 'sm' | 'md' | 'lg';
 type FormInputVariant = 'default' | 'file';
@@ -37,11 +38,13 @@ export const FormInput = forwardRef<
   },
   ref
 ) {
+  const { t } = useI18n();
+
   if (variant === 'file') {
     const fileText =
       typeof props.value === 'string' && props.value.length > 0
         ? props.value
-        : (props.placeholder ?? 'Text');
+        : (props.placeholder ?? t('form.fileUpload'));
 
     return (
       <span

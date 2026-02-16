@@ -29,12 +29,14 @@ export function PostingTitle({
   workArrangement,
   minYearsExperience,
 }: Props) {
-  const { locale } = useI18n();
+  const { locale, t } = useI18n();
   const composedTitleParts = [
     company,
     jobDisplayName,
     workArrangement,
-    minYearsExperience != null ? `${minYearsExperience}+ years` : null,
+    minYearsExperience != null
+      ? t('jobs.yearsExperience', { years: minYearsExperience })
+      : null,
   ].filter((value): value is string => Boolean(value));
   const displayTitle =
     composedTitleParts.length > 0 ? composedTitleParts.join(' / ') : title;
@@ -46,7 +48,7 @@ export function PostingTitle({
           <Link
             href={backHref}
             className="inline-flex h-[24px] w-[24px] items-center justify-center"
-            aria-label="Back to jobs"
+            aria-label={t('jobs.backToJobsAria')}
           >
             <Icon name="arrow-left" size={24} />
           </Link>
@@ -55,7 +57,7 @@ export function PostingTitle({
             type="button"
             onClick={onBack}
             className="inline-flex h-[24px] w-[24px] items-center justify-center"
-            aria-label="Back"
+            aria-label={t('jobs.backAria')}
           >
             <Icon name="arrow-left" size={24} />
           </button>

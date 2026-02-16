@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { DatePicker } from '@/components/ui/date-picker';
 import { ToggleSwitch } from '@/components/ui/toggle-switch';
 import { FormInput } from '@/components/ui/form-input';
+import { useI18n } from '@/lib/i18n/client';
 import { useUpdateProfilePublic } from '../model/use-profile-mutations';
 
 type Props = {
@@ -41,6 +42,7 @@ function renderError(errors: unknown[]): string {
 
 export function ProfilePublicForm({ initialData }: Props) {
   const router = useRouter();
+  const { t } = useI18n();
   const mutation = useUpdateProfilePublic();
   const [serverError, setServerError] = useState<string | null>(null);
 
@@ -78,7 +80,7 @@ export function ProfilePublicForm({ initialData }: Props) {
         <form.Field name="firstName">
           {(field) => (
             <div className="flex flex-col gap-1.5">
-              <Label htmlFor="pub-firstName">이름</Label>
+              <Label htmlFor="pub-firstName">{t('form.firstName')}</Label>
               <FormInput
                 id="pub-firstName"
                 value={field.state.value}
@@ -99,7 +101,7 @@ export function ProfilePublicForm({ initialData }: Props) {
         <form.Field name="lastName">
           {(field) => (
             <div className="flex flex-col gap-1.5">
-              <Label htmlFor="pub-lastName">성</Label>
+              <Label htmlFor="pub-lastName">{t('form.lastName')}</Label>
               <FormInput
                 id="pub-lastName"
                 value={field.state.value}
@@ -122,7 +124,7 @@ export function ProfilePublicForm({ initialData }: Props) {
         <form.Field name="dateOfBirth">
           {(field) => (
             <div className="flex flex-col gap-1.5">
-              <Label>생년월일</Label>
+              <Label>{t('form.dateOfBirth')}</Label>
               <DatePicker
                 type="full"
                 value={
@@ -147,7 +149,7 @@ export function ProfilePublicForm({ initialData }: Props) {
         <form.Field name="location">
           {(field) => (
             <div className="flex flex-col gap-1.5">
-              <Label htmlFor="pub-location">지역</Label>
+              <Label htmlFor="pub-location">{t('form.location')}</Label>
               <FormInput
                 id="pub-location"
                 value={field.state.value ?? ''}
@@ -163,7 +165,7 @@ export function ProfilePublicForm({ initialData }: Props) {
       <form.Field name="headline">
         {(field) => (
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="pub-headline">헤드라인</Label>
+            <Label htmlFor="pub-headline">{t('form.headline')}</Label>
             <FormInput
               id="pub-headline"
               value={field.state.value ?? ''}
@@ -178,7 +180,7 @@ export function ProfilePublicForm({ initialData }: Props) {
       <form.Field name="aboutMe">
         {(field) => (
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="pub-aboutMe">소개</Label>
+            <Label htmlFor="pub-aboutMe">{t('form.aboutMe')}</Label>
             <FormInput
               id="pub-aboutMe"
               size="lg"
@@ -194,7 +196,9 @@ export function ProfilePublicForm({ initialData }: Props) {
       <form.Field name="isOpenToWork">
         {(field) => (
           <div className="flex items-center justify-between rounded-[10px] bg-[#fbfbfb] px-[20px] py-[12px]">
-            <span className="text-sm text-[#333]">Open to Work</span>
+            <span className="text-sm text-[#333]">
+              {t('profile.openToWork')}
+            </span>
             <ToggleSwitch
               checked={Boolean(field.state.value)}
               onChange={(checked) => field.handleChange(checked)}
@@ -208,7 +212,9 @@ export function ProfilePublicForm({ initialData }: Props) {
       <form.Subscribe selector={(s) => s.isSubmitting}>
         {(isSubmitting) => (
           <Button type="submit" disabled={isSubmitting || mutation.isPending}>
-            {isSubmitting || mutation.isPending ? '저장 중...' : '저장'}
+            {isSubmitting || mutation.isPending
+              ? t('common.actions.saving')
+              : t('common.actions.save')}
           </Button>
         )}
       </form.Subscribe>

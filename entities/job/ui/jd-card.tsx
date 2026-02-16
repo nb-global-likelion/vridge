@@ -1,11 +1,14 @@
+'use client';
+
 import Link from 'next/link';
 import { Card, CardContent } from '@/components/ui/card';
 import {
-  EMPLOYMENT_TYPE_LABELS,
   formatDate,
-  WORK_ARRANGEMENT_LABELS,
+  getEmploymentTypeLabel,
+  getWorkArrangementLabel,
   formatSalary,
 } from '@/lib/frontend/presentation';
+import { useI18n } from '@/lib/i18n/client';
 
 type Props = {
   id: string;
@@ -40,6 +43,8 @@ export function JdCard({
   createdAt,
   href,
 }: Props) {
+  const { locale, t } = useI18n();
+
   return (
     <Link href={href} className="block">
       <Card className="transition-shadow hover:shadow-md">
@@ -55,16 +60,16 @@ export function JdCard({
               </p>
             </div>
             <p className="shrink-0 text-xs text-muted-foreground">
-              {formatDate(createdAt)}
+              {formatDate(createdAt, locale)}
             </p>
           </div>
 
           <div className="flex flex-wrap gap-1.5">
             <span className="rounded-full bg-secondary px-2.5 py-0.5 text-xs">
-              {EMPLOYMENT_TYPE_LABELS[employmentType] ?? employmentType}
+              {getEmploymentTypeLabel(employmentType, t)}
             </span>
             <span className="rounded-full bg-secondary px-2.5 py-0.5 text-xs">
-              {WORK_ARRANGEMENT_LABELS[workArrangement] ?? workArrangement}
+              {getWorkArrangementLabel(workArrangement, t)}
             </span>
           </div>
 
@@ -74,7 +79,9 @@ export function JdCard({
               salaryMax,
               salaryCurrency,
               salaryPeriod,
-              salaryIsNegotiable
+              salaryIsNegotiable,
+              locale,
+              t
             )}
           </p>
 

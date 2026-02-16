@@ -1,6 +1,7 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import { ProfilePublicForm } from '@/features/profile-edit/ui/profile-public-form';
 import { useUpdateProfilePublic } from '@/features/profile-edit/model/use-profile-mutations';
+import { renderWithI18n } from '@/__tests__/test-utils/render-with-i18n';
 
 jest.mock('@/features/profile-edit/model/use-profile-mutations', () => ({
   useUpdateProfilePublic: jest.fn(),
@@ -21,7 +22,7 @@ describe('ProfilePublicForm', () => {
   });
 
   it('신규 필드 포함 렌더링', () => {
-    render(
+    renderWithI18n(
       <ProfilePublicForm
         initialData={{
           firstName: '길동',
@@ -35,11 +36,11 @@ describe('ProfilePublicForm', () => {
       />
     );
 
-    expect(screen.getByLabelText(/이름/i)).toHaveValue('길동');
-    expect(screen.getByLabelText(/성/i)).toHaveValue('홍');
-    expect(screen.getByLabelText(/지역/i)).toHaveValue('Seoul');
-    expect(screen.getByLabelText(/헤드라인/i)).toHaveValue('Frontend Engineer');
-    expect(screen.getByLabelText(/소개/i)).toHaveValue('소개');
+    expect(screen.getByLabelText(/First Name/i)).toHaveValue('길동');
+    expect(screen.getByLabelText(/Last Name/i)).toHaveValue('홍');
+    expect(screen.getByLabelText(/Location/i)).toHaveValue('Seoul');
+    expect(screen.getByLabelText(/Headline/i)).toHaveValue('Frontend Engineer');
+    expect(screen.getByLabelText(/About Me/i)).toHaveValue('소개');
     expect(screen.getByRole('switch')).toHaveAttribute('aria-checked', 'true');
   });
 
@@ -49,7 +50,7 @@ describe('ProfilePublicForm', () => {
       isPending: true,
     });
 
-    render(
+    renderWithI18n(
       <ProfilePublicForm
         initialData={{
           firstName: '길동',
@@ -58,8 +59,6 @@ describe('ProfilePublicForm', () => {
       />
     );
 
-    expect(
-      screen.getByRole('button', { name: /저장|저장 중/i })
-    ).toBeDisabled();
+    expect(screen.getByRole('button', { name: /Save|Saving/i })).toBeDisabled();
   });
 });

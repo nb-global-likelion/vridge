@@ -1,3 +1,7 @@
+'use client';
+
+import { useI18n } from '@/lib/i18n/client';
+
 type Url = {
   id: string;
   label: string;
@@ -10,8 +14,10 @@ type Props = {
 };
 
 export function UrlList({ urls }: Props) {
+  const { t } = useI18n();
+
   if (urls.length === 0) {
-    return <p className="text-muted-foreground">등록된 링크 없음</p>;
+    return <p className="text-muted-foreground">{t('profile.empty.urls')}</p>;
   }
 
   return (

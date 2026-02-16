@@ -1,9 +1,10 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import { LanguageForm } from '@/features/profile-edit/ui/language-form';
 import {
   useAddLanguage,
   useUpdateLanguage,
 } from '@/features/profile-edit/model/use-profile-mutations';
+import { renderWithI18n } from '@/__tests__/test-utils/render-with-i18n';
 
 jest.mock('@/features/profile-edit/model/use-profile-mutations', () => ({
   useAddLanguage: jest.fn(),
@@ -30,14 +31,14 @@ describe('LanguageForm', () => {
   });
 
   it('추가 모드에서 기본 필드 렌더링', () => {
-    render(<LanguageForm onSuccess={jest.fn()} />);
-    expect(screen.getByLabelText(/언어/i)).toHaveValue('');
-    expect(screen.getByLabelText(/시험명/i)).toHaveValue('');
-    expect(screen.getByLabelText(/점수/i)).toHaveValue('');
+    renderWithI18n(<LanguageForm onSuccess={jest.fn()} />);
+    expect(screen.getByLabelText(/Language/i)).toHaveValue('');
+    expect(screen.getByLabelText(/Test name/i)).toHaveValue('');
+    expect(screen.getByLabelText(/Score/i)).toHaveValue('');
   });
 
   it('편집 모드에서 초기값 렌더링', () => {
-    render(
+    renderWithI18n(
       <LanguageForm
         onSuccess={jest.fn()}
         languageId="lang-1"
@@ -51,9 +52,9 @@ describe('LanguageForm', () => {
       />
     );
 
-    expect(screen.getByLabelText(/언어/i)).toHaveValue('English');
-    expect(screen.getByLabelText(/시험명/i)).toHaveValue('TOEFL');
-    expect(screen.getByLabelText(/점수/i)).toHaveValue('100');
+    expect(screen.getByLabelText(/Language/i)).toHaveValue('English');
+    expect(screen.getByLabelText(/Test name/i)).toHaveValue('TOEFL');
+    expect(screen.getByLabelText(/Score/i)).toHaveValue('100');
   });
 
   it('mutation pending 시 저장 버튼 비활성화', () => {
@@ -62,9 +63,7 @@ describe('LanguageForm', () => {
       isPending: true,
     });
 
-    render(<LanguageForm onSuccess={jest.fn()} />);
-    expect(
-      screen.getByRole('button', { name: /저장|저장 중/i })
-    ).toBeDisabled();
+    renderWithI18n(<LanguageForm onSuccess={jest.fn()} />);
+    expect(screen.getByRole('button', { name: /Save|Saving/i })).toBeDisabled();
   });
 });

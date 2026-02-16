@@ -7,6 +7,7 @@ import { profilePrivateSchema } from '@/lib/validations/profile';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
+import { useI18n } from '@/lib/i18n/client';
 import { useUpdateProfilePrivate } from '../model/use-profile-mutations';
 
 type Props = {
@@ -15,6 +16,7 @@ type Props = {
 
 export function ContactForm({ initialData }: Props) {
   const router = useRouter();
+  const { t } = useI18n();
   const mutation = useUpdateProfilePrivate();
   const [serverError, setServerError] = useState<string | null>(null);
 
@@ -45,11 +47,11 @@ export function ContactForm({ initialData }: Props) {
       <form.Field name="phoneNumber">
         {(field) => (
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="contact-phone">연락처</Label>
+            <Label htmlFor="contact-phone">{t('form.phoneNumber')}</Label>
             <Input
               id="contact-phone"
               type="tel"
-              placeholder="+84 90 1234 5678"
+              placeholder={t('form.phonePlaceholder')}
               value={field.state.value ?? ''}
               onChange={(e) => field.handleChange(e.target.value || undefined)}
               onBlur={field.handleBlur}
@@ -75,7 +77,9 @@ export function ContactForm({ initialData }: Props) {
       <form.Subscribe selector={(s) => s.isSubmitting}>
         {(isSubmitting) => (
           <Button type="submit" disabled={isSubmitting || mutation.isPending}>
-            {isSubmitting || mutation.isPending ? '저장 중...' : '저장'}
+            {isSubmitting || mutation.isPending
+              ? t('common.actions.saving')
+              : t('common.actions.save')}
           </Button>
         )}
       </form.Subscribe>

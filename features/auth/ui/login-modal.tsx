@@ -109,7 +109,7 @@ export function LoginModal() {
               {t('auth.login.title')}
             </DialogTitle>
             <DialogDescription className="sr-only">
-              Log in to access your account.
+              {t('auth.login.description')}
             </DialogDescription>
 
             <div className="flex w-full flex-col gap-5">
@@ -171,7 +171,7 @@ export function LoginModal() {
                         onBlur={field.handleBlur}
                         placeholder={t('auth.login.emailPlaceholder')}
                         leftIconName="mail"
-                        leftIconAlt="mail"
+                        leftIconAlt={t('auth.icon.mailAlt')}
                         filled={field.state.value.length > 0}
                       />
                       {field.state.meta.isTouched &&
@@ -218,7 +218,11 @@ export function LoginModal() {
                       </div>
                       {serverError && (
                         <p className="flex items-center text-sm leading-[1.5] font-medium text-[#e50000]">
-                          <Icon name="error" size={24} alt="error" />
+                          <Icon
+                            name="error"
+                            size={24}
+                            alt={t('auth.icon.errorAlt')}
+                          />
                           {serverError}
                         </p>
                       )}

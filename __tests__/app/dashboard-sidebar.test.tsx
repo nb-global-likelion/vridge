@@ -1,6 +1,7 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { screen, fireEvent } from '@testing-library/react';
 import DashboardSidebar from '@/app/(dashboard)/dashboard-sidebar';
 import { signOut } from '@/lib/infrastructure/auth-client';
+import { renderWithI18n } from '@/__tests__/test-utils/render-with-i18n';
 
 jest.mock('next/navigation', () => ({
   usePathname: jest.fn(),
@@ -26,7 +27,7 @@ beforeEach(() => {
 
 describe('DashboardSidebar', () => {
   it('MY Page 메뉴를 렌더링한다', () => {
-    render(<DashboardSidebar />);
+    renderWithI18n(<DashboardSidebar />);
 
     expect(screen.getByText('MY Page')).toBeInTheDocument();
     expect(
@@ -37,7 +38,7 @@ describe('DashboardSidebar', () => {
   });
 
   it('현재 경로 링크에 활성 색상을 적용한다', () => {
-    render(<DashboardSidebar />);
+    renderWithI18n(<DashboardSidebar />);
 
     const active = screen.getByRole('link', { name: 'My Profile' });
     const inactive = screen.getByRole('link', { name: 'My Jobs' });
@@ -47,7 +48,7 @@ describe('DashboardSidebar', () => {
   });
 
   it('Logout 클릭 시 signOut을 호출한다', () => {
-    render(<DashboardSidebar />);
+    renderWithI18n(<DashboardSidebar />);
 
     fireEvent.click(screen.getByRole('button', { name: 'Logout' }));
 

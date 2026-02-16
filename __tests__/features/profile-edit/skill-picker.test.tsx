@@ -1,9 +1,10 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { screen, fireEvent } from '@testing-library/react';
 import { SkillPicker } from '@/features/profile-edit/ui/skill-picker';
 import {
   useAddSkill,
   useDeleteSkill,
 } from '@/features/profile-edit/model/use-profile-mutations';
+import { renderWithI18n } from '@/__tests__/test-utils/render-with-i18n';
 
 jest.mock('@/lib/actions/catalog', () => ({ searchSkills: jest.fn() }));
 jest.mock('@/features/profile-edit/model/use-profile-mutations', () => ({
@@ -35,23 +36,23 @@ describe('SkillPicker', () => {
   });
 
   it('renders existing skill names', () => {
-    render(<SkillPicker currentSkills={currentSkills} />);
+    renderWithI18n(<SkillPicker currentSkills={currentSkills} />);
     expect(screen.getByText('TypeScript')).toBeInTheDocument();
     expect(screen.getByText('React')).toBeInTheDocument();
   });
 
   it('renders a remove button for each skill', () => {
-    render(<SkillPicker currentSkills={currentSkills} />);
+    renderWithI18n(<SkillPicker currentSkills={currentSkills} />);
     const removeButtons = screen.getAllByRole('button', {
-      name: /제거|삭제|×|✕/i,
+      name: /Remove/i,
     });
     expect(removeButtons).toHaveLength(currentSkills.length);
   });
 
   it('calls deleteSkill.mutate with skill id when remove is clicked', () => {
-    render(<SkillPicker currentSkills={currentSkills} />);
+    renderWithI18n(<SkillPicker currentSkills={currentSkills} />);
     const removeButtons = screen.getAllByRole('button', {
-      name: /제거|삭제|×|✕/i,
+      name: /Remove/i,
     });
     fireEvent.click(removeButtons[0]);
     expect(mockDeleteMutate).toHaveBeenCalledWith(

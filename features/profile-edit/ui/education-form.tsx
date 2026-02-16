@@ -21,9 +21,11 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import {
-  EDUCATION_TYPE_LABELS,
-  GRADUATION_STATUS_LABELS,
+  getEducationTypeLabel,
+  getEducationTypeOptions,
+  getGraduationStatusOptions,
 } from '@/lib/frontend/presentation';
+import { useI18n } from '@/lib/i18n/client';
 import {
   useAddEducation,
   useUpdateEducation,
@@ -60,6 +62,7 @@ export function EducationForm({
   educationId,
   initialData,
 }: EducationFormProps) {
+  const { t } = useI18n();
   const addEducation = useAddEducation();
   const updateEducation = useUpdateEducation();
   const [serverError, setServerError] = useState<string | null>(null);
@@ -107,7 +110,7 @@ export function EducationForm({
       <form.Field name="institutionName">
         {(field) => (
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="edu-institution">학교/기관명</Label>
+            <Label htmlFor="edu-institution">{t('form.schoolName')}</Label>
             <Input
               id="edu-institution"
               value={field.state.value}
@@ -124,16 +127,16 @@ export function EducationForm({
       <form.Field name="educationType">
         {(field) => (
           <div className="flex flex-col gap-1.5">
-            <Label>학력 유형</Label>
+            <Label>{t('form.levelOfEducation')}</Label>
             <Select
               value={field.state.value}
               onValueChange={field.handleChange}
             >
               <SelectTrigger>
-                <SelectValue placeholder="유형 선택" />
+                <SelectValue placeholder={t('form.select')} />
               </SelectTrigger>
               <SelectContent>
-                {Object.entries(EDUCATION_TYPE_LABELS).map(([value, label]) => (
+                {getEducationTypeOptions(t).map(({ value, label }) => (
                   <SelectItem key={value} value={value}>
                     {label}
                   </SelectItem>
@@ -150,7 +153,7 @@ export function EducationForm({
       <form.Field name="field">
         {(field) => (
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="edu-field">전공 (선택)</Label>
+            <Label htmlFor="edu-field">{t('form.fieldOfStudyOptional')}</Label>
             <Input
               id="edu-field"
               value={field.state.value ?? ''}
@@ -164,22 +167,20 @@ export function EducationForm({
       <form.Field name="graduationStatus">
         {(field) => (
           <div className="flex flex-col gap-1.5">
-            <Label>졸업 상태</Label>
+            <Label>{t('form.graduationStatus')}</Label>
             <Select
               value={field.state.value}
               onValueChange={field.handleChange}
             >
               <SelectTrigger>
-                <SelectValue placeholder="상태 선택" />
+                <SelectValue placeholder={t('form.select')} />
               </SelectTrigger>
               <SelectContent>
-                {Object.entries(GRADUATION_STATUS_LABELS).map(
-                  ([value, label]) => (
-                    <SelectItem key={value} value={value}>
-                      {label}
-                    </SelectItem>
-                  )
-                )}
+                {getGraduationStatusOptions(t).map(({ value, label }) => (
+                  <SelectItem key={value} value={value}>
+                    {label}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
@@ -190,7 +191,7 @@ export function EducationForm({
         <form.Field name="startDate">
           {(field) => (
             <div className="flex flex-col gap-1.5">
-              <Label htmlFor="edu-start">시작일</Label>
+              <Label htmlFor="edu-start">{t('form.startDate')}</Label>
               <Input
                 id="edu-start"
                 type="date"
@@ -208,7 +209,7 @@ export function EducationForm({
         <form.Field name="endDate">
           {(field) => (
             <div className="flex flex-col gap-1.5">
-              <Label htmlFor="edu-end">종료일 (선택)</Label>
+              <Label htmlFor="edu-end">{t('form.endDateOptional')}</Label>
               <Input
                 id="edu-end"
                 type="date"
@@ -231,7 +232,9 @@ export function EducationForm({
       <form.Subscribe selector={(s) => s.isSubmitting}>
         {(isSubmitting) => (
           <Button type="submit" disabled={isSubmitting || mutation.isPending}>
-            {isSubmitting || mutation.isPending ? '저장 중...' : '저장'}
+            {isSubmitting || mutation.isPending
+              ? t('common.actions.saving')
+              : t('common.actions.save')}
           </Button>
         )}
       </form.Subscribe>
@@ -242,6 +245,7 @@ export function EducationForm({
 type Education = EducationData & { id: string };
 
 export function EducationSection({ educations }: { educations: Education[] }) {
+  const { t } = useI18n();
   const router = useRouter();
   const deleteEducation = useDeleteEducation();
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -266,8 +270,7 @@ export function EducationSection({ educations }: { educations: Education[] }) {
               <div>
                 <p className="font-medium">{edu.institutionName}</p>
                 <p className="text-sm text-muted-foreground">
-                  {EDUCATION_TYPE_LABELS[edu.educationType] ??
-                    edu.educationType}
+                  {getEducationTypeLabel(edu.educationType, t)}
                 </p>
               </div>
               <div className="flex gap-2">
@@ -279,7 +282,7 @@ export function EducationSection({ educations }: { educations: Education[] }) {
                     setDialogOpen(true);
                   }}
                 >
-                  편집
+                  {t('common.actions.edit')}
                 </Button>
                 <Button
                   variant="destructive"
@@ -290,7 +293,7 @@ export function EducationSection({ educations }: { educations: Education[] }) {
                     })
                   }
                 >
-                  삭제
+                  {t('common.actions.delete')}
                 </Button>
               </div>
             </li>
@@ -304,13 +307,19 @@ export function EducationSection({ educations }: { educations: Education[] }) {
           setDialogOpen(true);
         }}
       >
-        + 학력 추가
+        {t('profile.actions.addEducation')}
       </Button>
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
             <DialogTitle>
-              {editingEducation ? '학력 편집' : '학력 추가'}
+              {editingEducation
+                ? t('profile.dialog.editSection', {
+                    section: t('profile.education'),
+                  })
+                : t('profile.dialog.addSection', {
+                    section: t('profile.education'),
+                  })}
             </DialogTitle>
           </DialogHeader>
           <EducationForm
