@@ -38,6 +38,13 @@ enum WorkArrangement {
   @@map("work_arrangement")
 }
 
+enum JobPostingStatus {
+  recruiting
+  done
+
+  @@map("job_posting_status")
+}
+
 enum LanguageProficiency {
   native
   fluent
@@ -425,6 +432,7 @@ model JobDescription {
   orgId              String?          @map("org_id") @db.Uuid
   jobId              String           @map("job_id") @db.Text
   title              String
+  status             JobPostingStatus @default(recruiting)
   employmentType     EmploymentType   @map("employment_type")
   workArrangement    WorkArrangement  @map("work_arrangement")
   minYearsExperience Int?             @map("min_years_experience")

@@ -40,6 +40,7 @@ interface SampleJobDescriptionSeed {
   orgId?: string;
   jobId: string;
   title: string;
+  status?: 'recruiting' | 'done';
   employmentType: 'full_time' | 'part_time' | 'intern' | 'freelance';
   workArrangement: 'onsite' | 'hybrid' | 'remote';
   minYearsExperience?: number;
@@ -162,6 +163,7 @@ const SAMPLE_IDS = {
   jdFrontend: '00000000-0000-0000-0000-000000000401',
   jdBackend: '00000000-0000-0000-0000-000000000402',
   jdProduct: '00000000-0000-0000-0000-000000000403',
+  jdContentDone: '00000000-0000-0000-0000-000000000404',
 } as const;
 
 const SAMPLE_JOB_DESCRIPTIONS: SampleJobDescriptionSeed[] = [
@@ -170,6 +172,7 @@ const SAMPLE_JOB_DESCRIPTIONS: SampleJobDescriptionSeed[] = [
     orgId: SAMPLE_IDS.org,
     jobId: 'frontend-engineer',
     title: 'Frontend Engineer (Next.js)',
+    status: 'recruiting',
     employmentType: 'full_time',
     workArrangement: 'remote',
     minYearsExperience: 2,
@@ -188,6 +191,7 @@ const SAMPLE_JOB_DESCRIPTIONS: SampleJobDescriptionSeed[] = [
     orgId: SAMPLE_IDS.org,
     jobId: 'backend-engineer',
     title: 'Backend Engineer (Node.js)',
+    status: 'recruiting',
     employmentType: 'full_time',
     workArrangement: 'hybrid',
     minYearsExperience: 3,
@@ -206,6 +210,7 @@ const SAMPLE_JOB_DESCRIPTIONS: SampleJobDescriptionSeed[] = [
     orgId: SAMPLE_IDS.org,
     jobId: 'product-manager',
     title: 'Product Manager (ATS)',
+    status: 'recruiting',
     employmentType: 'full_time',
     workArrangement: 'onsite',
     minYearsExperience: 4,
@@ -218,6 +223,22 @@ const SAMPLE_JOB_DESCRIPTIONS: SampleJobDescriptionSeed[] = [
     descriptionMarkdown:
       'Own product planning, prioritize roadmap, and collaborate across design and engineering.',
     skillIds: ['agile', 'scrum', 'project-management', 'communication'],
+  },
+  {
+    id: SAMPLE_IDS.jdContentDone,
+    orgId: SAMPLE_IDS.org,
+    jobId: 'content-marketer',
+    title: 'Content Marketer',
+    status: 'done',
+    employmentType: 'intern',
+    workArrangement: 'onsite',
+    minEducation: 'higher_bachelor',
+    salaryCurrency: 'VND',
+    salaryPeriod: 'month',
+    salaryIsNegotiable: true,
+    descriptionMarkdown:
+      'Plan and execute content strategy, copywriting, and social media campaigns.',
+    skillIds: ['communication', 'project-management', 'agile'],
   },
 ];
 
@@ -541,6 +562,7 @@ async function seedSampleJobDescriptions() {
         orgId: jd.orgId ?? null,
         jobId: jd.jobId,
         title: jd.title,
+        status: jd.status ?? 'recruiting',
         employmentType: jd.employmentType,
         workArrangement: jd.workArrangement,
         minYearsExperience: jd.minYearsExperience ?? null,
@@ -557,6 +579,7 @@ async function seedSampleJobDescriptions() {
         orgId: jd.orgId ?? null,
         jobId: jd.jobId,
         title: jd.title,
+        status: jd.status ?? 'recruiting',
         employmentType: jd.employmentType,
         workArrangement: jd.workArrangement,
         minYearsExperience: jd.minYearsExperience ?? null,

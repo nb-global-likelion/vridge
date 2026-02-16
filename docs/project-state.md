@@ -34,10 +34,12 @@
 - `app/candidate/[slug]/page.tsx`의 공개 프로필 카드 상태/생년월일 표기가 로케일별 번역/포맷으로 정렬되고, 섹션 컨테이너/타이틀 스타일이 Figma node `283:2572`에 가깝게 보정됨
 - `app/(dashboard)/candidate/profile/edit/page.tsx`는 대시보드 셸을 유지한 채 콘텐츠 패널 섹션 구조/하단 Save 바/포트폴리오 표시가 Figma node `323:560`, `323:783` 기준으로 보정됨
 - `app/(dashboard)/candidate/applications/page.tsx`는 route-local 합성으로 Figma node `283:2635` 기준의 `My Jobs/List` 26px 헤딩, 통계 카드(22px/rounded 20), 리스트 섹션 셸을 정렬함(공유 컴포넌트/대시보드 셸 변경 없음)
+- `app/jobs/page.tsx`는 Figma node `315:15170` 기준으로 route-level 합성(1200/800 컨테이너, 탭/정렬 3열 정렬, 카드 간격)을 보정했고, 목록 행의 direct apply CTA를 추가함
+- `JobDescription.status`(`recruiting`/`done`) 모델을 추가하고 시드에 `done` 공고를 포함해 목록 상태 표현을 데이터 기반으로 전환함
 - DS `3.1a` 입력 계열 공통 컴포넌트 정렬 완료(완료/계획: `8/8`): `FormInput(file variant 포함)`, `FormDropdown`, `DropdownBox`, `DropdownMenu`, `DatePicker`, `DialcodePicker`, `LangPicker`, `LangMenu` 상호작용
 - DS `3.1b` 표시 계열 공통 컴포넌트 정렬 완료(완료/계획: `8/8`): `CTA(Button)`, `Tap(TabItem)`, `SectionTitle`, `Chips`, `SummaryCard`, `PostStatus`, `PostingList`, `PostingTitle`
 - DS `3.1c` 잔여 공통 컴포넌트 정렬 완료(완료/계획: `8/8`): `LoginField`, `SocialLS`, `GNB2(MainNav/UserMenu shell)`, `SearchBar`, `Pagination`, `ProfileCard(mode 확장)`, `MyPageMenu(DashboardSidebar)`, `Toggle`
-- item `#5`의 비밀번호 아이콘 상태 불일치(`hidden.svg`/`show.svg`)는 `3.1c`에서 선반영되었고, 인증 필드/플로우의 나머지 정밀 정렬은 후속 항목으로 유지
+- item `#5`(인증 필드 단일 항목)는 팀 합의로 descoped 처리했고, 인증 플로우 전반 정렬은 item `#9` 범위로 유지
 - `DialcodePicker`용 국기 아이콘 자산(`flag-vn.svg`, `flag-kr.svg`) 추가 및 트리거/메뉴 상태 정렬
 
 ### i18n (Phase 6)
@@ -115,7 +117,7 @@
 - S3 업로드(프로필 이미지/포트폴리오)
 - 채용담당자 대시보드 및 지원자 관리 UI
 - 비밀번호 찾기/재설정 플로우
-- 인증 입력 필드/로그인·회원가입 플로우의 잔여 디자인 정렬(`fix_needed.md`의 `#5`, `#9`)
+- 로그인/회원가입 플로우 전반 디자인 정렬(`fix_needed.md`의 `#9`)
 
 ## 참고 문서
 

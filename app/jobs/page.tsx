@@ -1,5 +1,7 @@
 import { getJobDescriptions } from '@/lib/actions/jd-queries';
 import { getJobFamilies } from '@/lib/actions/catalog';
+import { getMyApplications } from '@/lib/actions/applications';
+import { getCurrentUser } from '@/lib/infrastructure/auth-utils';
 import { PostingListItem } from '@/entities/job/ui/posting-list-item';
 import { NumberedPagination } from '@/components/ui/numbered-pagination';
 import { JobSearchForm } from '@/features/job-browse/ui/job-search-form';
@@ -14,6 +16,7 @@ import {
 import { getServerI18n } from '@/lib/i18n/server';
 import { getActionErrorMessage } from '@/lib/i18n/action-error';
 import { getLocalizedCatalogName } from '@/lib/i18n/catalog';
+import { JobsListApplyCta } from './_jobs-list-apply-cta';
 
 export default async function JobsPage({
   searchParams,
@@ -28,9 +31,10 @@ export default async function JobsPage({
   const sort = getEffectiveJobsSort(query);
   const page = query.page ?? 1;
 
-  const [jdResult, familiesResult] = await Promise.all([
+  const [jdResult, familiesResult, user] = await Promise.all([
     getJobDescriptions({ search, familyId, sort, page }),
     getJobFamilies(),
+    getCurrentUser(),
   ]);
 
   if ('errorCode' in jdResult) {
@@ -42,6 +46,14 @@ export default async function JobsPage({
   }
 
   const { items, total, pageSize } = jdResult.data;
+  const isAuthenticated = Boolean(user);
+  const isCandidate = user?.role === 'candidate';
+  const myApplicationsResult = isCandidate ? await getMyApplications() : null;
+  const appliedJdIds = new Set(
+    myApplicationsResult && !('errorCode' in myApplicationsResult)
+      ? myApplicationsResult.data.map((application) => application.jdId)
+      : []
+  );
   const jobFamilies =
     'errorCode' in familiesResult
       ? []
@@ -56,21 +68,29 @@ export default async function JobsPage({
   }
 
   return (
-    <div className="mx-auto flex max-w-4xl flex-col gap-6 px-6 py-8">
-      <JobSearchForm initialSearch={search} />
-      <div className="flex items-start justify-between gap-4">
-        <JobCategoryTabs
-          families={jobFamilies}
-          activeFamilyId={familyId}
-          query={query}
-        />
-        <JobSortControl />
+    <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-[20px] px-6 py-10">
+      <div className="mx-auto w-full max-w-[800px]">
+        <JobSearchForm initialSearch={search} />
+      </div>
+
+      <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-4">
+        <div />
+        <div className="justify-self-center">
+          <JobCategoryTabs
+            families={jobFamilies}
+            activeFamilyId={familyId}
+            query={query}
+          />
+        </div>
+        <div className="justify-self-end">
+          <JobSortControl />
+        </div>
       </div>
 
       {items.length === 0 ? (
         <p className="text-muted-foreground">{t('jobs.empty')}</p>
       ) : (
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-[20px]">
           {items.map((jd) => (
             <PostingListItem
               key={jd.id}
@@ -84,8 +104,17 @@ export default async function JobsPage({
               minEducation={jd.minEducation}
               skills={jd.skills}
               createdAt={jd.createdAt}
-              status="recruiting"
+              status={jd.status}
               href={`/jobs/${jd.id}`}
+              cta={
+                <JobsListApplyCta
+                  jdId={jd.id}
+                  status={jd.status}
+                  isAuthenticated={isAuthenticated}
+                  isCandidate={isCandidate}
+                  isApplied={appliedJdIds.has(jd.id)}
+                />
+              }
             />
           ))}
         </div>

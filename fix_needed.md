@@ -58,14 +58,14 @@
 - component: Email field, Password field
 - design: https://www.figma.com/design/27tn2lCDeji78dNzuOICXv/Vridge-Web-Ver-0.1?node-id=386-3148&m=dev, https://www.figma.com/design/27tn2lCDeji78dNzuOICXv/Vridge-Web-Ver-0.1?node-id=386-3149&m=dev
 - description: login / signup fields
-- current state: design mismatch remains; icon mismatch는 3.1c에서 해결됨 (hidden -> hidden.svg, visible -> show.svg)
+- current state: ❌ descoped (팀 합의). hidden/show 아이콘 매핑은 3.1c에서 해결되었고, 잔여 정렬은 item #9(인증 플로우 전반)에서 처리
 
 6.
 
 - route: app/jobs
 - design: https://www.figma.com/design/27tn2lCDeji78dNzuOICXv/Vridge-Web-Ver-0.1?node-id=315-15170&m=dev
 - description : jobs page
-- current state: design mismatch and feature mismatch (where is the apply button??)
+- current state: 완료 (route-level 정렬 + list direct apply CTA + JD status(recruiting/done) full-stack 반영)
 
 7.
 
@@ -76,20 +76,20 @@
 
 8.
 
-- route: app/annoucnments
+- route: app/announcements
 - design: https://www.figma.com/design/27tn2lCDeji78dNzuOICXv/Vridge-Web-Ver-0.1?node-id=315-15060&m=dev
 - description: announcements
 - current state: design mismatch
 
-8.
+9.
 
-- route: app/annoucnments/[id]
+- route: app/announcements/[id]
 - design: https://www.figma.com/design/27tn2lCDeji78dNzuOICXv/Vridge-Web-Ver-0.1?node-id=315-15103&m=dev
 - description: announcements detail
 - current state: design mismatch
 
-9.
+10.
 
 - components : the entire sign in / sign up flow
 - design: https://www.figma.com/design/27tn2lCDeji78dNzuOICXv/Vridge-Web-Ver-0.1?node-id=285-14949&m=dev
-- current state: highly likely desing mismatch
+- current state: highly likely desing mismatch, recheck thoroughly.
