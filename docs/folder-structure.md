@@ -30,6 +30,8 @@ vridge/
 └── 설정 파일들
 ```
 
+- `public/icons/`에 dialcode picker용 국기 아이콘(`flag-vn.svg`, `flag-kr.svg`)이 추가되었습니다.
+
 ## Next.js 라우트 구조 (`app/`)
 
 ```text

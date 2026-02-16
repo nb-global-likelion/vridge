@@ -50,4 +50,13 @@ describe('FormInput', () => {
       container.querySelector('img[src*="required"]')
     ).not.toBeInTheDocument();
   });
+
+  it('file variant 렌더링: plus 아이콘 + 텍스트', () => {
+    const { container } = render(
+      <FormInput variant="file" placeholder="File Upload" />
+    );
+
+    expect(screen.getByText('File Upload')).toBeInTheDocument();
+    expect(container.querySelector('img[src*="plus"]')).toBeInTheDocument();
+  });
 });

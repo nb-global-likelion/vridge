@@ -1,7 +1,7 @@
 # 프로젝트 상태 (아카이브) — 컴포넌트 요구사항 체크리스트
 
 > 출처: 기존 `docs/project-state.md`의 Figma 요구사항 비교 섹션  
-> 마지막 갱신: 2026-02-15
+> 마지막 갱신: 2026-02-16
 
 ## 체크 기준
 
@@ -138,7 +138,9 @@
 - [x] 커스텀 DatePicker
 - [x] Status Indicator(`PostStatus`)
 - [x] SVG 아이콘 자산 실사용
-- [ ] Dropdown/DatePicker/DialcodePicker 상세 상태(Opened/Hovered/Selected) Figma `node 378:439` 정렬
+- [x] `FormInput` File 상태(`+ Text`) 반영
+- [x] Dropdown/DatePicker/DialcodePicker 상세 상태(Opened/Hovered/Selected) Figma `node 378:439` 정렬
+- [x] LangPicker 기본/열림/메뉴 상태 정렬
 - [ ] 토큰/테마의 Figma 1:1 매칭 검증
 
 ## Storybook 문서화

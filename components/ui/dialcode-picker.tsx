@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import { Icon } from './icon';
 
 type DialcodePickerProps = {
   value: string;
@@ -8,20 +9,14 @@ type DialcodePickerProps = {
 };
 
 const DIAL_CODES = [
-  '+1',
-  '+44',
-  '+49',
-  '+61',
-  '+81',
-  '+82',
-  '+84',
-  '+86',
-  '+91',
-];
+  { code: '+84', flag: 'flag-vn' },
+  { code: '+82', flag: 'flag-kr' },
+] as const;
 
 export function DialcodePicker({ value, onChange }: DialcodePickerProps) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const selected = DIAL_CODES.find((option) => option.code === value);
 
   useEffect(() => {
     function handleOutside(e: MouseEvent) {
@@ -37,24 +32,34 @@ export function DialcodePicker({ value, onChange }: DialcodePickerProps) {
     <div ref={ref} className="relative">
       <button
         type="button"
-        className="flex items-center text-[16px] text-[#333]"
+        className="flex h-[44px] items-center gap-[5px] rounded-[10px] bg-[#fbfbfb] px-[15px] py-[10px]"
         onClick={() => setOpen(!open)}
+        aria-expanded={open}
       >
-        {value}
+        {selected ? (
+          <Icon name={selected.flag} size={20} />
+        ) : (
+          <span className="h-[18px] w-[20px]" />
+        )}
+        <span className="text-[14px] font-medium text-[#666]">{value}</span>
+        <Icon name={open ? 'chevron-up' : 'chevron-down'} size={18} />
       </button>
       {open && (
-        <div className="absolute z-10 mt-1 max-h-[200px] overflow-y-auto rounded-[10px] bg-white shadow-[0_0_10px_rgba(0,0,0,0.05)]">
-          {DIAL_CODES.map((code) => (
+        <div className="absolute top-[48px] left-0 z-10 w-[106px] rounded-[10px] bg-white px-[20px] py-[10px] shadow-[0_0_10px_rgba(0,0,0,0.05)]">
+          {DIAL_CODES.map((option) => (
             <button
-              key={code}
+              key={option.code}
               type="button"
-              className="w-full px-4 py-2 text-left text-[16px] text-[#333] hover:bg-[#fbfbfb]"
+              className="flex w-full items-center gap-[10px] py-[5px] text-left"
               onClick={() => {
-                onChange(code);
+                onChange(option.code);
                 setOpen(false);
               }}
             >
-              {code}
+              <Icon name={option.flag} size={20} />
+              <span className="text-[14px] font-medium text-[#666]">
+                {option.code}
+              </span>
             </button>
           ))}
         </div>

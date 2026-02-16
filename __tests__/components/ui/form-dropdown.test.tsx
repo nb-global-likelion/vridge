@@ -89,4 +89,50 @@ describe('FormDropdown', () => {
       container.querySelector('img[src*="chevron-down"]')
     ).toBeInTheDocument();
   });
+
+  it('open 상태에서 chevron-up 아이콘 렌더링', async () => {
+    const user = userEvent.setup();
+    const { container } = render(
+      <FormDropdown
+        options={OPTIONS}
+        placeholder="Select"
+        onChange={() => {}}
+      />
+    );
+
+    await user.click(screen.getByRole('button'));
+    expect(
+      container.querySelector('img[src*="chevron-up"]')
+    ).toBeInTheDocument();
+  });
+
+  it('required=true일 때 required 아이콘 렌더링', () => {
+    const { container } = render(
+      <FormDropdown
+        options={OPTIONS}
+        placeholder="Select"
+        required
+        onChange={() => {}}
+      />
+    );
+
+    expect(container.querySelector('img[src*="required"]')).toBeInTheDocument();
+  });
+
+  it('드롭다운 메뉴 hover 클래스: brand-sub + brand text', async () => {
+    const user = userEvent.setup();
+    render(
+      <FormDropdown
+        options={OPTIONS}
+        placeholder="Select"
+        onChange={() => {}}
+      />
+    );
+
+    await user.click(screen.getByRole('button'));
+    const option = screen.getByRole('button', { name: 'React' });
+
+    expect(option).toHaveClass('hover:bg-[#ffefe5]');
+    expect(option).toHaveClass('hover:text-[#ff6000]');
+  });
 });

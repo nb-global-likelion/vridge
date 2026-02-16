@@ -4,11 +4,13 @@ import { forwardRef, type ComponentPropsWithoutRef } from 'react';
 import { Icon } from './icon';
 
 type FormInputSize = 'sm' | 'md' | 'lg';
+type FormInputVariant = 'default' | 'file';
 
 type FormInputProps = {
   size?: FormInputSize;
   filled?: boolean;
   required?: boolean;
+  variant?: FormInputVariant;
 } & Omit<ComponentPropsWithoutRef<'input'>, 'size'> &
   Omit<ComponentPropsWithoutRef<'textarea'>, 'size'>;
 
@@ -25,9 +27,32 @@ export const FormInput = forwardRef<
   HTMLInputElement | HTMLTextAreaElement,
   FormInputProps
 >(function FormInput(
-  { size = 'md', filled = false, required = false, className, ...props },
+  {
+    size = 'md',
+    filled = false,
+    required = false,
+    variant = 'default',
+    className,
+    ...props
+  },
   ref
 ) {
+  if (variant === 'file') {
+    const fileText =
+      typeof props.value === 'string' && props.value.length > 0
+        ? props.value
+        : (props.placeholder ?? 'Text');
+
+    return (
+      <span
+        className={`inline-flex h-[52px] w-full items-center justify-center gap-[5px] rounded-[10px] bg-[#fbfbfb] px-[20px] ${className ?? ''}`}
+      >
+        <Icon name="plus" size={24} />
+        <span className="text-[14px] font-medium text-[#666]">{fileText}</span>
+      </span>
+    );
+  }
+
   const stateClass = filled
     ? 'bg-white border border-[#b3b3b3]'
     : 'bg-[#fbfbfb]';
