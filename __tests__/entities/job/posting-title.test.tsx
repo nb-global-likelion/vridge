@@ -46,6 +46,21 @@ describe('PostingTitle', () => {
     ).toBeInTheDocument();
   });
 
+  it('backHref 전달 시 뒤로가기 링크를 렌더링한다', () => {
+    renderWithI18n(
+      <PostingTitle
+        title="Test"
+        status="recruiting"
+        createdAt={new Date('2025-01-01')}
+        backHref="/jobs"
+      />
+    );
+    expect(screen.getByRole('link', { name: 'Back to jobs' })).toHaveAttribute(
+      'href',
+      '/jobs'
+    );
+  });
+
   it('PostStatus 렌더링', () => {
     renderWithI18n(
       <PostingTitle

@@ -67,6 +67,7 @@ export const koMessages: Record<MessageKey, string> = {
   'jobs.withdraw': '철회',
   'jobs.applying': '지원 중...',
   'jobs.apply': '지원하기',
+  'jobs.share': '공유',
   'jobs.skillsRequired': '요구 스킬',
   'jobs.status.recruiting': '채용중',
   'jobs.status.done': '마감',
