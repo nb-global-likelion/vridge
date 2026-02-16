@@ -73,6 +73,7 @@ export const viMessages: Record<MessageKey, string> = {
   'jobs.withdraw': 'Rút đơn',
   'jobs.applying': 'Đang ứng tuyển...',
   'jobs.apply': 'Ứng tuyển',
+  'jobs.share': 'Chia sẻ',
   'jobs.skillsRequired': 'Kỹ năng yêu cầu',
   'jobs.status.recruiting': 'Đang tuyển',
   'jobs.status.done': 'Đã đóng',

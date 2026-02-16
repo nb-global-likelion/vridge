@@ -52,6 +52,19 @@ describe('ApplyButton', () => {
     expect(screen.getByRole('button', { name: '철회' })).toBeInTheDocument();
   });
 
+  it('allowWithdraw가 false면 applied 상태에서 철회 버튼을 숨긴다', () => {
+    renderWithKo(
+      <ApplyButton
+        jdId={JD_ID}
+        initialApplied={true}
+        applyId="apply-id-1"
+        allowWithdraw={false}
+      />
+    );
+    expect(screen.getByText(/지원완료/)).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: '철회' })).toBeNull();
+  });
+
   it('"지원하기" click calls mutate with jdId', () => {
     renderWithKo(<ApplyButton jdId={JD_ID} initialApplied={false} />);
     fireEvent.click(screen.getByRole('button', { name: '지원하기' }));

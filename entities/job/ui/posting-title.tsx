@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { Icon } from '@/components/ui/icon';
 import { PostStatus } from '@/components/ui/post-status';
 import { formatDate } from '@/lib/frontend/presentation';
@@ -10,6 +11,7 @@ type Props = {
   status: 'recruiting' | 'done';
   createdAt: Date;
   onBack?: () => void;
+  backHref?: string;
   company?: string | null;
   jobDisplayName?: string | null;
   workArrangement?: string | null;
@@ -21,6 +23,7 @@ export function PostingTitle({
   status,
   createdAt,
   onBack,
+  backHref,
   company,
   jobDisplayName,
   workArrangement,
@@ -38,12 +41,21 @@ export function PostingTitle({
 
   return (
     <div className="flex items-start gap-[20px]">
-      <div className="flex h-[45px] w-[45px] shrink-0 items-center justify-center rounded-full bg-white">
-        {onBack ? (
+      <div className="flex h-[24px] w-[24px] shrink-0 items-center justify-center">
+        {backHref ? (
+          <Link
+            href={backHref}
+            className="inline-flex h-[24px] w-[24px] items-center justify-center"
+            aria-label="Back to jobs"
+          >
+            <Icon name="arrow-left" size={24} />
+          </Link>
+        ) : onBack ? (
           <button
             type="button"
             onClick={onBack}
-            className="inline-flex h-[45px] w-[45px] items-center justify-center rounded-full"
+            className="inline-flex h-[24px] w-[24px] items-center justify-center"
+            aria-label="Back"
           >
             <Icon name="arrow-left" size={24} />
           </button>
@@ -53,7 +65,7 @@ export function PostingTitle({
       </div>
 
       <div className="flex min-w-0 flex-1 items-center gap-[20px]">
-        <div className="h-[97px] w-[97px] shrink-0 bg-[#efefef]" />
+        <div className="h-[97px] w-[97px] shrink-0 bg-[#ff6000]" />
         <div className="flex min-w-0 flex-1 flex-col gap-[10px]">
           <h1 className="truncate text-[30px] font-bold text-black">
             {displayTitle}

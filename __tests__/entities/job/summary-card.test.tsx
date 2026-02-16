@@ -57,6 +57,16 @@ describe('SummaryCard', () => {
     expect(screen.getByText('보조 액션')).toBeInTheDocument();
   });
 
+  it('secondaryAction으로 전달된 공유 버튼 aria-label을 노출한다', () => {
+    renderWithI18n(
+      <SummaryCard
+        {...baseProps}
+        secondaryAction={<button aria-label="Share">share</button>}
+      />
+    );
+    expect(screen.getByRole('button', { name: 'Share' })).toBeInTheDocument();
+  });
+
   it('컨테이너 스타일: w-[300px] rounded-[20px]', () => {
     const { container } = renderWithI18n(<SummaryCard {...baseProps} />);
     const card = container.firstChild;
