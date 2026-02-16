@@ -41,6 +41,7 @@ Rule #1: If you want exception to ANY rule, YOU MUST STOP and get explicit permi
 - If the project isn't in a git repo, ask permission to initialize one
 - Track all non-trivial changes in git
 - Commit frequently throughout the development process, even if your high-level tasks are not yet done. Each commit should be one logical unit of work — coherent and reviewable on its own.
+- Use Conventional Commits for all commit messages (for example: `feat(scope): ...`, `fix(scope): ...`, `docs(scope): ...`).
 - NEVER commit directly to main, master, or dev branches
 - ALWAYS create a feature branch for your work
 - If you mistakenly try to commit on main/master/dev, STOP and create a feature branch first
