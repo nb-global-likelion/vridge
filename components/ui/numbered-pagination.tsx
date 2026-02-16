@@ -46,47 +46,66 @@ export function NumberedPagination({
   const pages = getPageNumbers(currentPage, totalPages);
 
   return (
-    <nav className="flex items-center justify-center gap-2">
+    <nav className="flex items-center justify-center gap-[22px]">
       {currentPage > 1 ? (
-        <Link href={buildHref(currentPage - 1)} aria-label={prevAriaLabel}>
-          <Icon name="chevron-left" size={20} />
+        <Link
+          href={buildHref(currentPage - 1)}
+          aria-label={prevAriaLabel}
+          className="flex h-[31px] w-[25px] items-center justify-center"
+        >
+          <Icon name="chevron-left" size={25} />
         </Link>
       ) : (
-        <span aria-label={prevAriaLabel} className="opacity-30">
-          <Icon name="chevron-left" size={20} />
+        <span
+          aria-label={prevAriaLabel}
+          className="flex h-[31px] w-[25px] items-center justify-center opacity-30"
+        >
+          <Icon name="chevron-left" size={25} />
         </span>
       )}
 
-      {pages.map((p, i) =>
-        p === '...' ? (
-          <span key={`dots-${i}`} className="px-1 text-[20px] text-black">
-            ···
-          </span>
-        ) : p === currentPage ? (
-          <span
-            key={p}
-            className="flex h-[36px] w-[36px] items-center justify-center rounded-[60px] bg-[#ffefe5] text-[20px] font-medium text-[#ff6000]"
-          >
-            {p}
-          </span>
-        ) : (
-          <Link
-            key={p}
-            href={buildHref(p)}
-            className="flex h-[36px] w-[36px] items-center justify-center text-[20px] text-black"
-          >
-            {p}
-          </Link>
-        )
-      )}
+      <div className="flex items-center gap-[30px]">
+        {pages.map((p, i) =>
+          p === '...' ? (
+            <span
+              key={`dots-${i}`}
+              className="text-[20px] leading-none text-black"
+            >
+              ···
+            </span>
+          ) : p === currentPage ? (
+            <span
+              key={p}
+              className="flex h-[24px] w-[24px] items-center justify-center rounded-[60px] bg-[#ffefe5] text-[20px] leading-none font-normal text-[#ff6000]"
+            >
+              {p}
+            </span>
+          ) : (
+            <Link
+              key={p}
+              href={buildHref(p)}
+              className="flex items-center justify-center text-[20px] leading-none font-normal text-black"
+            >
+              {p}
+            </Link>
+          )
+        )}
+      </div>
 
       {currentPage < totalPages ? (
-        <Link href={buildHref(currentPage + 1)} aria-label={nextAriaLabel}>
-          <Icon name="chevron-right" size={20} />
+        <Link
+          href={buildHref(currentPage + 1)}
+          aria-label={nextAriaLabel}
+          className="flex h-[31px] w-[25px] items-center justify-center"
+        >
+          <Icon name="chevron-right" size={25} />
         </Link>
       ) : (
-        <span aria-label={nextAriaLabel} className="opacity-30">
-          <Icon name="chevron-right" size={20} />
+        <span
+          aria-label={nextAriaLabel}
+          className="flex h-[31px] w-[25px] items-center justify-center opacity-30"
+        >
+          <Icon name="chevron-right" size={25} />
         </span>
       )}
     </nav>

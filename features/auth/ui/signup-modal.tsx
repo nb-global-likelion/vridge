@@ -11,8 +11,9 @@ import {
 } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { FormInput } from '@/components/ui/form-input';
 import { Icon } from '@/components/ui/icon';
+import { LoginField } from '@/components/ui/login-field';
+import { SocialLs } from '@/components/ui/social-ls';
 import { signIn, signUp } from '@/lib/infrastructure/auth-client';
 import { useAuthModal } from '../model/use-auth-modal';
 import { PasswordInput } from './password-input';
@@ -101,45 +102,27 @@ export function SignupModal() {
                 </DialogTitle>
 
                 <div className="flex w-full flex-col gap-5">
-                  <Button
-                    variant="outline"
-                    type="button"
-                    className="h-14 w-full justify-center rounded-[10px] border-[#b3b3b3] px-2.5 py-5 text-[#333]"
+                  <SocialLs
+                    provider="google"
+                    actionLabel="Sign up"
                     onClick={() =>
                       signIn.social({
                         provider: 'google',
                         callbackURL: '/candidate/profile',
                       })
                     }
-                  >
-                    <span className="flex w-64 items-center gap-5">
-                      <Icon name="google" size={32} alt="Google" />
-                      <span className="flex gap-1 text-lg font-medium">
-                        <span>Sign up</span>
-                        <span>with Google</span>
-                      </span>
-                    </span>
-                  </Button>
+                  />
 
-                  <Button
-                    variant="outline"
-                    type="button"
-                    className="h-14 w-full justify-center rounded-[10px] border-[#b3b3b3] px-2.5 py-5 text-[#333]"
+                  <SocialLs
+                    provider="facebook"
+                    actionLabel="Sign up"
                     onClick={() =>
                       signIn.social({
                         provider: 'facebook',
                         callbackURL: '/candidate/profile',
                       })
                     }
-                  >
-                    <span className="flex w-64 items-center gap-5">
-                      <Icon name="facebook" size={32} alt="Facebook" />
-                      <span className="flex gap-1 text-lg font-medium">
-                        <span>Sign up</span>
-                        <span>with Facebook</span>
-                      </span>
-                    </span>
-                  </Button>
+                  />
                 </div>
 
                 <div className="flex w-full items-center gap-2.5 overflow-hidden">
@@ -148,20 +131,11 @@ export function SignupModal() {
                   <div className="h-px flex-1 bg-[#b3b3b3]" />
                 </div>
 
-                <Button
-                  variant="outline"
-                  type="button"
-                  className="h-14 w-full justify-center rounded-[10px] border-[#b3b3b3] px-2.5 py-5 text-[#333]"
+                <SocialLs
+                  provider="email"
+                  actionLabel="Sign up"
                   onClick={() => setStep('form')}
-                >
-                  <span className="flex w-64 items-center gap-5">
-                    <Icon name="email-at" size={32} alt="Email" />
-                    <span className="flex gap-1 text-lg font-medium">
-                      <span>Sign up</span>
-                      <span>with E-mail</span>
-                    </span>
-                  </span>
-                </Button>
+                />
               </>
             )}
 
@@ -184,20 +158,18 @@ export function SignupModal() {
                         <Label htmlFor="signup-email" className="sr-only">
                           Email
                         </Label>
-                        <div className="flex items-center gap-2.5">
-                          <Icon name="mail" size={24} />
-                          <FormInput
-                            id="signup-email"
-                            type="email"
-                            autoComplete="email"
-                            value={field.state.value}
-                            onChange={(e) => field.handleChange(e.target.value)}
-                            onBlur={field.handleBlur}
-                            placeholder="E-mail"
-                            filled
-                            className="h-14 text-lg placeholder:text-[#999]"
-                          />
-                        </div>
+                        <LoginField
+                          id="signup-email"
+                          type="email"
+                          autoComplete="email"
+                          value={field.state.value}
+                          onChange={(e) => field.handleChange(e.target.value)}
+                          onBlur={field.handleBlur}
+                          placeholder="E-mail"
+                          leftIconName="mail"
+                          leftIconAlt="mail"
+                          filled={field.state.value.length > 0}
+                        />
                         {field.state.meta.isTouched &&
                           field.state.meta.errors.length > 0 && (
                             <p className="text-xs text-destructive">
@@ -229,7 +201,6 @@ export function SignupModal() {
                           onChange={(e) => field.handleChange(e.target.value)}
                           onBlur={field.handleBlur}
                           placeholder="Password"
-                          className="h-14"
                         />
                         <p
                           className={`text-xs ${

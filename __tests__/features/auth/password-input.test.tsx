@@ -42,6 +42,18 @@ describe('PasswordInput', () => {
     ).toBeInTheDocument();
   });
 
+  it('숨김/표시 상태 아이콘이 올바르게 매핑된다', () => {
+    render(<PasswordInput id="pw" placeholder="비밀번호" />);
+    const showButton = screen.getByRole('button', { name: '비밀번호 보기' });
+    const hiddenIcon = showButton.querySelector('img');
+    expect(hiddenIcon).toHaveAttribute('src', '/icons/hidden.svg');
+
+    fireEvent.click(showButton);
+    const hideButton = screen.getByRole('button', { name: '비밀번호 숨기기' });
+    const showIcon = hideButton.querySelector('img');
+    expect(showIcon).toHaveAttribute('src', '/icons/show.svg');
+  });
+
   it('자물쇠 아이콘이 렌더링됨', () => {
     render(<PasswordInput id="pw" placeholder="비밀번호" />);
     const lockIcon = screen.getByAltText('lock');

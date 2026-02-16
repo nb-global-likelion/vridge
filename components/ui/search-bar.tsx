@@ -8,8 +8,8 @@ type SearchBarProps = {
 };
 
 const VARIANT_CLASS = {
-  main: 'border border-[#b3b3b3] rounded-[60px] h-[50px] px-[20px] bg-white',
-  skills: 'bg-[#fbfbfb] rounded-[999px] h-[52px] px-[20px] pl-[44px]',
+  main: 'h-[50px] rounded-[60px] border border-[#b3b3b3] bg-white px-[20px]',
+  skills: 'h-[52px] rounded-[999px] bg-[#fbfbfb] px-[20px] pl-[54px]',
 } as const;
 
 export function SearchBar({
@@ -22,7 +22,7 @@ export function SearchBar({
     <div className="relative w-full">
       {variant === 'skills' && (
         <span className="pointer-events-none absolute top-1/2 left-[16px] -translate-y-1/2">
-          <Icon name="search" size={20} />
+          <Icon name="search" size={24} />
         </span>
       )}
       <input
@@ -30,7 +30,14 @@ export function SearchBar({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className={`w-full text-[16px] text-[#333] outline-none placeholder:text-[#999] ${VARIANT_CLASS[variant]}`}
+        className={[
+          'w-full bg-transparent outline-none placeholder:text-[#999]',
+          variant === 'skills'
+            ? 'text-[14px] leading-[1.5] font-bold tracking-[0.4354px]'
+            : 'text-[16px] leading-normal font-normal',
+          value ? 'text-[#333]' : 'text-[#999]',
+          VARIANT_CLASS[variant],
+        ].join(' ')}
       />
     </div>
   );

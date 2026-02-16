@@ -26,11 +26,18 @@ describe('ProfileCard', () => {
     expect(screen.getByText('Seoul')).toBeInTheDocument();
   });
 
-  it('aboutMe와 headline 렌더링', () => {
+  it('요약 박스를 18px 본문으로 렌더링', () => {
     renderWithI18n(<ProfileCard {...baseProps} />);
+    const summary = screen.getByText('Building reliable web products');
+    expect(summary).toBeInTheDocument();
+    expect(summary).toHaveClass('text-[18px]');
     expect(
-      screen.getByText('Building reliable web products')
-    ).toBeInTheDocument();
+      screen.queryByText('Experienced developer looking for new opportunities')
+    ).not.toBeInTheDocument();
+  });
+
+  it('aboutMe가 없으면 headline을 요약으로 사용한다', () => {
+    renderWithI18n(<ProfileCard {...baseProps} aboutMe={null} />);
     expect(
       screen.getByText('Experienced developer looking for new opportunities')
     ).toBeInTheDocument();
@@ -64,6 +71,21 @@ describe('ProfileCard', () => {
     renderWithI18n(<ProfileCard {...baseProps} />, { locale: 'ko' });
     expect(screen.getByText(/1월/)).toBeInTheDocument();
     expect(screen.queryByText('15. Jan. 1990')).not.toBeInTheDocument();
+  });
+
+  it('myProfile 모드에서 Basic Profile 타이틀을 렌더링한다', () => {
+    renderWithI18n(<ProfileCard {...baseProps} mode="myProfile" />);
+    expect(screen.getByText('Basic Profile')).toBeInTheDocument();
+  });
+
+  it('myPage 모드에서 statusAccessory를 렌더링한다', () => {
+    renderWithI18n(
+      <ProfileCard
+        {...baseProps}
+        statusAccessory={<span data-testid="status-accessory">accessory</span>}
+      />
+    );
+    expect(screen.getByTestId('status-accessory')).toBeInTheDocument();
   });
 
   it('profileImageUrl 없으면 기본 프로필 아이콘 fallback 표시', () => {

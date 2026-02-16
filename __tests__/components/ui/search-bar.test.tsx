@@ -29,6 +29,7 @@ describe('SearchBar', () => {
     const input = screen.getByPlaceholderText('Search skills');
     expect(input).toHaveClass('bg-[#fbfbfb]');
     expect(input).toHaveClass('rounded-[999px]');
+    expect(input).toHaveClass('text-[14px]');
   });
 
   it('skills variant: search 아이콘 렌더링', () => {
@@ -68,5 +69,18 @@ describe('SearchBar', () => {
     );
     await user.type(screen.getByPlaceholderText('Search'), 'test');
     expect(handleChange).toHaveBeenCalled();
+  });
+
+  it('값이 있으면 본문 텍스트 톤을 사용한다', () => {
+    render(
+      <SearchBar
+        variant="skills"
+        value="Frontend"
+        onChange={() => {}}
+        placeholder="Search"
+      />
+    );
+
+    expect(screen.getByDisplayValue('Frontend')).toHaveClass('text-[#333]');
   });
 });

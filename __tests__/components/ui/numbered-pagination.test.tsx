@@ -41,6 +41,8 @@ describe('NumberedPagination', () => {
     const active = screen.getByText('3');
     expect(active).toHaveClass('bg-[#ffefe5]');
     expect(active).toHaveClass('text-[#ff6000]');
+    expect(active).toHaveClass('h-[24px]');
+    expect(active).toHaveClass('w-[24px]');
   });
 
   it('비활성 페이지: Link로 렌더링', () => {

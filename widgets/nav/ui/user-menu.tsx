@@ -30,8 +30,8 @@ export default function UserMenu({ name, email, image }: UserMenuProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="rounded-full outline-none focus-visible:ring-2 focus-visible:ring-ring">
-          <Avatar className="h-9 w-9 cursor-pointer">
+        <button className="flex h-[60px] w-[60px] items-center justify-center rounded-[80px] bg-white shadow-[0_0_15px_rgba(255,149,84,0.2)] outline-none focus-visible:ring-2 focus-visible:ring-ring">
+          <Avatar className="h-[32px] w-[32px] cursor-pointer">
             <AvatarImage src={image ?? undefined} alt={name} />
             <AvatarFallback>{initials}</AvatarFallback>
           </Avatar>

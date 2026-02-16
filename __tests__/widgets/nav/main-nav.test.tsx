@@ -113,21 +113,27 @@ describe('MainNav', () => {
     const logo = screen.getByRole('link', { name: /vridge/i });
     expect(logo).toBeInTheDocument();
     expect(logo.querySelector('.text-brand')).toBeInTheDocument();
+    expect(logo.className).toContain('rounded-[80px]');
   });
 
-  it('네비게이션 shadow 스타일 적용', () => {
+  it('탭 메뉴 컨테이너 pill 스타일 적용', () => {
     mockUseSession.mockReturnValue({ data: null });
     render(<MainNav />);
 
-    const nav = screen.getByRole('navigation');
-    expect(nav).toHaveClass('shadow-[0_4px_13px_rgba(0,0,0,0.04)]');
+    const jobsLink = screen.getByRole('link', { name: 'Jobs' });
+    const menuContainer = jobsLink.parentElement;
+    expect(menuContainer).toHaveClass('rounded-[80px]');
+    expect(menuContainer).toHaveClass('shadow-[0_0_15px_rgba(255,149,84,0.2)]');
   });
 
-  it('미인증 — Log in | Sign Up 구분선 표시', () => {
+  it('미인증 — 로그인 컨테이너 pill 스타일 표시', () => {
     mockUseSession.mockReturnValue({ data: null });
     render(<MainNav />);
 
-    expect(screen.getByText('|')).toBeInTheDocument();
+    const loginButton = screen.getByRole('button', { name: /log in/i });
+    const authContainer = loginButton.parentElement;
+    expect(authContainer).toHaveClass('rounded-[80px]');
+    expect(authContainer).toHaveClass('shadow-[0_0_15px_rgba(255,149,84,0.2)]');
   });
 
   it('언어 변경 시 refresh 호출', async () => {
