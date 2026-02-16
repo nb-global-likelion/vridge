@@ -16,6 +16,23 @@ describe('PostingTitle', () => {
     ).toBeInTheDocument();
   });
 
+  it('옵션 메타 전달 시 조합 타이틀 렌더링', () => {
+    renderWithI18n(
+      <PostingTitle
+        title="fallback title"
+        company="TechCo"
+        jobDisplayName="Frontend Engineer"
+        workArrangement="Remote"
+        minYearsExperience={3}
+        status="recruiting"
+        createdAt={new Date('2025-01-01')}
+      />
+    );
+    expect(
+      screen.getByText('TechCo / Frontend Engineer / Remote / 3+ years')
+    ).toBeInTheDocument();
+  });
+
   it('뒤로가기 화살표 렌더링', () => {
     const { container } = renderWithI18n(
       <PostingTitle

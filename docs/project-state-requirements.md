@@ -39,7 +39,7 @@
 - [x] 정렬 컨트롤(`Sort by`)
 - [x] 카드 좌측 회사 로고 영역(플레이스홀더)
 - [x] 상태 표시(`Recruiting`/`Done`)
-- [ ] 메타데이터 아이콘 완전 매칭(briefcase/location/chart/edu)
+- [x] 메타데이터 아이콘 완전 매칭(briefcase/location/chart/edu)
 - [ ] 카드별 `Apply Now` 버튼
 - [x] 번호형 페이지네이션
 - [x] 가로형 리스트 카드 레이아웃
@@ -51,7 +51,7 @@
 - [ ] 회사 로고 표시
 - [x] 상태 배지 표시
 - [ ] 공유(forward) 버튼
-- [ ] 요약 카드 메타데이터 완전 매칭(특히 Required Edu)
+- [x] 요약 카드 메타데이터 완전 매칭(특히 Required Edu)
 - [x] 우측 요약 카드 내 지원 CTA
 
 ## Announcements List (`/announcements`)
@@ -141,6 +141,8 @@
 - [x] `FormInput` File 상태(`+ Text`) 반영
 - [x] Dropdown/DatePicker/DialcodePicker 상세 상태(Opened/Hovered/Selected) Figma `node 378:439` 정렬
 - [x] LangPicker 기본/열림/메뉴 상태 정렬
+- [x] CTA/Tap/SectionTitle/Chips/PostStatus 상태 정렬(Figma `node 248:12932`, `248:12970`, `337:3647`, `343:3931`, `371:1267`)
+- [x] SummaryCard/PostingList/PostingTitle 표시 구조 정렬(Figma `node 348:4430`, `371:1380`, `378:1586`)
 - [ ] 토큰/테마의 Figma 1:1 매칭 검증
 
 ## Storybook 문서화

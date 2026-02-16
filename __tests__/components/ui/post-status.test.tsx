@@ -7,6 +7,7 @@ describe('PostStatus', () => {
     renderWithI18n(<PostStatus status="recruiting" />);
     const text = screen.getByText('Recruiting');
     expect(text).toHaveClass('text-[#00a600]');
+    expect(text.parentElement).toHaveClass('gap-[2px]');
   });
 
   it('done 상태: 빨간색 텍스트', () => {

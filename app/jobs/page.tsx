@@ -80,6 +80,8 @@ export default async function JobsPage({
               jobDisplayName={getLocalizedCatalogName(jd.job, locale)}
               employmentType={jd.employmentType}
               workArrangement={jd.workArrangement}
+              minYearsExperience={jd.minYearsExperience}
+              minEducation={jd.minEducation}
               skills={jd.skills}
               createdAt={jd.createdAt}
               status="recruiting"

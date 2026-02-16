@@ -10,6 +10,7 @@ import { LoginToApplyCta } from './_login-to-apply-cta';
 import { getServerI18n } from '@/lib/i18n/server';
 import { getActionErrorMessage } from '@/lib/i18n/action-error';
 import { getLocalizedCatalogName } from '@/lib/i18n/catalog';
+import { getWorkArrangementLabel } from '@/lib/frontend/presentation';
 
 export default async function JobDetailPage({
   params,
@@ -53,6 +54,10 @@ export default async function JobDetailPage({
       <div className="flex flex-1 flex-col gap-6">
         <PostingTitle
           title={jd.title}
+          company={jd.org?.name}
+          jobDisplayName={getLocalizedCatalogName(jd.job, locale)}
+          workArrangement={getWorkArrangementLabel(jd.workArrangement, t)}
+          minYearsExperience={jd.minYearsExperience}
           status="recruiting"
           createdAt={jd.createdAt}
         />
@@ -69,6 +74,8 @@ export default async function JobDetailPage({
           jobDisplayName={getLocalizedCatalogName(jd.job, locale)}
           employmentType={jd.employmentType}
           workArrangement={jd.workArrangement}
+          minYearsExperience={jd.minYearsExperience}
+          minEducation={jd.minEducation}
           skills={jd.skills}
           cta={cta}
         />

@@ -35,7 +35,7 @@ describe('Button brand variants', () => {
   });
 
   describe('brand sizes', () => {
-    it('brand-sm: h-[34px] px-[10px] text-[16px]', () => {
+    it('brand-sm: h-[34px] px-[10px] py-[5px] text-[16px] gap-[5px]', () => {
       render(
         <Button variant="brand" size="brand-sm">
           SM
@@ -44,10 +44,12 @@ describe('Button brand variants', () => {
       const btn = screen.getByRole('button', { name: 'SM' });
       expect(btn).toHaveClass('h-[34px]');
       expect(btn).toHaveClass('px-[10px]');
+      expect(btn).toHaveClass('py-[5px]');
       expect(btn).toHaveClass('text-[16px]');
+      expect(btn).toHaveClass('gap-[5px]');
     });
 
-    it('brand-md: h-[45px] px-[20px] text-[20px]', () => {
+    it('brand-md: h-[45px] px-[20px] py-[5px] text-[20px] gap-[5px]', () => {
       render(
         <Button variant="brand" size="brand-md">
           MD
@@ -56,10 +58,12 @@ describe('Button brand variants', () => {
       const btn = screen.getByRole('button', { name: 'MD' });
       expect(btn).toHaveClass('h-[45px]');
       expect(btn).toHaveClass('px-[20px]');
+      expect(btn).toHaveClass('py-[5px]');
       expect(btn).toHaveClass('text-[20px]');
+      expect(btn).toHaveClass('gap-[5px]');
     });
 
-    it('brand-lg: h-[60px] px-[40px] text-[20px] font-bold', () => {
+    it('brand-lg: h-[60px] px-[40px] py-[5px] text-[20px] font-bold gap-[5px]', () => {
       render(
         <Button variant="brand" size="brand-lg">
           LG
@@ -68,8 +72,10 @@ describe('Button brand variants', () => {
       const btn = screen.getByRole('button', { name: 'LG' });
       expect(btn).toHaveClass('h-[60px]');
       expect(btn).toHaveClass('px-[40px]');
+      expect(btn).toHaveClass('py-[5px]');
       expect(btn).toHaveClass('text-[20px]');
       expect(btn).toHaveClass('font-bold');
+      expect(btn).toHaveClass('gap-[5px]');
     });
   });
 });

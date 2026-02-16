@@ -33,7 +33,7 @@ export function PostStatus({ status, size = 'sm', label }: PostStatusProps) {
   const displayLabel = label ?? t(config.defaultLabelKey);
 
   return (
-    <span className="inline-flex items-center justify-center">
+    <span className="inline-flex items-center justify-center gap-[2px]">
       <Icon name={config.icon} size={18} />
       <span
         className={`leading-[1.5] font-medium ${config.color} ${SIZE_CLASS[size]}`}

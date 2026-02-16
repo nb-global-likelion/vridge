@@ -65,6 +65,8 @@ export default async function MyApplicationsPage() {
                 jobDisplayName={getLocalizedCatalogName(apply.jd.job, locale)}
                 employmentType={apply.jd.employmentType}
                 workArrangement={apply.jd.workArrangement}
+                minYearsExperience={apply.jd.minYearsExperience}
+                minEducation={apply.jd.minEducation}
                 skills={apply.jd.skills}
                 createdAt={apply.createdAt}
                 status={toPostingStatus(apply.status)}
