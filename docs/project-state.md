@@ -111,6 +111,8 @@
   - `features/job-browse/model/query-state.ts`
 - 테스트 헬퍼
   - i18n 의존 클라이언트 컴포넌트는 `__tests__/test-utils/render-with-i18n.tsx` 사용
+- i18n 변경 가드
+  - 신규 UI/기능 i18n 적용 시 `docs/i18n-checklist.md` 체크리스트를 필수로 확인
 - Storybook 스토리 위치
   - 구현 컴포넌트와 분리하여 `stories/ui`에 문서 스토리를 유지
 - 클라이언트 경계
@@ -126,5 +128,6 @@
 
 - 구현 계획: `docs/implementation-plan-p5.md`
 - 폴더 구조: `docs/folder-structure.md`
+- i18n 체크리스트: `docs/i18n-checklist.md`
 - 진행 현황: `todo.md`
 - 기존 상세 요구사항 체크리스트(아카이브): `docs/project-state-requirements.md`
