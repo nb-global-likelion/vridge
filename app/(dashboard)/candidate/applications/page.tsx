@@ -1,4 +1,3 @@
-import { SectionTitle } from '@/components/ui/section-title';
 import { PostingListItem } from '@/entities/job/ui/posting-list-item';
 import { getMyApplications } from '@/lib/actions/applications';
 import { requireUser } from '@/lib/infrastructure/auth-utils';
@@ -31,26 +30,34 @@ export default async function MyApplicationsPage() {
   ).length;
 
   return (
-    <div className="flex w-full flex-col gap-6 p-6">
-      <SectionTitle title={t('profile.myJobs')} />
+    <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-[20px]">
+      <h1 className="text-[26px] leading-[1.5] font-bold text-[#1f1d1b]">
+        {t('profile.myJobs')}
+      </h1>
 
-      <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-        <div className="bg-neutral-50 rounded-[20px] px-10 py-8 text-center">
-          <p className="text-xl font-bold text-[#1a1a1a]">
+      <div className="grid grid-cols-1 gap-[10px] md:grid-cols-2">
+        <div className="flex flex-col items-center justify-center gap-[10px] rounded-[20px] bg-[#fbfbfb] px-[40px] py-[50px] text-center">
+          <p className="text-[22px] leading-[1.5] font-bold text-[#1a1a1a]">
             {t('profile.applied')}
           </p>
-          <p className="text-xl font-bold text-[#1a1a1a]">{appliedCount}</p>
+          <p className="text-[22px] leading-[1.5] font-bold text-[#1a1a1a]">
+            {appliedCount}
+          </p>
         </div>
-        <div className="bg-neutral-50 rounded-[20px] px-10 py-8 text-center">
-          <p className="text-xl font-bold text-[#4c4c4c]">
+        <div className="flex flex-col items-center justify-center gap-[10px] rounded-[20px] bg-[#fbfbfb] px-[40px] py-[50px] text-center">
+          <p className="text-[22px] leading-[1.5] font-bold text-[#1a1a1a]">
             {t('profile.inProgress')}
           </p>
-          <p className="text-xl font-bold text-[#4c4c4c]">{inProgressCount}</p>
+          <p className="text-[22px] leading-[1.5] font-bold text-[#1a1a1a]">
+            {inProgressCount}
+          </p>
         </div>
       </div>
 
-      <div className="flex flex-col gap-4">
-        <SectionTitle title={t('profile.list')} />
+      <section className="flex flex-col gap-[20px] rounded-[20px] bg-white py-[20px]">
+        <h2 className="text-[26px] leading-[1.5] font-bold text-[#1f1d1b]">
+          {t('profile.list')}
+        </h2>
 
         {applications.length === 0 ? (
           <p className="text-muted-foreground">{t('jobs.empty')}</p>
@@ -75,7 +82,7 @@ export default async function MyApplicationsPage() {
             ))}
           </div>
         )}
-      </div>
+      </section>
     </div>
   );
 }

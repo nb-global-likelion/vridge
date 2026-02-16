@@ -51,7 +51,7 @@
 - route: app/(dashboard)/candidate/jobs
 - design: https://www.figma.com/design/27tn2lCDeji78dNzuOICXv/Vridge-Web-Ver-0.1?node-id=283-2635&m=dev
 - description: jobs applied by the candidate
-- current state: minor design mismatch
+- current state: 완료 (route-local 정렬: 26px heading, stat card/list shell 보정, shared shell/components는 유지)
 
 5.
 

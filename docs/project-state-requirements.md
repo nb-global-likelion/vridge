@@ -112,6 +112,7 @@
 
 - [x] Applied / In progress 요약 카드
 - [x] 목록 카드형 UI(채용공고 카드 스타일 재사용)
+- [x] route-local `My Jobs`/`List` 헤딩(26px) + 리스트 섹션 셸 정렬(Figma `283:2635`)
 - [ ] `JdCard` 컴포넌트 직접 재사용
 
 ## Candidate Landing (`/candidate/[slug]`)

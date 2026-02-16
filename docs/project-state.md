@@ -33,6 +33,7 @@
 - `app/(dashboard)/candidate/profile/page.tsx`는 더 이상 slug 페이지로 리다이렉트하지 않고, 내 프로필 섹션 렌더링 + 하단 `Edit Profile` CTA 제공
 - `app/candidate/[slug]/page.tsx`의 공개 프로필 카드 상태/생년월일 표기가 로케일별 번역/포맷으로 정렬되고, 섹션 컨테이너/타이틀 스타일이 Figma node `283:2572`에 가깝게 보정됨
 - `app/(dashboard)/candidate/profile/edit/page.tsx`는 대시보드 셸을 유지한 채 콘텐츠 패널 섹션 구조/하단 Save 바/포트폴리오 표시가 Figma node `323:560`, `323:783` 기준으로 보정됨
+- `app/(dashboard)/candidate/applications/page.tsx`는 route-local 합성으로 Figma node `283:2635` 기준의 `My Jobs/List` 26px 헤딩, 통계 카드(22px/rounded 20), 리스트 섹션 셸을 정렬함(공유 컴포넌트/대시보드 셸 변경 없음)
 - DS `3.1a` 입력 계열 공통 컴포넌트 정렬 완료(완료/계획: `8/8`): `FormInput(file variant 포함)`, `FormDropdown`, `DropdownBox`, `DropdownMenu`, `DatePicker`, `DialcodePicker`, `LangPicker`, `LangMenu` 상호작용
 - DS `3.1b` 표시 계열 공통 컴포넌트 정렬 완료(완료/계획: `8/8`): `CTA(Button)`, `Tap(TabItem)`, `SectionTitle`, `Chips`, `SummaryCard`, `PostStatus`, `PostingList`, `PostingTitle`
 - DS `3.1c` 잔여 공통 컴포넌트 정렬 완료(완료/계획: `8/8`): `LoginField`, `SocialLS`, `GNB2(MainNav/UserMenu shell)`, `SearchBar`, `Pagination`, `ProfileCard(mode 확장)`, `MyPageMenu(DashboardSidebar)`, `Toggle`
