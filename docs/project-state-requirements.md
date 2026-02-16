@@ -162,5 +162,5 @@
 ## 비고
 
 - 이 문서는 “현재 구현 대비 Figma 요구사항 충족도”를 추적하기 위한 아카이브입니다.
-- `fix_needed.md`의 item `#5`(인증 필드 단일 보정)는 팀 합의로 descoped 처리되었고, 인증 UI 잔여 정렬은 item `#9`로 추적합니다.
+- `fix_needed.md`의 item `#5`(인증 필드 단일 보정)는 팀 합의로 descoped 처리되었고, 인증 UI 잔여 정렬은 item `#10`으로 추적합니다.
 - 최신 시스템 상태는 `docs/project-state.md`를 기준으로 합니다.

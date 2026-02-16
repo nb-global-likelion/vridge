@@ -22,7 +22,8 @@ Always run:
 | 6    | `/jobs`                   | `pnpm exec jest __tests__/app/jobs-page.test.tsx --runInBand` (or nearest jobs list test)<br>`pnpm exec jest __tests__/entities/job --runInBand`                                                                                                                                           |
 | 7    | `/jobs/[id]`              | `pnpm exec jest __tests__/app/job-detail-page.test.tsx --runInBand` (or nearest detail test)                                                                                                                                                                                               |
 | 8    | `/announcements`          | `pnpm exec jest __tests__/app/announcements-page.test.tsx --runInBand`                                                                                                                                                                                                                     |
-| 9    | Sign in/up flow           | `pnpm exec jest __tests__/features/auth --runInBand`                                                                                                                                                                                                                                       |
+| 9    | `/announcements/[id]`     | `pnpm exec jest __tests__/app/announcement-detail-page.test.tsx --runInBand`<br>`pnpm exec jest __tests__/app/announcements-page.test.tsx --runInBand`                                                                                                                                     |
+| 10   | Sign in/up flow           | `pnpm exec jest __tests__/features/auth --runInBand`                                                                                                                                                                                                                                       |
 
 ## Test Discovery Fallback
 

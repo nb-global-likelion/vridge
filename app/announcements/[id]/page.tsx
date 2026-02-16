@@ -48,31 +48,33 @@ export default async function AnnouncementDetailPage({
   const neighbors = neighborsResult.data;
 
   return (
-    <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-7 px-6 py-10">
+    <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-[30px] px-6 pt-10 pb-[120px]">
       <Link
         href="/announcements"
         aria-label={t('announcements.backAria')}
         className="inline-flex w-fit items-center text-black hover:text-brand"
       >
-        <Icon name="arrow-left" size={24} />
+        <Icon name="chevron-left" size={24} />
       </Link>
 
       <div className="flex flex-col gap-2">
-        <h1 className="text-3xl font-bold">{announcement.title}</h1>
-        <div className="inline-flex items-center gap-2 text-sm font-medium text-[#666]">
+        <h1 className="text-[30px] leading-[1.5] font-bold text-black">
+          {announcement.title}
+        </h1>
+        <div className="inline-flex items-center gap-[5px] text-[14px] leading-[1.5] font-medium text-[#808080]">
           {announcement.isPinned && <span>({t('announcements.pinned')})</span>}
           <span>{formatDate(announcement.createdAt)}</span>
         </div>
       </div>
 
-      <div className="bg-neutral-50 rounded-[20px] px-5 py-6">
-        <div className="prose prose-sm max-w-none">
+      <div className="rounded-[20px] bg-[#fbfbfb] px-[20px] pt-[20px] pb-[40px]">
+        <div className="text-[18px] leading-[1.5] font-medium text-[#333] [&_li]:mb-[4px] [&_li:last-child]:mb-0 [&_p]:mb-[14px] [&_p:last-child]:mb-0 [&_ul]:my-[14px] [&_ul]:list-disc [&_ul]:pl-[27px]">
           <ReactMarkdown>{announcement.content}</ReactMarkdown>
         </div>
       </div>
 
-      <div className="flex flex-col border-y border-black">
-        <div className="grid grid-cols-[96px_1fr_192px] items-center gap-4 border-b border-black py-5 text-sm font-medium text-[#666]">
+      <div className="flex flex-col">
+        <div className="grid grid-cols-[94px_1fr_193px] items-center gap-[30px] border-y border-black py-5 text-[14px] leading-[1.5] font-medium text-[#4c4c4c]">
           <span className="text-center">{t('announcements.next')}</span>
           {neighbors.next ? (
             <Link
@@ -89,7 +91,7 @@ export default async function AnnouncementDetailPage({
           </span>
         </div>
 
-        <div className="grid grid-cols-[96px_1fr_192px] items-center gap-4 py-5 text-sm font-medium text-[#666]">
+        <div className="grid grid-cols-[94px_1fr_193px] items-center gap-[30px] border-b border-black py-5 text-[14px] leading-[1.5] font-medium text-[#4c4c4c]">
           <span className="text-center">{t('announcements.before')}</span>
           {neighbors.before ? (
             <Link

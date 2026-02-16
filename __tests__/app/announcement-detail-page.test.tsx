@@ -76,8 +76,25 @@ describe('AnnouncementDetailPage', () => {
     });
     renderWithI18n(ui);
 
-    expect(screen.getByText('About Vridge')).toBeInTheDocument();
+    const heading = screen.getByRole('heading', {
+      name: 'About Vridge',
+      level: 1,
+    });
+    expect(heading).toBeInTheDocument();
+    expect(heading).toHaveClass('text-[30px]', 'leading-[1.5]');
     expect(screen.getByText('(Pinned)')).toBeInTheDocument();
+
+    const contentText = screen.getByText('안내 본문');
+    const contentCard =
+      contentText.closest('div')?.parentElement?.parentElement;
+    expect(contentCard).toHaveClass(
+      'bg-[#fbfbfb]',
+      'rounded-[20px]',
+      'px-[20px]',
+      'pt-[20px]',
+      'pb-[40px]'
+    );
+
     expect(screen.getByRole('link', { name: '다음 공지' })).toHaveAttribute(
       'href',
       '/announcements/ann-2'
@@ -85,6 +102,11 @@ describe('AnnouncementDetailPage', () => {
     expect(screen.getByRole('link', { name: '이전 공지' })).toHaveAttribute(
       'href',
       '/announcements/ann-0'
+    );
+    expect(screen.getByText('Next').parentElement).toHaveClass(
+      'grid-cols-[94px_1fr_193px]',
+      'gap-[30px]',
+      'text-[#4c4c4c]'
     );
     expect(
       screen.getByRole('link', { name: /back to announcement list/i })
