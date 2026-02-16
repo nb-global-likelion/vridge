@@ -85,14 +85,15 @@
 | 31  | `/candidate/[slug]` i18n 이슈 정리     | ✅   |
 | 32  | `/candidate/profile/edit` 라우트 정렬  | ✅   |
 | 33  | `/candidate/applications` 디자인 보정  | ✅   |
-| 34  | 인증 입력 필드(이메일/비밀번호) 아이콘 | 🔶   |
-| 35  | `/jobs` 디자인/기능 보정               | ⬜   |
+| 34  | 인증 입력 필드(이메일/비밀번호) 아이콘 | ❌   |
+| 35  | `/jobs` 디자인/기능 보정               | ✅   |
 | 36  | `/jobs/[id]` 디자인/기능 보정          | ⬜   |
 | 37  | `/announcements` 디자인 보정           | ⬜   |
 | 38  | `/announcements/[id]` 디자인 보정      | ⬜   |
 | 39  | 로그인/회원가입 플로우 전반 보정       | ⬜   |
 
-- `#34`는 3.1c에서 비밀번호 아이콘 상태 매핑(`hidden.svg`/`show.svg`)까지 반영되었고, 나머지 로그인/회원가입 필드 정밀 정렬은 후속으로 유지합니다.
+- `#34`는 팀 합의로 descoped 처리했습니다. 비밀번호 hidden/show 아이콘 매핑은 3.1c 반영 상태이며, 인증 플로우 전반 정렬은 `#39`에서 처리합니다.
+- `#35`는 `/jobs` 라우트의 route-level 정렬, list direct apply CTA, JD status(`recruiting`/`done`) 모델 반영까지 완료했습니다.
 
 ### DS 3.1 배치 진행률
 

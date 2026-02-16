@@ -42,6 +42,7 @@ app/
 ├── error.tsx
 ├── not-found.tsx
 ├── jobs/
+│   ├── _jobs-list-apply-cta.tsx
 │   ├── page.tsx
 │   ├── loading.tsx
 │   └── [id]/
@@ -74,6 +75,7 @@ app/
 ```
 
 - `/candidate/profile`는 대시보드 내 "내 프로필" 화면을 직접 렌더링하며, 하단 CTA로 `/candidate/profile/edit`에 연결됩니다.
+- `/jobs`는 route-local CTA 컴포넌트(`app/jobs/_jobs-list-apply-cta.tsx`)를 통해 목록에서 직접 지원/로그인 유도 상태를 처리합니다.
 
 ## 백엔드 계층 (`lib/`)
 
@@ -190,6 +192,8 @@ stories/
 - 내 프로필 라우트 회귀 테스트: `__tests__/app/candidate-profile-page.test.tsx`
 - 내 프로필 편집 라우트 회귀 테스트: `__tests__/app/candidate-profile-edit-page.test.tsx`
 - 대시보드 사이드바 회귀 테스트: `__tests__/app/dashboard-sidebar.test.tsx`
+- jobs 라우트 회귀 테스트: `__tests__/app/jobs-page.test.tsx`
+- jobs 목록 CTA 단위 테스트: `__tests__/app/jobs-list-apply-cta.test.tsx`
 - 신규 UI 컴포넌트 테스트: `__tests__/components/ui/login-field.test.tsx`, `__tests__/components/ui/social-ls.test.tsx`
 
 ## `proxy.ts` 역할
