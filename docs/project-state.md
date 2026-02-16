@@ -42,6 +42,8 @@
 - DS `3.1a` 입력 계열 공통 컴포넌트 정렬 완료(완료/계획: `8/8`): `FormInput(file variant 포함)`, `FormDropdown`, `DropdownBox`, `DropdownMenu`, `DatePicker`, `DialcodePicker`, `LangPicker`, `LangMenu` 상호작용
 - DS `3.1b` 표시 계열 공통 컴포넌트 정렬 완료(완료/계획: `8/8`): `CTA(Button)`, `Tap(TabItem)`, `SectionTitle`, `Chips`, `SummaryCard`, `PostStatus`, `PostingList`, `PostingTitle`
 - DS `3.1c` 잔여 공통 컴포넌트 정렬 완료(완료/계획: `8/8`): `LoginField`, `SocialLS`, `GNB2(MainNav/UserMenu shell)`, `SearchBar`, `Pagination`, `ProfileCard(mode 확장)`, `MyPageMenu(DashboardSidebar)`, `Toggle`
+- item `#5`(인증 필드 단일 항목)는 팀 합의로 descoped 처리했고, 인증 플로우 전반 정렬은 item `#10`으로 완료
+- `features/auth/ui/login-modal.tsx`, `features/auth/ui/signup-modal.tsx`는 Figma node `285:14949` 기준 상태별 레이아웃(로그인 오류, 비밀번호 유효/무효, 동의 체크, 가입 완료)과 i18n 문구를 정렬함
 - item `#5`(인증 필드 단일 항목)는 팀 합의로 descoped 처리했고, 인증 플로우 전반 정렬은 item `#10` 범위로 유지
 - `DialcodePicker`용 국기 아이콘 자산(`flag-vn.svg`, `flag-kr.svg`) 추가 및 트리거/메뉴 상태 정렬
 
