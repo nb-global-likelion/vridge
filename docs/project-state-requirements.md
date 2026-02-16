@@ -102,8 +102,9 @@
 - [x] 커스텀 DatePicker 컴포넌트 존재
 - [x] Experience Level 입력
 - [x] Certification 섹션
+- [x] 하단 고정 Save 바(`81px`, blur, top shadow) 반영
 - [ ] 포트폴리오 파일 업로드
-- [ ] 교육 레벨 옵션 완전 매칭(Figma 기준)
+- [x] 교육 레벨 옵션 완전 매칭(Figma 기준)
 - [x] Graduation Status enum 정렬
 
 ## My Jobs / Applications (`/candidate/applications`)
@@ -137,6 +138,7 @@
 - [x] 커스텀 DatePicker
 - [x] Status Indicator(`PostStatus`)
 - [x] SVG 아이콘 자산 실사용
+- [ ] Dropdown/DatePicker/DialcodePicker 상세 상태(Opened/Hovered/Selected) Figma `node 378:439` 정렬
 - [ ] 토큰/테마의 Figma 1:1 매칭 검증
 
 ## Storybook 문서화

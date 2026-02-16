@@ -185,6 +185,7 @@ stories/
 - UI 렌더링 테스트 + use-case/action 단위 테스트 + `proxy.ts` node 환경 테스트
 - i18n 클라이언트 컴포넌트는 `__tests__/test-utils/render-with-i18n.tsx`로 감싸서 렌더링
 - 내 프로필 라우트 회귀 테스트: `__tests__/app/candidate-profile-page.test.tsx`
+- 내 프로필 편집 라우트 회귀 테스트: `__tests__/app/candidate-profile-edit-page.test.tsx`
 
 ## `proxy.ts` 역할
 

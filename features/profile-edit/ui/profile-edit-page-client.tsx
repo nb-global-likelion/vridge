@@ -19,14 +19,12 @@ import { FormDropdown } from '@/components/ui/form-dropdown';
 import { FormInput } from '@/components/ui/form-input';
 import { Icon } from '@/components/ui/icon';
 import { SearchBar } from '@/components/ui/search-bar';
-import { SectionTitle } from '@/components/ui/section-title';
 import { ToggleSwitch } from '@/components/ui/toggle-switch';
 import { searchSkills } from '@/lib/actions/catalog';
 import {
   EDUCATION_TYPE_LABELS,
   EMPLOYMENT_TYPE_LABELS,
   EXPERIENCE_LEVEL_LABELS,
-  GRADUATION_STATUS_LABELS,
   PROFICIENCY_LABELS,
 } from '@/lib/frontend/presentation';
 import {
@@ -191,6 +189,66 @@ const EMPTY_URL: Omit<DraftUrl, 'id'> = {
   label: '',
   url: '',
 };
+
+const BASE_SECTION_CLASS = 'w-full rounded-[20px] px-[40px] py-[20px]';
+const BASIC_SECTION_CLASS = `${BASE_SECTION_CLASS} border-2 border-[#ffefe5] bg-white`;
+
+const CORE_EDUCATION_OPTIONS = [
+  { value: 'vet_elementary', label: 'High School Diploma' },
+  { value: 'vet_college', label: 'Associate Degree' },
+  { value: 'higher_bachelor', label: "Bachelor's Degree" },
+  { value: 'higher_master', label: "Master's Degree" },
+  { value: 'higher_doctorate', label: 'Doctoral Degree' },
+  { value: 'other', label: 'Other' },
+];
+
+const EXTRA_EDUCATION_OPTIONS = Object.entries(EDUCATION_TYPE_LABELS)
+  .filter(
+    ([value]) => !CORE_EDUCATION_OPTIONS.some((item) => item.value === value)
+  )
+  .map(([value, label]) => ({ value, label }));
+
+const EDUCATION_OPTIONS = [
+  ...CORE_EDUCATION_OPTIONS,
+  ...EXTRA_EDUCATION_OPTIONS,
+];
+
+const GRADUATION_STATUS_OPTIONS = [
+  { value: 'ENROLLED', label: 'Enrolled' },
+  { value: 'ON_LEAVE', label: 'On Leave' },
+  { value: 'GRADUATED', label: 'Graduated' },
+  { value: 'EXPECTED', label: 'Expected to Graduate' },
+  { value: 'WITHDRAWN', label: 'Withdrawn' },
+];
+
+function SectionHeader({
+  title,
+  onAdd,
+}: {
+  title: string;
+  onAdd?: () => void;
+}) {
+  return (
+    <div className="flex flex-col gap-[10px]">
+      <div className="flex items-start justify-between">
+        <h2 className="text-[22px] leading-[1.5] font-bold text-[#1a1a1a]">
+          {title}
+        </h2>
+        {onAdd && (
+          <button
+            type="button"
+            onClick={onAdd}
+            className="flex size-[42px] items-center justify-center"
+            aria-label={`${title} add`}
+          >
+            <span className="text-[30px] leading-[1.5] text-[#1a1a1a]">+</span>
+          </button>
+        )}
+      </div>
+      <div className="h-px w-full bg-[#e6e6e6]" />
+    </div>
+  );
+}
 
 function createTempId(prefix: string) {
   if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function')
@@ -619,11 +677,13 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
 
   return (
     <>
-      <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-10 px-6 py-10 pb-32">
-        <section className="w-full rounded-[20px] bg-white px-10 py-5">
-          <SectionTitle title="Basic Profile" />
+      <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-[40px] px-6 py-10 pb-[140px]">
+        <section className={BASIC_SECTION_CLASS}>
+          <h2 className="text-[22px] leading-[1.5] font-bold text-[#1a1a1a]">
+            Basic Profile
+          </h2>
 
-          <div className="mt-6 flex flex-col gap-6 lg:flex-row lg:items-start">
+          <div className="mt-[25px] flex flex-col gap-6 lg:flex-row lg:items-start">
             <div className="flex flex-col items-center gap-4">
               <div className="flex h-48 w-48 items-center justify-center rounded-full bg-[#ffefe5]">
                 <Icon name="profile" size={96} alt="profile placeholder" />
@@ -756,8 +816,8 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
           </div>
         </section>
 
-        <section className="w-full rounded-[20px] bg-white px-10 py-5">
-          <SectionTitle
+        <section className={BASE_SECTION_CLASS}>
+          <SectionHeader
             title="Education"
             onAdd={() =>
               setDraft((prev) => ({
@@ -770,7 +830,7 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
             }
           />
 
-          <div className="mt-6 flex flex-col gap-6">
+          <div className="mt-[25px] flex flex-col gap-6">
             {draft.educations.map((education) => (
               <div key={education.id} className="rounded-[10px] border p-4">
                 <div className="mb-3 flex justify-end">
@@ -810,9 +870,7 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
                   <FormDropdown
                     value={education.educationType}
                     placeholder="Level of Education"
-                    options={Object.entries(EDUCATION_TYPE_LABELS).map(
-                      ([value, label]) => ({ value, label })
-                    )}
+                    options={EDUCATION_OPTIONS}
                     onChange={(value) =>
                       setDraft((prev) => ({
                         ...prev,
@@ -921,9 +979,7 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
                   <FormDropdown
                     value={education.graduationStatus}
                     placeholder="Graduation Status"
-                    options={Object.entries(GRADUATION_STATUS_LABELS).map(
-                      ([value, label]) => ({ value, label })
-                    )}
+                    options={GRADUATION_STATUS_OPTIONS}
                     onChange={(value) =>
                       setDraft((prev) => ({
                         ...prev,
@@ -941,9 +997,9 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
           </div>
         </section>
 
-        <section className="w-full rounded-[20px] bg-white px-10 py-5">
-          <SectionTitle title="Skills" />
-          <div className="mt-6 flex flex-col gap-4">
+        <section className={BASE_SECTION_CLASS}>
+          <SectionHeader title="Skills" />
+          <div className="mt-[25px] flex flex-col gap-4">
             <SearchBar
               variant="skills"
               value={searchQuery}
@@ -996,8 +1052,8 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
           </div>
         </section>
 
-        <section className="w-full rounded-[20px] bg-white px-10 py-5">
-          <SectionTitle
+        <section className={BASE_SECTION_CLASS}>
+          <SectionHeader
             title="Experience"
             onAdd={() =>
               setDraft((prev) => ({
@@ -1009,7 +1065,7 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
               }))
             }
           />
-          <div className="mt-6 flex flex-col gap-6">
+          <div className="mt-[25px] flex flex-col gap-6">
             {draft.careers.map((career) => (
               <div key={career.id} className="rounded-[10px] border p-4">
                 <div className="mb-3 flex justify-end">
@@ -1207,8 +1263,8 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
           </div>
         </section>
 
-        <section className="w-full rounded-[20px] bg-white px-10 py-5">
-          <SectionTitle
+        <section className={BASE_SECTION_CLASS}>
+          <SectionHeader
             title="Certification"
             onAdd={() =>
               setDraft((prev) => ({
@@ -1220,7 +1276,7 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
               }))
             }
           />
-          <div className="mt-6 flex flex-col gap-6">
+          <div className="mt-[25px] flex flex-col gap-6">
             {draft.certifications.map((certification) => (
               <div key={certification.id} className="rounded-[10px] border p-4">
                 <div className="mb-3 flex justify-end">
@@ -1321,8 +1377,8 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
           </div>
         </section>
 
-        <section className="w-full rounded-[20px] bg-white px-10 py-5">
-          <SectionTitle
+        <section className={BASE_SECTION_CLASS}>
+          <SectionHeader
             title="Languages"
             onAdd={() =>
               setDraft((prev) => ({
@@ -1334,7 +1390,7 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
               }))
             }
           />
-          <div className="mt-6 flex flex-col gap-6">
+          <div className="mt-[25px] flex flex-col gap-6">
             {draft.languages.map((language) => (
               <div key={language.id} className="rounded-[10px] border p-4">
                 <div className="mb-3 flex justify-end">
@@ -1433,26 +1489,29 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
           </div>
         </section>
 
-        <section className="w-full rounded-[20px] bg-white px-10 py-5">
-          <SectionTitle title="Portfolio" onAdd={() => {}} />
-          <div className="mt-6 flex flex-col gap-4">
-            <Button
+        <section className={BASE_SECTION_CLASS}>
+          <SectionHeader title="Portfolio" />
+          <div className="mt-[25px] flex flex-col gap-[25px]">
+            <button
               type="button"
-              variant="outline"
-              className="h-12 justify-start"
-              disabled
+              className="flex h-[52px] w-full items-center justify-center gap-1 rounded-[10px] bg-[#f8f8f8] px-[20px] text-[14px] font-medium text-[#666]"
             >
-              <Icon name="profile" size={20} />
-              File Upload (Coming Soon)
-            </Button>
-            <p className="text-sm text-muted-foreground">
-              파일 업로드 기능은 추후 작업에서 연결됩니다.
-            </p>
+              <Icon name="plus" size={16} />
+              File Upload
+            </button>
+            <div className="flex items-center justify-between">
+              <p className="text-[18px] leading-[1.5] font-medium text-[#333]">
+                Uploaded file
+              </p>
+              <p className="text-[16px] leading-[1.5] font-medium text-[#808080]">
+                -
+              </p>
+            </div>
           </div>
         </section>
 
-        <section className="w-full rounded-[20px] bg-white px-10 py-5">
-          <SectionTitle
+        <section className={BASE_SECTION_CLASS}>
+          <SectionHeader
             title="URL"
             onAdd={() =>
               setDraft((prev) => ({
@@ -1461,7 +1520,7 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
               }))
             }
           />
-          <div className="mt-6 flex flex-col gap-6">
+          <div className="mt-[25px] flex flex-col gap-6">
             {draft.urls.map((url) => (
               <div key={url.id} className="rounded-[10px] border p-4">
                 <div className="mb-3 flex justify-end">
@@ -1518,21 +1577,13 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
         </section>
       </div>
 
-      <div className="fixed inset-x-0 bottom-0 z-40 border-t bg-white/90 px-6 py-3 backdrop-blur">
-        <div className="mx-auto flex w-full max-w-[1200px] items-center justify-between gap-4">
-          <div className="text-sm">
-            {saveError ? (
-              <span className="text-destructive">{saveError}</span>
-            ) : isDirty ? (
-              <span className="text-[#1a1a1a]">
-                저장되지 않은 변경사항이 있습니다.
-              </span>
-            ) : (
-              <span className="text-muted-foreground">
-                모든 변경사항이 저장되었습니다.
-              </span>
-            )}
-          </div>
+      <div className="fixed inset-x-0 bottom-0 z-40 h-[81px] bg-white/80 px-[40px] py-[10px] shadow-[0_-4px_40px_0_rgba(0,0,0,0.04)] backdrop-blur-[5.7px]">
+        <div className="mx-auto flex h-full w-full max-w-[1200px] items-end justify-end gap-4">
+          {saveError && (
+            <span className="mr-auto text-sm text-destructive">
+              {saveError}
+            </span>
+          )}
           <Button
             type="button"
             variant={isDirty ? 'brand' : 'brand-disabled'}

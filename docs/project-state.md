@@ -32,6 +32,7 @@
 - 전역 `error.tsx`, `not-found.tsx`, 라우트별 `loading.tsx`/`error.tsx` 반영
 - `app/(dashboard)/candidate/profile/page.tsx`는 더 이상 slug 페이지로 리다이렉트하지 않고, 내 프로필 섹션 렌더링 + 하단 `Edit Profile` CTA 제공
 - `app/candidate/[slug]/page.tsx`의 공개 프로필 카드 상태/생년월일 표기가 로케일별 번역/포맷으로 정렬되고, 섹션 컨테이너/타이틀 스타일이 Figma node `283:2572`에 가깝게 보정됨
+- `app/(dashboard)/candidate/profile/edit/page.tsx`는 대시보드 셸을 유지한 채 콘텐츠 패널 섹션 구조/하단 Save 바/포트폴리오 표시가 Figma node `323:560`, `323:783` 기준으로 보정됨
 
 ### i18n (Phase 6)
 
@@ -109,6 +110,7 @@
 - 채용담당자 대시보드 및 지원자 관리 UI
 - 비밀번호 찾기/재설정 플로우
 - 고급 입력 UI(국가코드 선택, 커스텀 월/년 picker)
+- 디자인 시스템 공통 컴포넌트 정렬(`node 378:439` 기준 `Dropdown`, `DropdownBox`, `DropdownMenu`, `DatePicker`, `DialcodePicker`)
 
 ## 참고 문서
 
