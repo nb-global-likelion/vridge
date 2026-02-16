@@ -10,9 +10,15 @@ type Props = {
   jdId: string;
   initialApplied: boolean;
   applyId?: string;
+  allowWithdraw?: boolean;
 };
 
-export function ApplyButton({ jdId, initialApplied, applyId }: Props) {
+export function ApplyButton({
+  jdId,
+  initialApplied,
+  applyId,
+  allowWithdraw = true,
+}: Props) {
   const router = useRouter();
   const { t } = useI18n();
   const [applied, setApplied] = useState(initialApplied);
@@ -53,14 +59,16 @@ export function ApplyButton({ jdId, initialApplied, applyId }: Props) {
           <Button variant="outline" disabled>
             {t('jobs.applied')}
           </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            disabled={isPending}
-            onClick={handleWithdraw}
-          >
-            {t('jobs.withdraw')}
-          </Button>
+          {allowWithdraw && (
+            <Button
+              variant="ghost"
+              size="sm"
+              disabled={isPending}
+              onClick={handleWithdraw}
+            >
+              {t('jobs.withdraw')}
+            </Button>
+          )}
         </div>
       ) : (
         <Button disabled={isPending} onClick={handleApply}>

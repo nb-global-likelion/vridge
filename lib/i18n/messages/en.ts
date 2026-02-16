@@ -76,6 +76,7 @@ export const enMessages = {
   'jobs.withdraw': 'Withdraw',
   'jobs.applying': 'Applying...',
   'jobs.apply': 'Apply',
+  'jobs.share': 'Share',
   'jobs.skillsRequired': 'Required skills',
   'jobs.status.recruiting': 'Recruiting',
   'jobs.status.done': 'Done',

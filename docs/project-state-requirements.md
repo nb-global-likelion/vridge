@@ -48,12 +48,13 @@
 ## Job Detail (`/jobs/[id]`)
 
 - [x] 2열 레이아웃(본문 + 우측 요약/CTA)
-- [ ] 뒤로가기 화살표 인터랙션(아이콘은 있으나 동작 연결 필요)
+- [x] 뒤로가기 화살표 인터랙션(`/jobs` 이동)
 - [ ] 회사 로고 표시
 - [x] 상태 배지 표시
-- [ ] 공유(forward) 버튼
+- [x] 공유(forward) 버튼
 - [x] 요약 카드 메타데이터 완전 매칭(특히 Required Edu)
 - [x] 우측 요약 카드 내 지원 CTA
+- [x] 상세 페이지 applied 상태에서 Withdraw 미노출
 
 ## Announcements List (`/announcements`)
 
