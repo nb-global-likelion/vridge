@@ -27,6 +27,7 @@ describe('LangPicker', () => {
     const user = userEvent.setup();
     render(<LangPicker value="en" onChange={() => {}} options={options} />);
     await user.click(screen.getByRole('button'));
+    expect(screen.getAllByText('EN').length).toBeGreaterThanOrEqual(1);
     expect(screen.getByText('KR')).toBeInTheDocument();
     expect(screen.getByText('VN')).toBeInTheDocument();
   });
@@ -38,5 +39,28 @@ describe('LangPicker', () => {
     await user.click(screen.getByRole('button'));
     await user.click(screen.getByText('KR'));
     expect(handleChange).toHaveBeenCalledWith('ko');
+  });
+
+  it('open 상태에서 chevron-up 아이콘 렌더링', async () => {
+    const user = userEvent.setup();
+    const { container } = render(
+      <LangPicker value="en" onChange={() => {}} options={options} />
+    );
+
+    await user.click(screen.getByRole('button'));
+    expect(
+      container.querySelector('img[src*="chevron-up"]')
+    ).toBeInTheDocument();
+  });
+
+  it('메뉴 옵션 순서: VN -> KR -> EN', async () => {
+    const user = userEvent.setup();
+    render(<LangPicker value="en" onChange={() => {}} options={options} />);
+
+    await user.click(screen.getByRole('button'));
+    const menuButtons = screen.getAllByRole('button').slice(1);
+    const labels = menuButtons.map((button) => button.textContent);
+
+    expect(labels).toEqual(['VN', 'KR', 'EN']);
   });
 });

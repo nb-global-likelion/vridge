@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect, useMemo } from 'react';
+import { Icon } from './icon';
 
 type DatePickerProps = {
   type?: 'full' | 'month';
@@ -20,6 +21,20 @@ function formatDate(date: Date, type: 'full' | 'month') {
   return type === 'full' ? `${pad(d)}.${pad(m)}.${y}` : `${pad(m)}.${y}`;
 }
 
+const MONTH_LABELS = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+];
 const MONTHS = Array.from({ length: 12 }, (_, i) => i + 1);
 const YEARS = Array.from({ length: 50 }, (_, i) => 2030 - i);
 const DAYS = Array.from({ length: 31 }, (_, i) => i + 1);
@@ -28,20 +43,24 @@ function ScrollColumn({
   items,
   selected,
   onSelect,
+  widthClass,
   format,
 }: {
   items: number[];
   selected: number;
   onSelect: (v: number) => void;
+  widthClass: string;
   format?: (v: number) => string;
 }) {
   return (
-    <div className="flex h-[160px] flex-col gap-1 overflow-y-auto px-2">
+    <div
+      className={`flex h-[194px] flex-col gap-[10px] overflow-y-auto ${widthClass}`}
+    >
       {items.map((item) => (
         <button
           key={item}
           type="button"
-          className={`rounded-[5px] px-3 py-1 text-center text-[14px] ${
+          className={`flex h-[41px] w-full items-center justify-center rounded-[5px] px-[10px] text-center text-[14px] font-medium ${
             item === selected
               ? 'bg-[#ffefe5] font-medium text-[#ff6000]'
               : 'text-[#333] hover:bg-[#fbfbfb]'
@@ -55,10 +74,19 @@ function ScrollColumn({
   );
 }
 
+function ColumnSeparator() {
+  return (
+    <div className="flex h-full items-center">
+      <div className="h-[30px] w-[3px] rounded-[60px] bg-[#ccc]" />
+    </div>
+  );
+}
+
 export function DatePicker({
   type = 'full',
   value,
   onChange,
+  required = false,
 }: DatePickerProps) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -86,6 +114,7 @@ export function DatePicker({
 
   const hasValue = !!value;
   const placeholder = type === 'full' ? 'DD.MM.YYYY' : 'MM.YYYY';
+  const triggerWidthClass = type === 'full' ? 'min-w-[150px]' : 'min-w-[126px]';
 
   function handleSelect() {
     const date = new Date(
@@ -99,45 +128,58 @@ export function DatePicker({
     <div ref={ref} className="relative">
       <button
         type="button"
-        className={`flex h-[52px] items-center rounded-[10px] px-[20px] text-left ${
+        className={`flex h-[52px] items-center justify-between rounded-[10px] px-[20px] text-left ${triggerWidthClass} ${
           hasValue
             ? 'border border-[#b3b3b3] bg-white text-[#333]'
-            : 'bg-[#fbfbfb] text-[#999]'
+            : 'bg-[#fbfbfb] text-[#666]'
         }`}
         onClick={() => setOpen(!open)}
+        aria-expanded={open}
       >
-        {hasValue ? formatDate(value, type) : placeholder}
+        <span className="text-[14px] font-medium">
+          {hasValue ? formatDate(value, type) : placeholder}
+        </span>
+        {required && <Icon name="required" size={10} />}
       </button>
       {open && (
-        <div className="absolute z-10 mt-1 rounded-[10px] bg-white p-4 shadow-[0_0_10px_rgba(0,0,0,0.05)]">
-          <div className="flex gap-2">
+        <div className="absolute top-[57px] left-0 z-10 rounded-[10px] bg-white px-[20px] py-[10px] shadow-[0_0_10px_rgba(0,0,0,0.05)]">
+          <div className="flex items-center gap-[10px] overflow-hidden">
             {type === 'full' && (
-              <ScrollColumn
-                items={DAYS}
-                selected={selDay}
-                onSelect={setSelDay}
-                format={pad}
-              />
+              <>
+                <ScrollColumn
+                  items={DAYS}
+                  selected={selDay}
+                  onSelect={setSelDay}
+                  widthClass="w-[37px]"
+                  format={pad}
+                />
+                <ColumnSeparator />
+              </>
             )}
             <ScrollColumn
               items={MONTHS}
               selected={selMonth}
               onSelect={setSelMonth}
-              format={pad}
+              widthClass="w-[81px]"
+              format={(month) => MONTH_LABELS[month - 1]}
             />
+            <ColumnSeparator />
             <ScrollColumn
               items={YEARS}
               selected={selYear}
               onSelect={setSelYear}
+              widthClass="w-[57px]"
             />
           </div>
-          <button
-            type="button"
-            className="mt-3 w-full rounded-[60px] bg-[#ff6000] py-2 text-center text-white"
-            onClick={handleSelect}
-          >
-            Select
-          </button>
+          <div className="mt-[10px] flex justify-end">
+            <button
+              type="button"
+              className="rounded-[60px] bg-[#ff6000] px-[10px] py-[5px] text-center text-[16px] font-medium text-white"
+              onClick={handleSelect}
+            >
+              Select
+            </button>
+          </div>
         </div>
       )}
     </div>

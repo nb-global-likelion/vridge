@@ -57,4 +57,34 @@ describe('DatePicker', () => {
     await user.click(screen.getByRole('button'));
     expect(screen.getByText('Select')).toBeInTheDocument();
   });
+
+  it('required=true일 때 required 아이콘 렌더링', () => {
+    const { container } = render(<DatePicker required onChange={() => {}} />);
+    expect(container.querySelector('img[src*="required"]')).toBeInTheDocument();
+  });
+
+  it('open 상태에서 월 컬럼은 영어 월 이름을 렌더링', async () => {
+    const user = userEvent.setup();
+    render(<DatePicker onChange={() => {}} />);
+
+    await user.click(screen.getByRole('button'));
+    expect(screen.getByText('January')).toBeInTheDocument();
+    expect(screen.getByText('February')).toBeInTheDocument();
+  });
+
+  it('값 선택 후 Select 클릭 시 onChange 호출', async () => {
+    const user = userEvent.setup();
+    const handleChange = jest.fn();
+    render(<DatePicker type="month" onChange={handleChange} />);
+
+    await user.click(screen.getByRole('button'));
+    await user.click(screen.getByRole('button', { name: 'February' }));
+    await user.click(screen.getByRole('button', { name: '1999' }));
+    await user.click(screen.getByRole('button', { name: 'Select' }));
+
+    expect(handleChange).toHaveBeenCalledTimes(1);
+    const changedDate = handleChange.mock.calls[0][0] as Date;
+    expect(changedDate.getUTCMonth()).toBe(1);
+    expect(changedDate.getUTCFullYear()).toBe(1999);
+  });
 });
