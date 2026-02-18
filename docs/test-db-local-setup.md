@@ -62,13 +62,14 @@ pnpm db:test:reset
 
 `prisma/seed.ts`에서 email/password 로그인 가능한 credential 계정을 함께 생성합니다.
 
-- candidate: `minji.kim@example.com` / `Password123!`
-- recruiter: `recruiter.demo@example.com` / `Password123!`
-- admin: `admin.demo@example.com` / `Password123!`
+- candidate: `candidate@likelion.net` / `@Aaa111`
+- recruiter: `recruiter@likelion.net` / `@Aaa111`
+- admin: `likelion@likelion.net` / `@Aaa111`
 
 추가 후보자 계정:
 
-- candidate: `anh.nguyen@example.com` / `Password123!`
+- candidate: `anh.nguyen@example.com` / `@Aaa111`
+- candidate: `seed.candidate1@likelion.net` / `@Aaa111` (이후 번호 증가)
 
 > 주의: 위 비밀번호는 로컬 테스트 전용 고정값입니다. 운영/공용 환경에서 사용 금지.
 
@@ -77,9 +78,10 @@ pnpm db:test:reset
 ## 포함되는 샘플 데이터
 
 - 샘플 조직 1개
-- 샘플 JD 3개
-- 사용자 4명(역할 3종 포함)
-- 후보자 프로필(경력/학력/언어/URL/스킬)
-- 지원서(`apply`) 데이터
+- 샘플 JD 1000개 (모든 JD는 마크다운 필수 섹션 포함)
+- 공지사항 100개
+- 사용자 20명 이상 (역할 3종 포함)
+- 후보자 프로필(경력/학력/언어/URL/자격증/첨부/스킬)
+- 지원서(`apply`) 데이터 (상태별 cardinality 포함)
 
 채용담당자 뷰에서 후보자가 조회되도록 지원 데이터가 함께 시드됩니다.

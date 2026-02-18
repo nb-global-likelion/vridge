@@ -4,6 +4,19 @@ import { hashPassword } from 'better-auth/crypto';
 import { randomUUID } from 'crypto';
 import { readFileSync } from 'fs';
 import { join } from 'path';
+import {
+  assertSeedCoverage,
+  buildCanonicalUsers,
+  buildGeneratedAnnouncements,
+  buildGeneratedJobDescriptions,
+  buildGeneratedUsers,
+  buildJobDescriptionMarkdown,
+  type SampleAnnouncementSeed,
+  type SampleApplySeed,
+  type SampleJobDescriptionSeed,
+  type SampleUserSeed,
+  type SeedBuildConfig,
+} from './seed-builders';
 
 const adapter = new PrismaPg({
   connectionString: process.env.DATABASE_URL!,
@@ -35,125 +48,6 @@ interface SkillSeed {
   aliases: string[];
 }
 
-interface SampleJobDescriptionSeed {
-  id: string;
-  orgId?: string;
-  jobId: string;
-  title: string;
-  status?: 'recruiting' | 'done';
-  employmentType: 'full_time' | 'part_time' | 'intern' | 'freelance';
-  workArrangement: 'onsite' | 'hybrid' | 'remote';
-  minYearsExperience?: number;
-  minEducation?:
-    | 'vet_elementary'
-    | 'vet_intermediate'
-    | 'vet_college'
-    | 'higher_bachelor'
-    | 'higher_master'
-    | 'higher_doctorate'
-    | 'continuing_education'
-    | 'international_program'
-    | 'other';
-  salaryMin?: number;
-  salaryMax?: number;
-  salaryCurrency?: string;
-  salaryPeriod?: 'year' | 'month' | 'hour';
-  salaryIsNegotiable?: boolean;
-  descriptionMarkdown?: string;
-  skillIds: string[];
-}
-
-interface SampleProfileSeed {
-  public: {
-    firstName: string;
-    lastName: string;
-    aboutMe?: string;
-    isPublic?: boolean;
-  };
-  private: {
-    phoneNumber?: string;
-  };
-  careers: Array<{
-    id: string;
-    companyName: string;
-    positionTitle: string;
-    jobId: string;
-    employmentType: 'full_time' | 'part_time' | 'intern' | 'freelance';
-    startDate: string;
-    endDate?: string;
-    description?: string;
-    sortOrder?: number;
-  }>;
-  educations: Array<{
-    id: string;
-    institutionName: string;
-    educationType:
-      | 'vet_elementary'
-      | 'vet_intermediate'
-      | 'vet_college'
-      | 'higher_bachelor'
-      | 'higher_master'
-      | 'higher_doctorate'
-      | 'continuing_education'
-      | 'international_program'
-      | 'other';
-    field?: string;
-    graduationStatus?:
-      | 'ENROLLED'
-      | 'ON_LEAVE'
-      | 'GRADUATED'
-      | 'EXPECTED'
-      | 'WITHDRAWN';
-    startDate: string;
-    endDate?: string;
-    sortOrder?: number;
-  }>;
-  languages: Array<{
-    id: string;
-    language: string;
-    proficiency: 'native' | 'fluent' | 'professional' | 'basic';
-    sortOrder?: number;
-  }>;
-  urls: Array<{
-    id: string;
-    label: string;
-    url: string;
-    sortOrder?: number;
-  }>;
-  certifications?: Array<{
-    id: string;
-    name: string;
-    date: string;
-    description?: string;
-    institutionName?: string;
-    sortOrder?: number;
-  }>;
-  skillIds: string[];
-}
-
-interface SampleUserSeed {
-  id: string;
-  name: string;
-  email: string;
-  role: 'candidate' | 'recruiter' | 'admin';
-  orgId?: string;
-  seedPassword?: string;
-  profile?: SampleProfileSeed;
-}
-
-interface SampleApplySeed {
-  userId: string;
-  jdId: string;
-  status?: 'applied' | 'accepted' | 'rejected' | 'withdrawn';
-}
-
-interface SampleAnnouncementSeed {
-  id: string;
-  title: string;
-  content: string;
-  isPinned?: boolean;
-}
-
 const SAMPLE_IDS = {
   org: '00000000-0000-0000-0000-000000000101',
   recruiter: '00000000-0000-0000-0000-000000000201',
@@ -166,7 +60,15 @@ const SAMPLE_IDS = {
   jdContentDone: '00000000-0000-0000-0000-000000000404',
 } as const;
 
-const SAMPLE_JOB_DESCRIPTIONS: SampleJobDescriptionSeed[] = [
+const SEED_BUILD_CONFIG: SeedBuildConfig = {
+  targetUserCount: 20,
+  targetJobDescriptionCount: 1000,
+  targetAnnouncementCount: 100,
+};
+
+const CANONICAL_PASSWORD = '@Aaa111';
+
+const BASE_SAMPLE_JOB_DESCRIPTIONS: SampleJobDescriptionSeed[] = [
   {
     id: SAMPLE_IDS.jdFrontend,
     orgId: SAMPLE_IDS.org,
@@ -182,8 +84,6 @@ const SAMPLE_JOB_DESCRIPTIONS: SampleJobDescriptionSeed[] = [
     salaryCurrency: 'VND',
     salaryPeriod: 'month',
     salaryIsNegotiable: false,
-    descriptionMarkdown:
-      'Build and ship candidate-facing product features with React and Next.js.',
     skillIds: ['typescript', 'react', 'nextjs', 'css'],
   },
   {
@@ -201,8 +101,6 @@ const SAMPLE_JOB_DESCRIPTIONS: SampleJobDescriptionSeed[] = [
     salaryCurrency: 'VND',
     salaryPeriod: 'month',
     salaryIsNegotiable: true,
-    descriptionMarkdown:
-      'Design APIs, data models, and integration pipelines for ATS core services.',
     skillIds: ['nodejs', 'postgresql', 'sql', 'docker', 'aws'],
   },
   {
@@ -220,8 +118,6 @@ const SAMPLE_JOB_DESCRIPTIONS: SampleJobDescriptionSeed[] = [
     salaryCurrency: 'VND',
     salaryPeriod: 'month',
     salaryIsNegotiable: true,
-    descriptionMarkdown:
-      'Own product planning, prioritize roadmap, and collaborate across design and engineering.',
     skillIds: ['agile', 'scrum', 'project-management', 'communication'],
   },
   {
@@ -236,118 +132,32 @@ const SAMPLE_JOB_DESCRIPTIONS: SampleJobDescriptionSeed[] = [
     salaryCurrency: 'VND',
     salaryPeriod: 'month',
     salaryIsNegotiable: true,
-    descriptionMarkdown:
-      'Plan and execute content strategy, copywriting, and social media campaigns.',
     skillIds: ['communication', 'project-management', 'agile'],
   },
 ];
 
+const SAMPLE_JOB_DESCRIPTIONS: SampleJobDescriptionSeed[] =
+  BASE_SAMPLE_JOB_DESCRIPTIONS.map((jd, index) => ({
+    ...jd,
+    descriptionMarkdown: buildJobDescriptionMarkdown({
+      title: jd.title,
+      companyName: 'Vridge Demo Org',
+      index: index + 1,
+    }),
+  }));
+
 const SAMPLE_USERS: SampleUserSeed[] = [
-  {
-    id: SAMPLE_IDS.recruiter,
-    name: 'Recruiter Demo',
-    email: 'recruiter.demo@example.com',
-    role: 'recruiter',
+  ...buildCanonicalUsers({
     orgId: SAMPLE_IDS.org,
-    seedPassword: 'Password123!',
-  },
-  {
-    id: SAMPLE_IDS.admin,
-    name: 'Admin Demo',
-    email: 'admin.demo@example.com',
-    role: 'admin',
-    orgId: SAMPLE_IDS.org,
-    seedPassword: 'Password123!',
-  },
-  {
-    id: SAMPLE_IDS.candidateA,
-    name: 'Minji Kim',
-    email: 'minji.kim@example.com',
-    role: 'candidate',
-    seedPassword: 'Password123!',
-    profile: {
-      public: {
-        firstName: 'Minji',
-        lastName: 'Kim',
-        aboutMe:
-          'Frontend engineer focused on React and product UX in B2B web apps.',
-        isPublic: true,
-      },
-      private: {
-        phoneNumber: '+82-10-5555-0101',
-      },
-      careers: [
-        {
-          id: '00000000-0000-0000-0000-000000001101',
-          companyName: 'Orbit Labs',
-          positionTitle: 'Frontend Engineer',
-          jobId: 'frontend-engineer',
-          employmentType: 'full_time',
-          startDate: '2021-03-01',
-          description:
-            'Built dashboards and application workflows with Next.js.',
-          sortOrder: 1,
-        },
-      ],
-      educations: [
-        {
-          id: '00000000-0000-0000-0000-000000001201',
-          institutionName: 'Seoul National University',
-          educationType: 'higher_bachelor',
-          field: 'Computer Science',
-          graduationStatus: 'GRADUATED',
-          startDate: '2016-03-01',
-          endDate: '2020-02-28',
-          sortOrder: 1,
-        },
-      ],
-      languages: [
-        {
-          id: '00000000-0000-0000-0000-000000001301',
-          language: 'Korean',
-          proficiency: 'native',
-          sortOrder: 1,
-        },
-        {
-          id: '00000000-0000-0000-0000-000000001302',
-          language: 'English',
-          proficiency: 'professional',
-          sortOrder: 2,
-        },
-      ],
-      urls: [
-        {
-          id: '00000000-0000-0000-0000-000000001401',
-          label: 'GitHub',
-          url: 'https://github.com/minji-demo',
-          sortOrder: 1,
-        },
-      ],
-      certifications: [
-        {
-          id: '00000000-0000-0000-0000-000000001501',
-          name: 'AWS Certified Developer - Associate',
-          date: '2023-06-15',
-          institutionName: 'Amazon Web Services',
-          description: 'Associate-level certification for cloud development.',
-          sortOrder: 1,
-        },
-      ],
-      skillIds: [
-        'typescript',
-        'react',
-        'nextjs',
-        'tailwindcss',
-        'communication',
-      ],
-    },
-  },
+    password: CANONICAL_PASSWORD,
+  }),
   {
     id: SAMPLE_IDS.candidateB,
     name: 'Anh Nguyen',
     email: 'anh.nguyen@example.com',
     role: 'candidate',
-    seedPassword: 'Password123!',
+    seedPassword: CANONICAL_PASSWORD,
+    emailVerified: true,
     profile: {
       public: {
         firstName: 'Anh',
@@ -355,6 +165,7 @@ const SAMPLE_USERS: SampleUserSeed[] = [
         aboutMe:
           'Backend engineer with production experience in APIs, Postgres, and cloud deployment.',
         isPublic: true,
+        isOpenToWork: false,
       },
       private: {
         phoneNumber: '+84-90-555-0202',
@@ -367,7 +178,9 @@ const SAMPLE_USERS: SampleUserSeed[] = [
           jobId: 'backend-engineer',
           employmentType: 'full_time',
           startDate: '2020-06-01',
+          endDate: '2025-01-31',
           description: 'Implemented API services and query optimizations.',
+          experienceLevel: 'MID',
           sortOrder: 1,
         },
       ],
@@ -415,12 +228,24 @@ const SAMPLE_USERS: SampleUserSeed[] = [
           sortOrder: 1,
         },
       ],
+      attachments: [
+        {
+          id: '00000000-0000-0000-0000-000000002601',
+          label: 'Resume',
+          fileType: 'pdf',
+          mimeType: 'application/pdf',
+          sizeBytes: 209715,
+          originalFileName: 'anh-nguyen-resume.pdf',
+          s3Bucket: 'vridge-seed-local',
+          s3Key: 'profiles/anh-nguyen/resume.pdf',
+        },
+      ],
       skillIds: ['nodejs', 'postgresql', 'docker', 'aws', 'problem-solving'],
     },
   },
 ];
 
-const SAMPLE_APPLIES: SampleApplySeed[] = [
+const BASE_SAMPLE_APPLIES: SampleApplySeed[] = [
   {
     userId: SAMPLE_IDS.candidateA,
     jdId: SAMPLE_IDS.jdFrontend,
@@ -429,12 +254,12 @@ const SAMPLE_APPLIES: SampleApplySeed[] = [
   {
     userId: SAMPLE_IDS.candidateA,
     jdId: SAMPLE_IDS.jdProduct,
-    status: 'applied',
+    status: 'accepted',
   },
   {
     userId: SAMPLE_IDS.candidateB,
     jdId: SAMPLE_IDS.jdBackend,
-    status: 'applied',
+    status: 'rejected',
   },
 ];
 
@@ -464,9 +289,78 @@ function loadJson<T>(filename: string): T {
   return JSON.parse(readFileSync(path, 'utf-8'));
 }
 
-async function seedJobFamilies() {
-  const families = loadJson<JobFamilySeed[]>('job-families.json');
+function chunkArray<T>(items: T[], size: number): T[][] {
+  if (items.length === 0) return [];
 
+  const chunks: T[][] = [];
+  for (let index = 0; index < items.length; index += size) {
+    chunks.push(items.slice(index, index + size));
+  }
+  return chunks;
+}
+
+function buildSeedDataset(params: {
+  families: JobFamilySeed[];
+  skills: SkillSeed[];
+}) {
+  const { families, skills } = params;
+  const jobIds = families.flatMap((family) => family.jobs.map((job) => job.id));
+  const skillIds = skills.map((skill) => skill.id);
+
+  const generatedUsers = buildGeneratedUsers({
+    baseUsers: SAMPLE_USERS,
+    targetUserCount: SEED_BUILD_CONFIG.targetUserCount,
+    orgId: SAMPLE_IDS.org,
+    seedPassword: CANONICAL_PASSWORD,
+    jobIds,
+    skillIds,
+  });
+
+  const generatedJobDescriptions = buildGeneratedJobDescriptions({
+    baseJobDescriptions: SAMPLE_JOB_DESCRIPTIONS,
+    targetJobDescriptionCount: SEED_BUILD_CONFIG.targetJobDescriptionCount,
+    orgId: SAMPLE_IDS.org,
+    jobIds,
+    skillIds,
+  });
+
+  const generatedAnnouncements = buildGeneratedAnnouncements({
+    baseAnnouncements: SAMPLE_ANNOUNCEMENTS,
+    targetAnnouncementCount: SEED_BUILD_CONFIG.targetAnnouncementCount,
+  });
+
+  const users = [...SAMPLE_USERS, ...generatedUsers];
+  const jobDescriptions = [
+    ...SAMPLE_JOB_DESCRIPTIONS,
+    ...generatedJobDescriptions,
+  ];
+  const announcements = [...SAMPLE_ANNOUNCEMENTS, ...generatedAnnouncements];
+  const applies: SampleApplySeed[] = [
+    ...BASE_SAMPLE_APPLIES,
+    {
+      userId: generatedUsers[0]?.id ?? SAMPLE_IDS.candidateB,
+      jdId: SAMPLE_IDS.jdContentDone,
+      status: 'withdrawn',
+    },
+  ];
+
+  const coverageReport = assertSeedCoverage({
+    users,
+    jobDescriptions,
+    announcements,
+    applies,
+  });
+
+  return {
+    users,
+    jobDescriptions,
+    announcements,
+    applies,
+    coverageReport,
+  };
+}
+
+async function seedJobFamilies(families: JobFamilySeed[]) {
   for (const family of families) {
     const { jobs, ...familyData } = family;
     await prisma.jobFamily.upsert({
@@ -503,9 +397,7 @@ async function seedJobFamilies() {
   );
 }
 
-async function seedSkills() {
-  const skills = loadJson<SkillSeed[]>('skills.json');
-
+async function seedSkills(skills: SkillSeed[]) {
   for (const skill of skills) {
     const { aliases, ...skillData } = skill;
     await prisma.skill.upsert({
@@ -554,72 +446,81 @@ async function seedSampleOrg() {
   console.log('시드 완료: sample org 1');
 }
 
-async function seedSampleJobDescriptions() {
-  for (const jd of SAMPLE_JOB_DESCRIPTIONS) {
-    await prisma.jobDescription.upsert({
-      where: { id: jd.id },
-      update: {
-        orgId: jd.orgId ?? null,
-        jobId: jd.jobId,
-        title: jd.title,
-        status: jd.status ?? 'recruiting',
-        employmentType: jd.employmentType,
-        workArrangement: jd.workArrangement,
-        minYearsExperience: jd.minYearsExperience ?? null,
-        minEducation: jd.minEducation ?? null,
-        salaryMin: jd.salaryMin ?? null,
-        salaryMax: jd.salaryMax ?? null,
-        salaryCurrency: jd.salaryCurrency ?? 'VND',
-        salaryPeriod: jd.salaryPeriod ?? 'month',
-        salaryIsNegotiable: jd.salaryIsNegotiable ?? false,
-        descriptionMarkdown: jd.descriptionMarkdown ?? null,
-      },
-      create: {
-        id: jd.id,
-        orgId: jd.orgId ?? null,
-        jobId: jd.jobId,
-        title: jd.title,
-        status: jd.status ?? 'recruiting',
-        employmentType: jd.employmentType,
-        workArrangement: jd.workArrangement,
-        minYearsExperience: jd.minYearsExperience ?? null,
-        minEducation: jd.minEducation ?? null,
-        salaryMin: jd.salaryMin ?? null,
-        salaryMax: jd.salaryMax ?? null,
-        salaryCurrency: jd.salaryCurrency ?? 'VND',
-        salaryPeriod: jd.salaryPeriod ?? 'month',
-        salaryIsNegotiable: jd.salaryIsNegotiable ?? false,
-        descriptionMarkdown: jd.descriptionMarkdown ?? null,
-      },
-    });
+async function seedSampleJobDescriptions(
+  jobDescriptions: SampleJobDescriptionSeed[]
+) {
+  for (const chunk of chunkArray(jobDescriptions, 100)) {
+    for (const jd of chunk) {
+      await prisma.jobDescription.upsert({
+        where: { id: jd.id },
+        update: {
+          orgId: jd.orgId ?? null,
+          jobId: jd.jobId,
+          title: jd.title,
+          status: jd.status ?? 'recruiting',
+          employmentType: jd.employmentType,
+          workArrangement: jd.workArrangement,
+          minYearsExperience: jd.minYearsExperience ?? null,
+          minEducation: jd.minEducation ?? null,
+          salaryMin: jd.salaryMin ?? null,
+          salaryMax: jd.salaryMax ?? null,
+          salaryCurrency: jd.salaryCurrency ?? 'VND',
+          salaryPeriod: jd.salaryPeriod ?? 'month',
+          salaryIsNegotiable: jd.salaryIsNegotiable ?? false,
+          descriptionMarkdown: jd.descriptionMarkdown ?? null,
+        },
+        create: {
+          id: jd.id,
+          orgId: jd.orgId ?? null,
+          jobId: jd.jobId,
+          title: jd.title,
+          status: jd.status ?? 'recruiting',
+          employmentType: jd.employmentType,
+          workArrangement: jd.workArrangement,
+          minYearsExperience: jd.minYearsExperience ?? null,
+          minEducation: jd.minEducation ?? null,
+          salaryMin: jd.salaryMin ?? null,
+          salaryMax: jd.salaryMax ?? null,
+          salaryCurrency: jd.salaryCurrency ?? 'VND',
+          salaryPeriod: jd.salaryPeriod ?? 'month',
+          salaryIsNegotiable: jd.salaryIsNegotiable ?? false,
+          descriptionMarkdown: jd.descriptionMarkdown ?? null,
+        },
+      });
 
-    await prisma.jobDescriptionSkill.deleteMany({
-      where: { jdId: jd.id, skillId: { notIn: jd.skillIds } },
-    });
-
-    await prisma.jobDescriptionSkill.createMany({
-      data: jd.skillIds.map((skillId) => ({ jdId: jd.id, skillId })),
-      skipDuplicates: true,
-    });
+      if (jd.skillIds.length > 0) {
+        await prisma.jobDescriptionSkill.deleteMany({
+          where: { jdId: jd.id, skillId: { notIn: jd.skillIds } },
+        });
+        await prisma.jobDescriptionSkill.createMany({
+          data: jd.skillIds.map((skillId) => ({ jdId: jd.id, skillId })),
+          skipDuplicates: true,
+        });
+      } else {
+        await prisma.jobDescriptionSkill.deleteMany({
+          where: { jdId: jd.id },
+        });
+      }
+    }
   }
 
-  console.log(`시드 완료: sample jds ${SAMPLE_JOB_DESCRIPTIONS.length}`);
+  console.log(`시드 완료: sample jds ${jobDescriptions.length}`);
 }
 
-async function seedSampleUsers() {
-  for (const user of SAMPLE_USERS) {
+async function seedSampleUsers(users: SampleUserSeed[]) {
+  for (const user of users) {
     await prisma.user.upsert({
       where: { id: user.id },
       update: {
         name: user.name,
         email: user.email,
-        emailVerified: true,
+        emailVerified: user.emailVerified ?? true,
       },
       create: {
         id: user.id,
         name: user.name,
         email: user.email,
-        emailVerified: true,
+        emailVerified: user.emailVerified ?? true,
       },
     });
 
@@ -645,6 +546,13 @@ async function seedSampleUsers() {
         lastName: user.profile.public.lastName,
         aboutMe: user.profile.public.aboutMe ?? null,
         isPublic: user.profile.public.isPublic ?? true,
+        dateOfBirth: user.profile.public.dateOfBirth
+          ? dateOnly(user.profile.public.dateOfBirth)
+          : null,
+        location: user.profile.public.location ?? null,
+        headline: user.profile.public.headline ?? null,
+        isOpenToWork: user.profile.public.isOpenToWork ?? false,
+        profileImageUrl: user.profile.public.profileImageUrl ?? null,
       },
       create: {
         userId: user.id,
@@ -652,6 +560,13 @@ async function seedSampleUsers() {
         lastName: user.profile.public.lastName,
         aboutMe: user.profile.public.aboutMe ?? null,
         isPublic: user.profile.public.isPublic ?? true,
+        dateOfBirth: user.profile.public.dateOfBirth
+          ? dateOnly(user.profile.public.dateOfBirth)
+          : null,
+        location: user.profile.public.location ?? null,
+        headline: user.profile.public.headline ?? null,
+        isOpenToWork: user.profile.public.isOpenToWork ?? false,
+        profileImageUrl: user.profile.public.profileImageUrl ?? null,
       },
     });
 
@@ -666,6 +581,19 @@ async function seedSampleUsers() {
       },
     });
 
+    if (user.profile.careers.length > 0) {
+      await prisma.profileCareer.deleteMany({
+        where: {
+          userId: user.id,
+          id: { notIn: user.profile.careers.map((career) => career.id) },
+        },
+      });
+    } else {
+      await prisma.profileCareer.deleteMany({
+        where: { userId: user.id },
+      });
+    }
+
     for (const career of user.profile.careers) {
       await prisma.profileCareer.upsert({
         where: { id: career.id },
@@ -678,6 +606,7 @@ async function seedSampleUsers() {
           startDate: dateOnly(career.startDate),
           endDate: career.endDate ? dateOnly(career.endDate) : null,
           description: career.description ?? null,
+          experienceLevel: career.experienceLevel ?? null,
           sortOrder: career.sortOrder ?? 0,
         },
         create: {
@@ -690,8 +619,24 @@ async function seedSampleUsers() {
           startDate: dateOnly(career.startDate),
           endDate: career.endDate ? dateOnly(career.endDate) : null,
           description: career.description ?? null,
+          experienceLevel: career.experienceLevel ?? null,
           sortOrder: career.sortOrder ?? 0,
         },
+      });
+    }
+
+    if (user.profile.educations.length > 0) {
+      await prisma.profileEducation.deleteMany({
+        where: {
+          userId: user.id,
+          id: {
+            notIn: user.profile.educations.map((education) => education.id),
+          },
+        },
+      });
+    } else {
+      await prisma.profileEducation.deleteMany({
+        where: { userId: user.id },
       });
     }
 
@@ -722,6 +667,19 @@ async function seedSampleUsers() {
       });
     }
 
+    if (user.profile.languages.length > 0) {
+      await prisma.profileLanguage.deleteMany({
+        where: {
+          userId: user.id,
+          id: { notIn: user.profile.languages.map((language) => language.id) },
+        },
+      });
+    } else {
+      await prisma.profileLanguage.deleteMany({
+        where: { userId: user.id },
+      });
+    }
+
     for (const language of user.profile.languages) {
       await prisma.profileLanguage.upsert({
         where: { id: language.id },
@@ -729,6 +687,8 @@ async function seedSampleUsers() {
           userId: user.id,
           language: language.language,
           proficiency: language.proficiency,
+          testName: language.testName ?? null,
+          testScore: language.testScore ?? null,
           sortOrder: language.sortOrder ?? 0,
         },
         create: {
@@ -736,8 +696,23 @@ async function seedSampleUsers() {
           userId: user.id,
           language: language.language,
           proficiency: language.proficiency,
+          testName: language.testName ?? null,
+          testScore: language.testScore ?? null,
           sortOrder: language.sortOrder ?? 0,
         },
+      });
+    }
+
+    if (user.profile.urls.length > 0) {
+      await prisma.profileUrl.deleteMany({
+        where: {
+          userId: user.id,
+          id: { notIn: user.profile.urls.map((url) => url.id) },
+        },
+      });
+    } else {
+      await prisma.profileUrl.deleteMany({
+        where: { userId: user.id },
       });
     }
 
@@ -760,7 +735,23 @@ async function seedSampleUsers() {
       });
     }
 
-    for (const certification of user.profile.certifications ?? []) {
+    const certifications = user.profile.certifications ?? [];
+    if (certifications.length > 0) {
+      await prisma.profileCertification.deleteMany({
+        where: {
+          userId: user.id,
+          id: {
+            notIn: certifications.map((certification) => certification.id),
+          },
+        },
+      });
+    } else {
+      await prisma.profileCertification.deleteMany({
+        where: { userId: user.id },
+      });
+    }
+
+    for (const certification of certifications) {
       await prisma.profileCertification.upsert({
         where: { id: certification.id },
         update: {
@@ -783,23 +774,70 @@ async function seedSampleUsers() {
       });
     }
 
-    await prisma.profileSkill.deleteMany({
-      where: { userId: user.id, skillId: { notIn: user.profile.skillIds } },
-    });
-    await prisma.profileSkill.createMany({
-      data: user.profile.skillIds.map((skillId) => ({
-        userId: user.id,
-        skillId,
-      })),
-      skipDuplicates: true,
-    });
+    const attachments = user.profile.attachments ?? [];
+    if (attachments.length > 0) {
+      await prisma.profileAttachment.deleteMany({
+        where: {
+          userId: user.id,
+          id: { notIn: attachments.map((attachment) => attachment.id) },
+        },
+      });
+    } else {
+      await prisma.profileAttachment.deleteMany({
+        where: { userId: user.id },
+      });
+    }
+
+    for (const attachment of attachments) {
+      await prisma.profileAttachment.upsert({
+        where: { id: attachment.id },
+        update: {
+          userId: user.id,
+          label: attachment.label ?? null,
+          fileType: attachment.fileType,
+          mimeType: attachment.mimeType,
+          sizeBytes: BigInt(attachment.sizeBytes),
+          originalFileName: attachment.originalFileName,
+          s3Bucket: attachment.s3Bucket,
+          s3Key: attachment.s3Key,
+        },
+        create: {
+          id: attachment.id,
+          userId: user.id,
+          label: attachment.label ?? null,
+          fileType: attachment.fileType,
+          mimeType: attachment.mimeType,
+          sizeBytes: BigInt(attachment.sizeBytes),
+          originalFileName: attachment.originalFileName,
+          s3Bucket: attachment.s3Bucket,
+          s3Key: attachment.s3Key,
+        },
+      });
+    }
+
+    if (user.profile.skillIds.length > 0) {
+      await prisma.profileSkill.deleteMany({
+        where: { userId: user.id, skillId: { notIn: user.profile.skillIds } },
+      });
+      await prisma.profileSkill.createMany({
+        data: user.profile.skillIds.map((skillId) => ({
+          userId: user.id,
+          skillId,
+        })),
+        skipDuplicates: true,
+      });
+    } else {
+      await prisma.profileSkill.deleteMany({
+        where: { userId: user.id },
+      });
+    }
   }
 
-  console.log(`시드 완료: sample users ${SAMPLE_USERS.length}`);
+  console.log(`시드 완료: sample users ${users.length}`);
 }
 
-async function seedSampleCredentialAccounts() {
-  for (const user of SAMPLE_USERS) {
+async function seedSampleCredentialAccounts(users: SampleUserSeed[]) {
+  for (const user of users) {
     if (!user.seedPassword) continue;
 
     const passwordHash = await hashPassword(user.seedPassword);
@@ -836,54 +874,78 @@ async function seedSampleCredentialAccounts() {
 
   console.log('시드 완료: credential 계정 생성/갱신');
   console.log('테스트 로그인 계정');
-  console.log('  candidate: minji.kim@example.com / Password123!');
-  console.log('  recruiter: recruiter.demo@example.com / Password123!');
-  console.log('  admin: admin.demo@example.com / Password123!');
+  console.log('  candidate: candidate@likelion.net / @Aaa111');
+  console.log('  recruiter: recruiter@likelion.net / @Aaa111');
+  console.log('  admin: likelion@likelion.net / @Aaa111');
 }
 
-async function seedSampleApplies() {
-  await prisma.apply.createMany({
-    data: SAMPLE_APPLIES.map((apply) => ({
-      userId: apply.userId,
-      jdId: apply.jdId,
-      status: apply.status ?? 'applied',
-    })),
-    skipDuplicates: true,
-  });
-
-  console.log(`시드 완료: sample applies ${SAMPLE_APPLIES.length}`);
-}
-
-async function seedAnnouncements() {
-  for (const announcement of SAMPLE_ANNOUNCEMENTS) {
-    await prisma.announcement.upsert({
-      where: { id: announcement.id },
+async function seedSampleApplies(applies: SampleApplySeed[]) {
+  for (const apply of applies) {
+    await prisma.apply.upsert({
+      where: {
+        userId_jdId: {
+          userId: apply.userId,
+          jdId: apply.jdId,
+        },
+      },
       update: {
-        title: announcement.title,
-        content: announcement.content,
-        isPinned: announcement.isPinned ?? false,
+        status: apply.status ?? 'applied',
       },
       create: {
-        id: announcement.id,
-        title: announcement.title,
-        content: announcement.content,
-        isPinned: announcement.isPinned ?? false,
+        userId: apply.userId,
+        jdId: apply.jdId,
+        status: apply.status ?? 'applied',
       },
     });
   }
 
-  console.log(`시드 완료: announcements ${SAMPLE_ANNOUNCEMENTS.length}`);
+  console.log(`시드 완료: sample applies ${applies.length}`);
+}
+
+async function seedAnnouncements(announcements: SampleAnnouncementSeed[]) {
+  for (const chunk of chunkArray(announcements, 100)) {
+    for (const announcement of chunk) {
+      await prisma.announcement.upsert({
+        where: { id: announcement.id },
+        update: {
+          title: announcement.title,
+          content: announcement.content,
+          isPinned: announcement.isPinned ?? false,
+        },
+        create: {
+          id: announcement.id,
+          title: announcement.title,
+          content: announcement.content,
+          isPinned: announcement.isPinned ?? false,
+        },
+      });
+    }
+  }
+
+  console.log(`시드 완료: announcements ${announcements.length}`);
 }
 
 async function main() {
-  await seedJobFamilies();
-  await seedSkills();
+  const families = loadJson<JobFamilySeed[]>('job-families.json');
+  const skills = loadJson<SkillSeed[]>('skills.json');
+  const { users, jobDescriptions, announcements, applies, coverageReport } =
+    buildSeedDataset({
+      families,
+      skills,
+    });
+
+  await seedJobFamilies(families);
+  await seedSkills(skills);
   await seedSampleOrg();
-  await seedSampleJobDescriptions();
-  await seedAnnouncements();
-  await seedSampleUsers();
-  await seedSampleCredentialAccounts();
-  await seedSampleApplies();
+  await seedSampleJobDescriptions(jobDescriptions);
+  await seedAnnouncements(announcements);
+  await seedSampleUsers(users);
+  await seedSampleCredentialAccounts(users);
+  await seedSampleApplies(applies);
+
+  console.log(
+    `coverage 검증 통과: missing ${coverageReport.missing.length}, users ${users.length}, jds ${jobDescriptions.length}, announcements ${announcements.length}`
+  );
 }
 
 main()
