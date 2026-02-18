@@ -19,6 +19,15 @@ export const koMessages: Record<MessageKey, string> = {
   'common.actions.retry': '다시 시도',
   'common.status.loading': '로딩 중...',
 
+  'analytics.consent.title': '더 나은 구직 경험을 위해 동의가 필요해요',
+  'analytics.consent.message':
+    '서비스 품질 개선과 지원 여정 분석을 위해 분석 쿠키를 사용합니다.',
+  'analytics.consent.accept': '분석 동의',
+  'analytics.consent.reject': '분석 거부',
+  'analytics.consent.privacyLink': '개인정보 처리방침 보기',
+  'analytics.consent.privacyText':
+    '브라우저 쿠키를 통해 언제든 분석 설정을 변경할 수 있습니다.',
+
   'nav.login': '로그인',
   'nav.signup': '회원가입',
   'nav.logout': '로그아웃',

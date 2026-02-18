@@ -8,6 +8,7 @@ import { SummaryCard } from '@/entities/job/ui/summary-card';
 import { ApplyButton } from '@/features/apply/ui/apply-button';
 import { LoginToApplyCta } from './_login-to-apply-cta';
 import { ShareJobButton } from './_share-job-button';
+import { JobDetailAnalytics } from './_job-detail-analytics';
 import { getServerI18n } from '@/lib/i18n/server';
 import { getActionErrorMessage } from '@/lib/i18n/action-error';
 import { getLocalizedCatalogName } from '@/lib/i18n/catalog';
@@ -57,6 +58,7 @@ export default async function JobDetailPage({
 
   return (
     <div className="mx-auto flex w-full max-w-[1200px] items-start gap-[25px] px-6 pt-[20px] pb-[120px]">
+      <JobDetailAnalytics jdId={jd.id} locale={locale} />
       <div className="flex min-w-0 flex-1 flex-col gap-[40px]">
         <PostingTitle
           title={jd.title}

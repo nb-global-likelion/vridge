@@ -2,6 +2,7 @@
 
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Icon } from '@/components/ui/icon';
+import { trackEvent } from '@/lib/analytics/ga4';
 import {
   applyJobsQueryPatch,
   buildJobsHref,
@@ -14,15 +15,26 @@ import { useI18n } from '@/lib/i18n/client';
 export function JobSortControl() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const queryString = searchParams.toString();
   const query = parseJobsQueryFromSearchParams(searchParams);
   const currentSort = getEffectiveJobsSort(query);
-  const { t } = useI18n();
+  const { locale, t } = useI18n();
   const sortOptions: { value: JobsSort; label: string }[] = [
     { value: 'updated_desc', label: t('jobs.sort.recentUpdated') },
     { value: 'created_desc', label: t('jobs.sort.recentPosted') },
   ];
 
   function handleChange(nextSort: JobsSort) {
+    trackEvent('job_sort_change', {
+      locale,
+      page_path: queryString ? `/jobs?${queryString}` : '/jobs',
+      search_term: query.search,
+      family_id: query.familyId,
+      sort: nextSort,
+      previous_sort: currentSort,
+      page: query.page ?? 1,
+    });
+
     const nextQuery = applyJobsQueryPatch(
       query,
       {

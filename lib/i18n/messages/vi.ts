@@ -20,6 +20,15 @@ export const viMessages: Record<MessageKey, string> = {
   'common.actions.retry': 'Thử lại',
   'common.status.loading': 'Đang tải...',
 
+  'analytics.consent.title': 'Giúp chúng tôi cải thiện trải nghiệm tìm việc',
+  'analytics.consent.message':
+    'Chúng tôi sử dụng cookie phân tích để đo lường hiệu quả sản phẩm và cải thiện hành trình ứng tuyển.',
+  'analytics.consent.accept': 'Đồng ý phân tích',
+  'analytics.consent.reject': 'Từ chối phân tích',
+  'analytics.consent.privacyLink': 'Xem chính sách quyền riêng tư',
+  'analytics.consent.privacyText':
+    'Bạn có thể thay đổi lựa chọn phân tích sau này trong cài đặt cookie của trình duyệt.',
+
   'nav.announcements': 'Thông báo',
   'nav.login': 'Đăng nhập',
   'nav.signup': 'Đăng ký',

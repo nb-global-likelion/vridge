@@ -37,6 +37,8 @@ const eslintConfig = defineConfig([
     'out/**',
     'build/**',
     'next-env.d.ts',
+    // Storybook build output should not be linted.
+    'storybook-static/**',
     // Generated output should not be linted.
     'lib/generated/prisma/**',
   ]),

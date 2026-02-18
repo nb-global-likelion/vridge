@@ -3,6 +3,7 @@
 import { useState, type MouseEvent } from 'react';
 import { useCreateApply } from '@/features/apply/model/use-apply-mutations';
 import { useAuthModal } from '@/features/auth/model/use-auth-modal';
+import { trackEvent } from '@/lib/analytics/ga4';
 import { useI18n } from '@/lib/i18n/client';
 import { cn } from '@/lib/utils';
 
@@ -24,7 +25,7 @@ export function JobsListApplyCta({
   const [applied, setApplied] = useState(isApplied);
   const createApply = useCreateApply();
   const { openLogin } = useAuthModal();
-  const { t } = useI18n();
+  const { locale, t } = useI18n();
 
   const isDone = status === 'done';
   const isDisabled =
@@ -45,7 +46,24 @@ export function JobsListApplyCta({
 
     if (isDone || applied || createApply.isPending) return;
 
+    trackEvent('apply_click', {
+      locale,
+      page_path: '/jobs',
+      jd_id: jdId,
+      cta_source: 'jobs_list',
+      is_authenticated: isAuthenticated,
+      user_role: isCandidate ? 'candidate' : 'other',
+    });
+
     if (!isAuthenticated) {
+      trackEvent('auth_modal_open', {
+        locale,
+        page_path: '/jobs',
+        modal: 'login',
+        entry_point: 'jobs_list_apply',
+        is_authenticated: false,
+        user_role: 'unknown',
+      });
       openLogin();
       return;
     }
@@ -55,6 +73,25 @@ export function JobsListApplyCta({
     createApply.mutate(jdId, {
       onSuccess: () => {
         setApplied(true);
+        trackEvent('apply_success', {
+          locale,
+          page_path: '/jobs',
+          jd_id: jdId,
+          cta_source: 'jobs_list',
+          is_authenticated: true,
+          user_role: 'candidate',
+        });
+      },
+      onError: () => {
+        trackEvent('apply_error', {
+          locale,
+          page_path: '/jobs',
+          jd_id: jdId,
+          cta_source: 'jobs_list',
+          is_authenticated: true,
+          user_role: 'candidate',
+          error_code: 'apply_failed',
+        });
       },
     });
   }
