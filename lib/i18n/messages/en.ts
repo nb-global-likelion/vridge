@@ -22,6 +22,15 @@ export const enMessages = {
   'common.actions.retry': 'Retry',
   'common.status.loading': 'Loading...',
 
+  'analytics.consent.title': 'Help us improve your job search experience',
+  'analytics.consent.message':
+    'We use cookies and similar technologies to measure product performance and improve your application journey.',
+  'analytics.consent.accept': 'Accept analytics',
+  'analytics.consent.reject': 'Reject analytics',
+  'analytics.consent.privacyLink': 'Read our privacy policy',
+  'analytics.consent.privacyText':
+    'You can update your analytics preference later from browser cookies.',
+
   'nav.jobs': 'Jobs',
   'nav.announcements': 'Announcement',
   'nav.login': 'Log in',

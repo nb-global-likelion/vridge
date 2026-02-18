@@ -15,6 +15,7 @@ import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/ui/icon';
 import { LoginField } from '@/components/ui/login-field';
 import { SocialLs } from '@/components/ui/social-ls';
+import { trackEvent } from '@/lib/analytics/ga4';
 import { useI18n } from '@/lib/i18n/client';
 import { signIn } from '@/lib/infrastructure/auth-client';
 import { cn } from '@/lib/utils';
@@ -45,8 +46,10 @@ function getFirstFieldError(errors: unknown[]) {
 export function LoginModal() {
   const { isLoginOpen, closeAll, openSignup } = useAuthModal();
   const router = useRouter();
-  const { t } = useI18n();
+  const { locale, t } = useI18n();
   const [serverError, setServerError] = useState<string | null>(null);
+  const pagePath =
+    typeof window !== 'undefined' ? window.location.pathname : undefined;
   const loginSchema = z.object({
     email: z.string().email(t('auth.validation.email')),
     password: z.string().min(8, t('auth.validation.passwordMin')),
@@ -57,15 +60,40 @@ export function LoginModal() {
     validators: { onSubmit: loginSchema },
     onSubmit: async ({ value }) => {
       setServerError(null);
+      trackEvent('login_submit', {
+        locale,
+        page_path: pagePath,
+        method: 'email',
+        entry_point: 'other',
+        is_authenticated: false,
+        user_role: 'unknown',
+      });
       await signIn.email({
         email: value.email,
         password: value.password,
         fetchOptions: {
           onSuccess: () => {
+            trackEvent('login_success', {
+              locale,
+              page_path: pagePath,
+              method: 'email',
+              entry_point: 'other',
+              is_authenticated: true,
+              user_role: 'candidate',
+            });
             closeAll();
             router.push('/candidate/profile');
           },
           onError: (ctx) => {
+            trackEvent('login_error', {
+              locale,
+              page_path: pagePath,
+              method: 'email',
+              entry_point: 'other',
+              is_authenticated: false,
+              user_role: 'unknown',
+              error_code: 'login_failed',
+            });
             setServerError(
               (ctx.error as { message?: string })?.message ??
                 t('auth.login.invalidCredentials')
@@ -88,7 +116,17 @@ export function LoginModal() {
               {t('auth.login.noAccount')}{' '}
               <button
                 type="button"
-                onClick={openSignup}
+                onClick={() => {
+                  trackEvent('auth_modal_open', {
+                    locale,
+                    page_path: pagePath,
+                    modal: 'signup',
+                    entry_point: 'auth_modal_switch',
+                    is_authenticated: false,
+                    user_role: 'unknown',
+                  });
+                  openSignup();
+                }}
                 className="underline underline-offset-2"
               >
                 {t('auth.login.signupLink')}
@@ -116,22 +154,38 @@ export function LoginModal() {
               <SocialLs
                 provider="google"
                 label={t('auth.login.withGoogle')}
-                onClick={() =>
+                onClick={() => {
+                  trackEvent('login_submit', {
+                    locale,
+                    page_path: pagePath,
+                    method: 'google',
+                    entry_point: 'other',
+                    is_authenticated: false,
+                    user_role: 'unknown',
+                  });
                   signIn.social({
                     provider: 'google',
                     callbackURL: '/candidate/profile',
-                  })
-                }
+                  });
+                }}
               />
               <SocialLs
                 provider="facebook"
                 label={t('auth.login.withFacebook')}
-                onClick={() =>
+                onClick={() => {
+                  trackEvent('login_submit', {
+                    locale,
+                    page_path: pagePath,
+                    method: 'facebook',
+                    entry_point: 'other',
+                    is_authenticated: false,
+                    user_role: 'unknown',
+                  });
                   signIn.social({
                     provider: 'facebook',
                     callbackURL: '/candidate/profile',
-                  })
-                }
+                  });
+                }}
               />
             </div>
 

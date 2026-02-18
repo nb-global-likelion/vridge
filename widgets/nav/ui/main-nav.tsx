@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useSession } from '@/hooks/use-session';
 import { useAuthModal } from '@/features/auth/model/use-auth-modal';
+import { trackEvent } from '@/lib/analytics/ga4';
 import { LangPicker } from '@/components/ui/lang-picker';
 import { useI18n, serializeLocaleCookie } from '@/lib/i18n/client';
 import type { AppLocale } from '@/lib/i18n/types';
@@ -31,6 +32,30 @@ export default function MainNav() {
   function handleLocaleChange(nextLocale: AppLocale) {
     document.cookie = serializeLocaleCookie(nextLocale);
     router.refresh();
+  }
+
+  function handleOpenLogin() {
+    trackEvent('auth_modal_open', {
+      locale,
+      page_path: pathname,
+      modal: 'login',
+      entry_point: 'nav',
+      is_authenticated: Boolean(user),
+      user_role: user ? 'other' : 'unknown',
+    });
+    openLogin();
+  }
+
+  function handleOpenSignup() {
+    trackEvent('auth_modal_open', {
+      locale,
+      page_path: pathname,
+      modal: 'signup',
+      entry_point: 'nav',
+      is_authenticated: Boolean(user),
+      user_role: user ? 'other' : 'unknown',
+    });
+    openSignup();
   }
 
   return (
@@ -79,7 +104,7 @@ export default function MainNav() {
           <div className="flex h-[60px] items-center rounded-[80px] bg-white px-[20px] py-[10px] shadow-[0_0_15px_rgba(255,149,84,0.2)]">
             <button
               type="button"
-              onClick={openLogin}
+              onClick={handleOpenLogin}
               className="text-[18px] leading-[1.5] font-medium text-[#1a1a1a] hover:text-brand"
             >
               {t('nav.login')}
@@ -87,7 +112,7 @@ export default function MainNav() {
             <span className="mx-[10px] h-[16px] w-px bg-[#b3b3b3]" />
             <button
               type="button"
-              onClick={openSignup}
+              onClick={handleOpenSignup}
               className="text-[18px] leading-[1.5] font-medium text-[#1a1a1a] hover:text-brand"
             >
               {t('nav.signup')}

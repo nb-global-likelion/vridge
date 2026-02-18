@@ -1,9 +1,11 @@
 import type { Metadata } from 'next';
 import { Inter, Geist_Mono } from 'next/font/google';
 import { Suspense } from 'react';
-import { GoogleAnalytics } from '@next/third-parties/google';
 import './globals.css';
 import Providers from '@/components/providers';
+import { Ga4Bootstrap } from '@/components/analytics/ga4-bootstrap';
+import { Ga4IdentitySync } from '@/components/analytics/ga4-identity-sync';
+import { PageViewTracker } from '@/components/analytics/page-view-tracker';
 import MainNav from '@/widgets/nav/ui/main-nav';
 import { LoginModal } from '@/features/auth/ui/login-modal';
 import { SignupModal } from '@/features/auth/ui/signup-modal';
@@ -44,12 +46,14 @@ export default async function RootLayout({
           {children}
           <LoginModal />
           <SignupModal />
+          <Ga4Bootstrap />
+          <Ga4IdentitySync />
+          <PageViewTracker />
           <Suspense>
             <AuthRedirectHandler />
           </Suspense>
         </Providers>
       </body>
-      <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID!} />
     </html>
   );
 }

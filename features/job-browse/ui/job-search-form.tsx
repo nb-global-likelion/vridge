@@ -1,11 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { SearchBar } from '@/components/ui/search-bar';
+import { trackEvent } from '@/lib/analytics/ga4';
 import {
   applyJobsQueryPatch,
   buildJobsHref,
+  DEFAULT_JOBS_SORT,
   parseJobsQueryFromSearchParams,
 } from '@/features/job-browse/model/query-state';
 import { useI18n } from '@/lib/i18n/client';
@@ -18,14 +20,44 @@ export function JobSearchForm({ initialSearch = '' }: Props) {
   const [value, setValue] = useState(initialSearch);
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { t } = useI18n();
+  const queryString = searchParams.toString();
+  const query = parseJobsQueryFromSearchParams(searchParams);
+  const { locale, t } = useI18n();
+
+  useEffect(() => {
+    trackEvent('job_list_view', {
+      locale,
+      page_path: queryString ? `/jobs?${queryString}` : '/jobs',
+      search_term: query.search,
+      family_id: query.familyId,
+      sort: query.sort ?? DEFAULT_JOBS_SORT,
+      page: query.page ?? 1,
+    });
+  }, [
+    locale,
+    queryString,
+    query.search,
+    query.familyId,
+    query.sort,
+    query.page,
+  ]);
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    const query = parseJobsQueryFromSearchParams(searchParams);
+    const nextSearch = value.trim() || undefined;
+
+    trackEvent('job_search', {
+      locale,
+      page_path: queryString ? `/jobs?${queryString}` : '/jobs',
+      search_term: nextSearch,
+      family_id: query.familyId,
+      sort: query.sort ?? DEFAULT_JOBS_SORT,
+      page: query.page ?? 1,
+    });
+
     const nextQuery = applyJobsQueryPatch(
       query,
-      { search: value.trim() || undefined },
+      { search: nextSearch },
       { resetPage: true }
     );
     router.push(buildJobsHref(nextQuery));

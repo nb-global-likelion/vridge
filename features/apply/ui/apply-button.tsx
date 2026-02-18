@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { useCreateApply, useWithdrawApply } from '../model/use-apply-mutations';
+import { trackEvent } from '@/lib/analytics/ga4';
 import { useI18n } from '@/lib/i18n/client';
 
 type Props = {
@@ -20,7 +21,7 @@ export function ApplyButton({
   allowWithdraw = true,
 }: Props) {
   const router = useRouter();
-  const { t } = useI18n();
+  const { locale, t } = useI18n();
   const [applied, setApplied] = useState(initialApplied);
   const [currentApplyId, setCurrentApplyId] = useState(applyId);
 
@@ -30,13 +31,41 @@ export function ApplyButton({
   const isPending = createApply.isPending || withdrawApply.isPending;
 
   const handleApply = () => {
+    trackEvent('apply_click', {
+      locale,
+      page_path: `/jobs/${jdId}`,
+      jd_id: jdId,
+      cta_source: 'job_detail',
+      is_authenticated: true,
+      user_role: 'candidate',
+    });
+
     createApply.mutate(jdId, {
       onSuccess: (data) => {
         setApplied(true);
         if (typeof data === 'object' && data !== null && 'id' in data) {
           setCurrentApplyId((data as { id: string }).id);
         }
+        trackEvent('apply_success', {
+          locale,
+          page_path: `/jobs/${jdId}`,
+          jd_id: jdId,
+          cta_source: 'job_detail',
+          is_authenticated: true,
+          user_role: 'candidate',
+        });
         router.refresh();
+      },
+      onError: () => {
+        trackEvent('apply_error', {
+          locale,
+          page_path: `/jobs/${jdId}`,
+          jd_id: jdId,
+          cta_source: 'job_detail',
+          is_authenticated: true,
+          user_role: 'candidate',
+          error_code: 'apply_failed',
+        });
       },
     });
   };

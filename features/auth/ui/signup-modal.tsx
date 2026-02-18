@@ -14,6 +14,7 @@ import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/ui/icon';
 import { LoginField } from '@/components/ui/login-field';
 import { SocialLs } from '@/components/ui/social-ls';
+import { trackEvent } from '@/lib/analytics/ga4';
 import { useI18n } from '@/lib/i18n/client';
 import { signIn, signUp } from '@/lib/infrastructure/auth-client';
 import { cn } from '@/lib/utils';
@@ -59,11 +60,13 @@ function isDuplicateEmailError(message?: string) {
 
 export function SignupModal() {
   const { isSignupOpen, closeAll, openLogin } = useAuthModal();
-  const { t } = useI18n();
+  const { locale, t } = useI18n();
   const [step, setStep] = useState<Step>('method');
   const [privacyChecked, setPrivacyChecked] = useState(false);
   const [emailError, setEmailError] = useState<string | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
+  const pagePath =
+    typeof window !== 'undefined' ? window.location.pathname : undefined;
   const signupSchema = z.object({
     email: z.string().email(t('auth.validation.email')),
     password: z.string().min(8, t('auth.validation.passwordMin')),
@@ -86,20 +89,56 @@ export function SignupModal() {
     onSubmit: async ({ value }) => {
       setEmailError(null);
       setFormError(null);
+      trackEvent('signup_start', {
+        locale,
+        page_path: pagePath,
+        method: 'email',
+        entry_point: 'other',
+        is_authenticated: false,
+        user_role: 'unknown',
+      });
       await signUp.email({
         name: value.email.split('@')[0],
         email: value.email,
         password: value.password,
         fetchOptions: {
-          onSuccess: () => setStep('success'),
+          onSuccess: () => {
+            trackEvent('signup_success', {
+              locale,
+              page_path: pagePath,
+              method: 'email',
+              entry_point: 'other',
+              is_authenticated: true,
+              user_role: 'candidate',
+            });
+            setStep('success');
+          },
           onError: (ctx) => {
             const errorMessage = (ctx.error as { message?: string })?.message;
 
             if (isDuplicateEmailError(errorMessage)) {
+              trackEvent('signup_error', {
+                locale,
+                page_path: pagePath,
+                method: 'email',
+                entry_point: 'other',
+                is_authenticated: false,
+                user_role: 'unknown',
+                error_code: 'duplicate_email',
+              });
               setEmailError(t('auth.signup.duplicateEmail'));
               return;
             }
 
+            trackEvent('signup_error', {
+              locale,
+              page_path: pagePath,
+              method: 'email',
+              entry_point: 'other',
+              is_authenticated: false,
+              user_role: 'unknown',
+              error_code: 'signup_failed',
+            });
             setFormError(errorMessage ?? t('auth.signup.failed'));
           },
         },
@@ -125,7 +164,17 @@ export function SignupModal() {
                 {t('auth.signup.haveAccount')}{' '}
                 <button
                   type="button"
-                  onClick={openLogin}
+                  onClick={() => {
+                    trackEvent('auth_modal_open', {
+                      locale,
+                      page_path: pagePath,
+                      modal: 'login',
+                      entry_point: 'auth_modal_switch',
+                      is_authenticated: false,
+                      user_role: 'unknown',
+                    });
+                    openLogin();
+                  }}
                   className="underline underline-offset-2"
                 >
                   {t('auth.signup.loginLink')}
@@ -156,23 +205,39 @@ export function SignupModal() {
                   <SocialLs
                     provider="google"
                     label={t('auth.signup.withGoogle')}
-                    onClick={() =>
+                    onClick={() => {
+                      trackEvent('signup_start', {
+                        locale,
+                        page_path: pagePath,
+                        method: 'google',
+                        entry_point: 'other',
+                        is_authenticated: false,
+                        user_role: 'unknown',
+                      });
                       signIn.social({
                         provider: 'google',
                         callbackURL: '/candidate/profile',
-                      })
-                    }
+                      });
+                    }}
                   />
 
                   <SocialLs
                     provider="facebook"
                     label={t('auth.signup.withFacebook')}
-                    onClick={() =>
+                    onClick={() => {
+                      trackEvent('signup_start', {
+                        locale,
+                        page_path: pagePath,
+                        method: 'facebook',
+                        entry_point: 'other',
+                        is_authenticated: false,
+                        user_role: 'unknown',
+                      });
                       signIn.social({
                         provider: 'facebook',
                         callbackURL: '/candidate/profile',
-                      })
-                    }
+                      });
+                    }}
                   />
                 </div>
 
@@ -187,7 +252,17 @@ export function SignupModal() {
                 <SocialLs
                   provider="email"
                   label={t('auth.signup.withEmail')}
-                  onClick={() => setStep('form')}
+                  onClick={() => {
+                    trackEvent('signup_start', {
+                      locale,
+                      page_path: pagePath,
+                      method: 'email',
+                      entry_point: 'other',
+                      is_authenticated: false,
+                      user_role: 'unknown',
+                    });
+                    setStep('form');
+                  }}
                 />
               </>
             )}
