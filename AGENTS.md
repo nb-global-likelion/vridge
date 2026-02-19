@@ -110,6 +110,8 @@ YOU MUST follow this debugging framework for ANY technical issue:
 - Document architectural decisions and their outcomes
 - Track patterns in user feedback to improve collaboration
 - Document unrelated issues there rather than fixing immediately
+- Parentheses in file paths can break shell commands if unquoted. Always quote paths containing `(` or `)`.
+- Example: `sed -n '1,120p' 'app/(dashboard)/candidate/profile/edit/page.tsx'` (not `sed -n '1,120p' app/(dashboard)/candidate/profile/edit/page.tsx`)
 
 ## Documentation Guidelines
 
