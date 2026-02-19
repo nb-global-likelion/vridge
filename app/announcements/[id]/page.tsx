@@ -68,7 +68,7 @@ export default async function AnnouncementDetailPage({
       </div>
 
       <div className="rounded-[20px] bg-[#fbfbfb] px-[20px] pt-[20px] pb-[40px]">
-        <div className="text-[18px] leading-[1.5] font-medium text-[#333] [&_li]:mb-[4px] [&_li:last-child]:mb-0 [&_p]:mb-[14px] [&_p:last-child]:mb-0 [&_ul]:my-[14px] [&_ul]:list-disc [&_ul]:pl-[27px]">
+        <div className="text-[18px] leading-[1.5] font-medium text-[#4c4c4c] [&_h2]:mb-[40px] [&_h2]:border-b [&_h2]:border-[#d7d7d7] [&_h2]:pb-[10px] [&_h2]:text-[22px] [&_h2]:leading-[1.5] [&_h2]:font-bold [&_h2]:text-[#1a1a1a] [&_h2:not(:first-of-type)]:mt-[80px] [&_li]:mb-[4px] [&_li:last-child]:mb-0 [&_p]:m-0 [&_ul]:m-0 [&_ul]:list-disc [&_ul]:pl-[27px]">
           <ReactMarkdown>{announcement.content}</ReactMarkdown>
         </div>
       </div>

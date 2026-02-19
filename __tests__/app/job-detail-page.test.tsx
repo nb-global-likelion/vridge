@@ -98,6 +98,16 @@ const mockHeaders = headers as unknown as jest.Mock;
 const mockGetSession = auth.api.getSession as unknown as jest.Mock;
 const mockGetJobDescriptionById = getJobDescriptionById as unknown as jest.Mock;
 const mockGetMyApplications = getMyApplications as unknown as jest.Mock;
+const JOB_MARKDOWN_FIXTURE = [
+  '## About Us',
+  '',
+  'Vridge builds practical ATS workflows.',
+  '',
+  '## Responsibilities',
+  '',
+  '- Build and deliver roadmap items.',
+  '- Collaborate with product and design.',
+].join('\n');
 
 describe('JobDetailPage', () => {
   beforeEach(() => {
@@ -111,7 +121,7 @@ describe('JobDetailPage', () => {
       data: {
         id: 'jd-1',
         title: '[Likelion] UXUI Designer / Full-time / 3+ Years',
-        descriptionMarkdown: '## About Us\ncontent',
+        descriptionMarkdown: JOB_MARKDOWN_FIXTURE,
         createdAt: new Date('2026-02-16T00:00:00.000Z'),
         workArrangement: 'remote',
         minYearsExperience: 3,
@@ -146,6 +156,25 @@ describe('JobDetailPage', () => {
       'data-allow-withdraw',
       'false'
     );
+
+    const markdownText = screen.getByText(/## About Us/);
+    const markdownWrapper = markdownText.closest('div')?.parentElement;
+    expect(markdownWrapper).toHaveClass(
+      'text-[18px]',
+      '[&_h2]:text-[22px]',
+      '[&_ul]:list-disc',
+      '[&_ul]:pl-[27px]',
+      '[&_li]:mb-[4px]'
+    );
+    const markdownCard = markdownWrapper?.parentElement;
+    expect(markdownCard).toHaveClass(
+      'bg-[#fbfbfb]',
+      'rounded-[20px]',
+      'px-[40px]',
+      'pt-[20px]',
+      'pb-[40px]'
+    );
+
     expect(screen.getByRole('button', { name: 'Share' })).toBeInTheDocument();
     expect(screen.queryByTestId('login-to-apply-cta')).toBeNull();
   });

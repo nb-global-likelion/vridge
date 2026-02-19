@@ -72,8 +72,8 @@ export default async function JobDetailPage({
         />
 
         {jd.descriptionMarkdown && (
-          <div className="w-full rounded-[20px] bg-[#fbfbfb] px-[40px] py-[20px]">
-            <div className="prose prose-sm max-w-none text-[#4c4c4c]">
+          <div className="w-full rounded-[20px] bg-[#fbfbfb] px-[40px] pt-[20px] pb-[40px]">
+            <div className="text-[18px] leading-[1.5] font-medium text-[#4c4c4c] [&_h2]:mb-[40px] [&_h2]:border-b [&_h2]:border-[#d7d7d7] [&_h2]:pb-[10px] [&_h2]:text-[22px] [&_h2]:leading-[1.5] [&_h2]:font-bold [&_h2]:text-[#1a1a1a] [&_h2:not(:first-of-type)]:mt-[80px] [&_li]:mb-[4px] [&_li:last-child]:mb-0 [&_p]:m-0 [&_ul]:m-0 [&_ul]:list-disc [&_ul]:pl-[27px]">
               <ReactMarkdown>{jd.descriptionMarkdown}</ReactMarkdown>
             </div>
           </div>

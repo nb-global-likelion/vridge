@@ -35,6 +35,16 @@ const mockGetAnnouncementById = getAnnouncementById as unknown as jest.Mock;
 const mockGetAnnouncementNeighbors =
   getAnnouncementNeighbors as unknown as jest.Mock;
 const mockNotFound = notFound as unknown as jest.Mock;
+const ANNOUNCEMENT_MARKDOWN_FIXTURE = [
+  '## About Us',
+  '',
+  'Announcement body paragraph.',
+  '',
+  '## Responsibilities',
+  '',
+  '- Publish release notes',
+  '- Share operational updates',
+].join('\n');
 
 describe('AnnouncementDetailPage', () => {
   beforeEach(() => {
@@ -47,7 +57,7 @@ describe('AnnouncementDetailPage', () => {
       data: {
         id: 'ann-1',
         title: 'About Vridge',
-        content: '안내 본문',
+        content: ANNOUNCEMENT_MARKDOWN_FIXTURE,
         isPinned: true,
         createdAt: new Date('2026-02-06T00:00:00.000Z'),
         updatedAt: new Date('2026-02-06T00:00:00.000Z'),
@@ -84,9 +94,17 @@ describe('AnnouncementDetailPage', () => {
     expect(heading).toHaveClass('text-[30px]', 'leading-[1.5]');
     expect(screen.getByText('(Pinned)')).toBeInTheDocument();
 
-    const contentText = screen.getByText('안내 본문');
-    const contentCard =
-      contentText.closest('div')?.parentElement?.parentElement;
+    const markdownText = screen.getByText(/## About Us/);
+    const markdownWrapper = markdownText.closest('div')?.parentElement;
+    expect(markdownWrapper).toHaveClass(
+      'text-[18px]',
+      '[&_h2]:text-[22px]',
+      '[&_ul]:list-disc',
+      '[&_ul]:pl-[27px]',
+      '[&_li]:mb-[4px]'
+    );
+
+    const contentCard = markdownWrapper?.parentElement;
     expect(contentCard).toHaveClass(
       'bg-[#fbfbfb]',
       'rounded-[20px]',
