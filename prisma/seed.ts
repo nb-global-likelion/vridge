@@ -4,6 +4,7 @@ import { hashPassword } from 'better-auth/crypto';
 import { randomUUID } from 'crypto';
 import { readFileSync } from 'fs';
 import { join } from 'path';
+import { toDateOnlyUtc } from '../lib/date-only';
 import {
   assertSeedCoverage,
   buildCanonicalUsers,
@@ -280,10 +281,6 @@ const SAMPLE_ANNOUNCEMENTS: SampleAnnouncementSeed[] = [
   },
 ];
 
-function dateOnly(value: string): Date {
-  return new Date(`${value}T00:00:00.000Z`);
-}
-
 function loadJson<T>(filename: string): T {
   const path = join(__dirname, 'seed-data', filename);
   return JSON.parse(readFileSync(path, 'utf-8'));
@@ -547,7 +544,7 @@ async function seedSampleUsers(users: SampleUserSeed[]) {
         aboutMe: user.profile.public.aboutMe ?? null,
         isPublic: user.profile.public.isPublic ?? true,
         dateOfBirth: user.profile.public.dateOfBirth
-          ? dateOnly(user.profile.public.dateOfBirth)
+          ? toDateOnlyUtc(user.profile.public.dateOfBirth)
           : null,
         location: user.profile.public.location ?? null,
         headline: user.profile.public.headline ?? null,
@@ -561,7 +558,7 @@ async function seedSampleUsers(users: SampleUserSeed[]) {
         aboutMe: user.profile.public.aboutMe ?? null,
         isPublic: user.profile.public.isPublic ?? true,
         dateOfBirth: user.profile.public.dateOfBirth
-          ? dateOnly(user.profile.public.dateOfBirth)
+          ? toDateOnlyUtc(user.profile.public.dateOfBirth)
           : null,
         location: user.profile.public.location ?? null,
         headline: user.profile.public.headline ?? null,
@@ -603,8 +600,8 @@ async function seedSampleUsers(users: SampleUserSeed[]) {
           positionTitle: career.positionTitle,
           jobId: career.jobId,
           employmentType: career.employmentType,
-          startDate: dateOnly(career.startDate),
-          endDate: career.endDate ? dateOnly(career.endDate) : null,
+          startDate: toDateOnlyUtc(career.startDate),
+          endDate: career.endDate ? toDateOnlyUtc(career.endDate) : null,
           description: career.description ?? null,
           experienceLevel: career.experienceLevel ?? null,
           sortOrder: career.sortOrder ?? 0,
@@ -616,8 +613,8 @@ async function seedSampleUsers(users: SampleUserSeed[]) {
           positionTitle: career.positionTitle,
           jobId: career.jobId,
           employmentType: career.employmentType,
-          startDate: dateOnly(career.startDate),
-          endDate: career.endDate ? dateOnly(career.endDate) : null,
+          startDate: toDateOnlyUtc(career.startDate),
+          endDate: career.endDate ? toDateOnlyUtc(career.endDate) : null,
           description: career.description ?? null,
           experienceLevel: career.experienceLevel ?? null,
           sortOrder: career.sortOrder ?? 0,
@@ -649,8 +646,8 @@ async function seedSampleUsers(users: SampleUserSeed[]) {
           educationType: education.educationType,
           field: education.field ?? null,
           graduationStatus: education.graduationStatus ?? 'ENROLLED',
-          startDate: dateOnly(education.startDate),
-          endDate: education.endDate ? dateOnly(education.endDate) : null,
+          startDate: toDateOnlyUtc(education.startDate),
+          endDate: education.endDate ? toDateOnlyUtc(education.endDate) : null,
           sortOrder: education.sortOrder ?? 0,
         },
         create: {
@@ -660,8 +657,8 @@ async function seedSampleUsers(users: SampleUserSeed[]) {
           educationType: education.educationType,
           field: education.field ?? null,
           graduationStatus: education.graduationStatus ?? 'ENROLLED',
-          startDate: dateOnly(education.startDate),
-          endDate: education.endDate ? dateOnly(education.endDate) : null,
+          startDate: toDateOnlyUtc(education.startDate),
+          endDate: education.endDate ? toDateOnlyUtc(education.endDate) : null,
           sortOrder: education.sortOrder ?? 0,
         },
       });
@@ -757,7 +754,7 @@ async function seedSampleUsers(users: SampleUserSeed[]) {
         update: {
           userId: user.id,
           name: certification.name,
-          date: dateOnly(certification.date),
+          date: toDateOnlyUtc(certification.date),
           description: certification.description ?? null,
           institutionName: certification.institutionName ?? null,
           sortOrder: certification.sortOrder ?? 0,
@@ -766,7 +763,7 @@ async function seedSampleUsers(users: SampleUserSeed[]) {
           id: certification.id,
           userId: user.id,
           name: certification.name,
-          date: dateOnly(certification.date),
+          date: toDateOnlyUtc(certification.date),
           description: certification.description ?? null,
           institutionName: certification.institutionName ?? null,
           sortOrder: certification.sortOrder ?? 0,

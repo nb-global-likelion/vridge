@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/infrastructure/db';
 import { notFound, conflict } from '@/lib/domain/errors';
+import { toDateOnlyUtc } from '@/lib/date-only';
 import type { z } from 'zod';
 import type {
   profilePublicSchema,
@@ -22,29 +23,25 @@ const READONLY_PROFILE_INCLUDE = {
   certifications: { orderBy: { sortOrder: 'asc' } },
 } as const;
 
-function parseDateOnly(value: string): Date {
-  return new Date(`${value}T00:00:00.000Z`);
-}
-
 function toPublicProfileWriteData(data: z.infer<typeof profilePublicSchema>) {
   return data.dateOfBirth
-    ? { ...data, dateOfBirth: parseDateOnly(data.dateOfBirth) }
+    ? { ...data, dateOfBirth: toDateOnlyUtc(data.dateOfBirth) }
     : data;
 }
 
 function toCareerWriteData(data: z.infer<typeof profileCareerSchema>) {
   return {
     ...data,
-    startDate: parseDateOnly(data.startDate),
-    endDate: data.endDate ? parseDateOnly(data.endDate) : undefined,
+    startDate: toDateOnlyUtc(data.startDate),
+    endDate: data.endDate ? toDateOnlyUtc(data.endDate) : undefined,
   };
 }
 
 function toEducationWriteData(data: z.infer<typeof profileEducationSchema>) {
   return {
     ...data,
-    startDate: parseDateOnly(data.startDate),
-    endDate: data.endDate ? parseDateOnly(data.endDate) : undefined,
+    startDate: toDateOnlyUtc(data.startDate),
+    endDate: data.endDate ? toDateOnlyUtc(data.endDate) : undefined,
   };
 }
 
@@ -53,7 +50,7 @@ function toCertificationWriteData(
 ) {
   return {
     ...data,
-    date: parseDateOnly(data.date),
+    date: toDateOnlyUtc(data.date),
   };
 }
 
