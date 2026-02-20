@@ -227,7 +227,7 @@ model ProfilesPublic {
   lastName  String   @default("") @map("last_name")
   aboutMe   String?  @map("about_me")
   isPublic  Boolean  @default(true) @map("is_public")
-  publicSlug String  @unique @map("public_slug") @db.Text @default(dbgenerated("public.generate_profile_slug()"))
+  publicSlug String  @unique @map("public_slug") @db.Text @default(dbgenerated("generate_profile_slug()"))
   dateOfBirth     DateTime? @map("date_of_birth") @db.Date
   location        String?
   headline        String?
