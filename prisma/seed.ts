@@ -68,6 +68,17 @@ const SEED_BUILD_CONFIG: SeedBuildConfig = {
 };
 
 const CANONICAL_PASSWORD = '@Aaa111!';
+type SeedScope = 'full' | 'prod_v0_1_core3';
+
+function resolveSeedScope(rawScope: string | undefined): SeedScope {
+  if (!rawScope) return 'full';
+  if (rawScope === 'full' || rawScope === 'prod_v0_1_core3') {
+    return rawScope;
+  }
+
+  console.warn(`알 수 없는 SEED_SCOPE(${rawScope})로 full 모드를 사용합니다.`);
+  return 'full';
+}
 
 const BASE_SAMPLE_JOB_DESCRIPTIONS: SampleJobDescriptionSeed[] = [
   {
@@ -925,6 +936,26 @@ async function seedAnnouncements(announcements: SampleAnnouncementSeed[]) {
 async function main() {
   const families = loadJson<JobFamilySeed[]>('job-families.json');
   const skills = loadJson<SkillSeed[]>('skills.json');
+  const seedScope = resolveSeedScope(process.env.SEED_SCOPE);
+
+  if (seedScope === 'prod_v0_1_core3') {
+    const coreUsers = buildCanonicalUsers({
+      orgId: SAMPLE_IDS.org,
+      password: CANONICAL_PASSWORD,
+    });
+
+    await seedJobFamilies(families);
+    await seedSkills(skills);
+    await seedSampleOrg();
+    await seedSampleUsers(coreUsers);
+    await seedSampleCredentialAccounts(coreUsers);
+
+    console.log(
+      `seed scope(${seedScope}) 완료: families ${families.length}, jobs ${families.reduce((sum, f) => sum + f.jobs.length, 0)}, skills ${skills.length}, users ${coreUsers.length}`
+    );
+    return;
+  }
+
   const { users, jobDescriptions, announcements, applies, coverageReport } =
     buildSeedDataset({
       families,
