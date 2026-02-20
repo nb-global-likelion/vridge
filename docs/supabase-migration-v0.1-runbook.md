@@ -45,7 +45,7 @@ ls prisma/migrations
 ```bash
 DATABASE_URL='postgresql://<user>:<password>@<host>:5432/<db_name>?sslmode=require' \
 DIRECT_URL='postgresql://<user>:<password>@<host>:5432/<db_name>?sslmode=require' \
-pnpm db:prod:migrate
+pnpm exec prisma migrate deploy
 ```
 
 내부적으로 실행되는 명령:
@@ -164,7 +164,7 @@ from generate_series(1, 5);
 배포 중:
 
 - 운영 direct URL 사용 확인
-- `pnpm db:prod:migrate` 성공 확인
+- `pnpm exec prisma migrate deploy` 성공 확인
 - `pnpm db:prod:seed:v0.1` 성공 확인
 
 배포 후:
