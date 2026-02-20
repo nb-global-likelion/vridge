@@ -109,11 +109,8 @@ YOU MUST follow this debugging framework for ANY technical issue:
 - Track patterns in user feedback to improve collaboration
 - Document unrelated issues there rather than fixing immediately
 
-# Technical knowledge
-
-(To be replaced with skills)
-
 ## Documentation Guidelines
 
 - Conversation with Ori is in English
+- Skill files (`SKILL.md`) and prompt plan files are instructions optimized for Claude — write them in English for clarity
 - All other written artifacts must be in Korean: PR titles/descriptions, commit messages, code comments, documentation files, and issue descriptions

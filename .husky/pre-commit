@@ -1,3 +1,3 @@
-tsc --noEmit
-prisma validate
-lint-staged
+pnpm exec tsc --noEmit
+pnpm exec prisma validate
+pnpm exec lint-staged

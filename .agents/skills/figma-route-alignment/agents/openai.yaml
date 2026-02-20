@@ -1,0 +1,4 @@
+interface:
+  display_name: 'Figma Route Alignment'
+  short_description: 'Fix Figma-vs-route mismatches with verified workflow'
+  default_prompt: 'Use $figma-route-alignment to audit and fix item #N from fix_needed.md against its Figma node.'

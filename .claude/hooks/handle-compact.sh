@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 # ABOUTME: Compact slash command hook that provides context injection
 # ABOUTME: Enhances /compact with conversation focus and learning reminders
 
@@ -7,8 +7,9 @@ set -e
 USER_PROMPT=$(echo "$1" | jq -r '.prompt // empty')
 
 # Check if this is a /compact command
-if [[ "$USER_PROMPT" =~ ^/compact ]]; then
-    COMPACT_CONTEXT=$(cat << 'EOF'
+case "$USER_PROMPT" in
+    /compact*)
+        COMPACT_CONTEXT=$(cat << EOF
 
 COMPACT MODE ACTIVATED
 
@@ -21,7 +22,8 @@ Guidelines:
 
 EOF
 )
-    echo "$COMPACT_CONTEXT"
-fi
+        echo "$COMPACT_CONTEXT"
+        ;;
+esac
 
 exit 0

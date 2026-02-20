@@ -38,6 +38,13 @@ enum WorkArrangement {
   @@map("work_arrangement")
 }
 
+enum JobPostingStatus {
+  recruiting
+  done
+
+  @@map("job_posting_status")
+}
+
 enum LanguageProficiency {
   native
   fluent
@@ -81,6 +88,26 @@ enum ApplyStatus {
   @@map("apply_status")
 }
 
+enum ExperienceLevel {
+  ENTRY
+  JUNIOR
+  MID
+  SENIOR
+  LEAD
+
+  @@map("experience_level")
+}
+
+enum GraduationStatus {
+  ENROLLED
+  ON_LEAVE
+  GRADUATED
+  EXPECTED
+  WITHDRAWN
+
+  @@map("graduation_status")
+}
+
 enum SalaryPeriod {
   year
   month
@@ -88,6 +115,72 @@ enum SalaryPeriod {
 
   @@map("salary_period")
 }
+
+// BetterAuth 핵심 테이블
+
+model User {
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name          String
+  email         String   @unique
+  emailVerified Boolean  @default(false) @map("email_verified")
+  image         String?
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt     DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  sessions Session[]
+  accounts Account[]
+  appUser  AppUser?
+
+  @@map("user")
+}
+
+model Session {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  token     String   @unique
+  expiresAt DateTime @map("expires_at") @db.Timestamptz
+  ipAddress String?  @map("ip_address")
+  userAgent String?  @map("user_agent")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId                String    @map("user_id") @db.Uuid
+  accountId             String    @map("account_id")
+  providerId            String    @map("provider_id")
+  accessToken           String?   @map("access_token")
+  refreshToken          String?   @map("refresh_token")
+  accessTokenExpiresAt  DateTime? @map("access_token_expires_at") @db.Timestamptz
+  refreshTokenExpiresAt DateTime? @map("refresh_token_expires_at") @db.Timestamptz
+  scope                 String?
+  idToken               String?   @map("id_token")
+  password              String?
+  createdAt             DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt             DateTime  @updatedAt @map("updated_at") @db.Timestamptz
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  identifier String
+  value      String
+  expiresAt  DateTime @map("expires_at") @db.Timestamptz
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt  DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@map("verification")
+}
+
+// 앱 도메인 테이블
 
 model Org {
   id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
@@ -103,12 +196,13 @@ model Org {
 
 model AppUser {
   id        String   @id @db.Uuid // BetterAuth user id
-  orgId     String   @map("org_id") @db.Uuid
+  orgId     String?  @map("org_id") @db.Uuid
   role      AppRole  @default(candidate)
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
 
-  org Org @relation(fields: [orgId], references: [id], onDelete: Restrict)
+  authUser User @relation(fields: [id], references: [id], onDelete: Cascade)
+  org      Org? @relation(fields: [orgId], references: [id], onDelete: Restrict)
 
   profilePublic  ProfilesPublic?
   profilePrivate ProfilesPrivate?
@@ -118,7 +212,8 @@ model AppUser {
   educations    ProfileEducation[]
   urls          ProfileUrl[]
   attachments   ProfileAttachment[]
-  profileSkills ProfileSkill[]
+  profileSkills  ProfileSkill[]
+  certifications ProfileCertification[]
 
   applies Apply[]
 
@@ -131,6 +226,13 @@ model ProfilesPublic {
   firstName String   @default("") @map("first_name")
   lastName  String   @default("") @map("last_name")
   aboutMe   String?  @map("about_me")
+  isPublic  Boolean  @default(true) @map("is_public")
+  publicSlug String  @unique @map("public_slug") @db.Text @default(dbgenerated("generate_profile_slug()"))
+  dateOfBirth     DateTime? @map("date_of_birth") @db.Date
+  location        String?
+  headline        String?
+  isOpenToWork    Boolean   @default(false) @map("is_open_to_work")
+  profileImageUrl String?   @map("profile_image_url")
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
 
@@ -155,6 +257,8 @@ model ProfileLanguage {
   userId      String              @map("user_id") @db.Uuid
   language    String
   proficiency LanguageProficiency
+  testName    String?             @map("test_name")
+  testScore   String?             @map("test_score")
   sortOrder   Int                 @default(0) @map("sort_order")
   createdAt   DateTime            @default(now()) @map("created_at") @db.Timestamptz
   updatedAt   DateTime            @updatedAt @map("updated_at") @db.Timestamptz
@@ -175,10 +279,11 @@ model ProfileCareer {
   employmentType EmploymentType @map("employment_type")
   startDate      DateTime       @map("start_date") @db.Date
   endDate        DateTime?      @map("end_date") @db.Date
-  description    String?
-  sortOrder      Int            @default(0) @map("sort_order")
-  createdAt      DateTime       @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt      DateTime       @updatedAt @map("updated_at") @db.Timestamptz
+  description     String?
+  experienceLevel ExperienceLevel? @map("experience_level")
+  sortOrder       Int            @default(0) @map("sort_order")
+  createdAt       DateTime       @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt       DateTime       @updatedAt @map("updated_at") @db.Timestamptz
 
   user AppUser @relation(fields: [userId], references: [id], onDelete: Cascade)
   job  Job     @relation(fields: [jobId], references: [id], onDelete: Restrict)
@@ -194,7 +299,7 @@ model ProfileEducation {
   institutionName String          @map("institution_name")
   educationType   EducationTypeVn @map("education_type")
   field           String?
-  isGraduated     Boolean         @default(false) @map("is_graduated")
+  graduationStatus GraduationStatus @default(ENROLLED) @map("graduation_status")
   startDate       DateTime        @map("start_date") @db.Date
   endDate         DateTime?       @map("end_date") @db.Date
   sortOrder       Int             @default(0) @map("sort_order")
@@ -324,9 +429,10 @@ model ProfileSkill {
 
 model JobDescription {
   id                 String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  orgId              String           @map("org_id") @db.Uuid
+  orgId              String?          @map("org_id") @db.Uuid
   jobId              String           @map("job_id") @db.Text
   title              String
+  status             JobPostingStatus @default(recruiting)
   employmentType     EmploymentType   @map("employment_type")
   workArrangement    WorkArrangement  @map("work_arrangement")
   minYearsExperience Int?             @map("min_years_experience")
@@ -343,7 +449,7 @@ model JobDescription {
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
 
-  org Org @relation(fields: [orgId], references: [id], onDelete: Restrict)
+  org Org? @relation(fields: [orgId], references: [id], onDelete: Restrict)
   job Job @relation(fields: [jobId], references: [id], onDelete: Restrict)
 
   skills  JobDescriptionSkill[]
@@ -385,4 +491,32 @@ model Apply {
   @@index([userId], map: "apply_user_idx")
   @@index([jdId], map: "apply_jd_idx")
   @@map("apply")
+}
+
+model ProfileCertification {
+  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId          String   @map("user_id") @db.Uuid
+  name            String
+  date            DateTime @db.Date
+  description     String?
+  institutionName String?  @map("institution_name")
+  sortOrder       Int      @default(0) @map("sort_order")
+  createdAt       DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt       DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  user AppUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId], map: "profile_certification_user_idx")
+  @@map("profile_certification")
+}
+
+model Announcement {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title     String
+  content   String
+  isPinned  Boolean  @default(false) @map("is_pinned")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@map("announcement")
 }

@@ -1,0 +1,436 @@
+[
+  {
+    "id": "javascript",
+    "displayNameEn": "JavaScript",
+    "displayNameKo": "자바스크립트",
+    "displayNameVi": "JavaScript",
+    "aliases": ["js"]
+  },
+  {
+    "id": "typescript",
+    "displayNameEn": "TypeScript",
+    "displayNameKo": "타입스크립트",
+    "displayNameVi": "TypeScript",
+    "aliases": ["ts"]
+  },
+  {
+    "id": "react",
+    "displayNameEn": "React",
+    "displayNameKo": "리액트",
+    "displayNameVi": "React",
+    "aliases": ["reactjs", "react.js"]
+  },
+  {
+    "id": "nextjs",
+    "displayNameEn": "Next.js",
+    "displayNameKo": "Next.js",
+    "displayNameVi": "Next.js",
+    "aliases": ["next"]
+  },
+  {
+    "id": "nodejs",
+    "displayNameEn": "Node.js",
+    "displayNameKo": "Node.js",
+    "displayNameVi": "Node.js",
+    "aliases": ["node"]
+  },
+  {
+    "id": "python",
+    "displayNameEn": "Python",
+    "displayNameKo": "파이썬",
+    "displayNameVi": "Python",
+    "aliases": ["py"]
+  },
+  {
+    "id": "java",
+    "displayNameEn": "Java",
+    "displayNameKo": "자바",
+    "displayNameVi": "Java",
+    "aliases": []
+  },
+  {
+    "id": "postgresql",
+    "displayNameEn": "PostgreSQL",
+    "displayNameKo": "PostgreSQL",
+    "displayNameVi": "PostgreSQL",
+    "aliases": ["postgres", "psql"]
+  },
+  {
+    "id": "docker",
+    "displayNameEn": "Docker",
+    "displayNameKo": "도커",
+    "displayNameVi": "Docker",
+    "aliases": []
+  },
+  {
+    "id": "aws",
+    "displayNameEn": "AWS",
+    "displayNameKo": "AWS",
+    "displayNameVi": "AWS",
+    "aliases": ["amazon-web-services"]
+  },
+  {
+    "id": "figma",
+    "displayNameEn": "Figma",
+    "displayNameKo": "피그마",
+    "displayNameVi": "Figma",
+    "aliases": []
+  },
+  {
+    "id": "css",
+    "displayNameEn": "CSS",
+    "displayNameKo": "CSS",
+    "displayNameVi": "CSS",
+    "aliases": ["css3"]
+  },
+  {
+    "id": "tailwindcss",
+    "displayNameEn": "Tailwind CSS",
+    "displayNameKo": "테일윈드 CSS",
+    "displayNameVi": "Tailwind CSS",
+    "aliases": ["tailwind"]
+  },
+  {
+    "id": "graphql",
+    "displayNameEn": "GraphQL",
+    "displayNameKo": "GraphQL",
+    "displayNameVi": "GraphQL",
+    "aliases": ["gql"]
+  },
+  {
+    "id": "rest-api",
+    "displayNameEn": "REST API",
+    "displayNameKo": "REST API",
+    "displayNameVi": "REST API",
+    "aliases": ["restful"]
+  },
+  {
+    "id": "git",
+    "displayNameEn": "Git",
+    "displayNameKo": "Git",
+    "displayNameVi": "Git",
+    "aliases": []
+  },
+  {
+    "id": "agile",
+    "displayNameEn": "Agile",
+    "displayNameKo": "애자일",
+    "displayNameVi": "Agile",
+    "aliases": []
+  },
+  {
+    "id": "scrum",
+    "displayNameEn": "Scrum",
+    "displayNameKo": "스크럼",
+    "displayNameVi": "Scrum",
+    "aliases": []
+  },
+  {
+    "id": "jira",
+    "displayNameEn": "Jira",
+    "displayNameKo": "Jira",
+    "displayNameVi": "Jira",
+    "aliases": []
+  },
+  {
+    "id": "data-analysis",
+    "displayNameEn": "Data Analysis",
+    "displayNameKo": "데이터 분석",
+    "displayNameVi": "Phân tích dữ liệu",
+    "aliases": []
+  },
+  {
+    "id": "sql",
+    "displayNameEn": "SQL",
+    "displayNameKo": "SQL",
+    "displayNameVi": "SQL",
+    "aliases": []
+  },
+  {
+    "id": "excel",
+    "displayNameEn": "Excel",
+    "displayNameKo": "엑셀",
+    "displayNameVi": "Excel",
+    "aliases": ["ms-excel"]
+  },
+  {
+    "id": "google-analytics",
+    "displayNameEn": "Google Analytics",
+    "displayNameKo": "구글 애널리틱스",
+    "displayNameVi": "Google Analytics",
+    "aliases": ["ga"]
+  },
+  {
+    "id": "seo",
+    "displayNameEn": "SEO",
+    "displayNameKo": "SEO",
+    "displayNameVi": "SEO",
+    "aliases": ["search-engine-optimization"]
+  },
+  {
+    "id": "copywriting",
+    "displayNameEn": "Copywriting",
+    "displayNameKo": "카피라이팅",
+    "displayNameVi": "Viết nội dung",
+    "aliases": []
+  },
+  {
+    "id": "project-management",
+    "displayNameEn": "Project Management",
+    "displayNameKo": "프로젝트 관리",
+    "displayNameVi": "Quản lý dự án",
+    "aliases": ["pm"]
+  },
+  {
+    "id": "communication",
+    "displayNameEn": "Communication",
+    "displayNameKo": "커뮤니케이션",
+    "displayNameVi": "Giao tiếp",
+    "aliases": []
+  },
+  {
+    "id": "leadership",
+    "displayNameEn": "Leadership",
+    "displayNameKo": "리더십",
+    "displayNameVi": "Lãnh đạo",
+    "aliases": []
+  },
+  {
+    "id": "problem-solving",
+    "displayNameEn": "Problem Solving",
+    "displayNameKo": "문제 해결",
+    "displayNameVi": "Giải quyết vấn đề",
+    "aliases": []
+  },
+  {
+    "id": "kubernetes",
+    "displayNameEn": "Kubernetes",
+    "displayNameKo": "쿠버네티스",
+    "displayNameVi": "Kubernetes",
+    "aliases": ["k8s"]
+  },
+  {
+    "id": "html",
+    "displayNameEn": "HTML",
+    "displayNameKo": "HTML",
+    "displayNameVi": "HTML",
+    "aliases": ["html5"]
+  },
+  {
+    "id": "csharp",
+    "displayNameEn": "C#",
+    "displayNameKo": "C#",
+    "displayNameVi": "C#",
+    "aliases": ["c#", ".net"]
+  },
+  {
+    "id": "cplusplus",
+    "displayNameEn": "C++",
+    "displayNameKo": "C++",
+    "displayNameVi": "C++",
+    "aliases": ["c++"]
+  },
+  {
+    "id": "linux",
+    "displayNameEn": "Linux",
+    "displayNameKo": "Linux",
+    "displayNameVi": "Linux",
+    "aliases": []
+  },
+  {
+    "id": "software-development",
+    "displayNameEn": "Software Development",
+    "displayNameKo": "소프트웨어 개발",
+    "displayNameVi": "Phát triển phần mềm",
+    "aliases": ["software-engineering"]
+  },
+  {
+    "id": "software-troubleshooting",
+    "displayNameEn": "Software Troubleshooting",
+    "displayNameKo": "소프트웨어 문제 해결",
+    "displayNameVi": "Khắc phục sự cố phần mềm",
+    "aliases": ["troubleshooting"]
+  },
+  {
+    "id": "ux-research",
+    "displayNameEn": "UX Research",
+    "displayNameKo": "UX 리서치",
+    "displayNameVi": "Nghiên cứu UX",
+    "aliases": ["user-research"]
+  },
+  {
+    "id": "wireframing",
+    "displayNameEn": "Wireframing",
+    "displayNameKo": "와이어프레이밍",
+    "displayNameVi": "Thiết kế khung wireframe",
+    "aliases": ["wireframe"]
+  },
+  {
+    "id": "prototyping",
+    "displayNameEn": "Prototyping",
+    "displayNameKo": "프로토타이핑",
+    "displayNameVi": "Tạo mẫu thử",
+    "aliases": ["prototype"]
+  },
+  {
+    "id": "design-systems",
+    "displayNameEn": "Design Systems",
+    "displayNameKo": "디자인 시스템",
+    "displayNameVi": "Hệ thống thiết kế",
+    "aliases": ["design-system"]
+  },
+  {
+    "id": "adobe-photoshop",
+    "displayNameEn": "Adobe Photoshop",
+    "displayNameKo": "어도비 포토샵",
+    "displayNameVi": "Adobe Photoshop",
+    "aliases": ["photoshop"]
+  },
+  {
+    "id": "adobe-illustrator",
+    "displayNameEn": "Adobe Illustrator",
+    "displayNameKo": "어도비 일러스트레이터",
+    "displayNameVi": "Adobe Illustrator",
+    "aliases": ["illustrator"]
+  },
+  {
+    "id": "adobe-indesign",
+    "displayNameEn": "Adobe InDesign",
+    "displayNameKo": "어도비 인디자인",
+    "displayNameVi": "Adobe InDesign",
+    "aliases": ["indesign"]
+  },
+  {
+    "id": "stakeholder-management",
+    "displayNameEn": "Stakeholder Management",
+    "displayNameKo": "이해관계자 관리",
+    "displayNameVi": "Quản lý các bên liên quan",
+    "aliases": ["stakeholder-engagement"]
+  },
+  {
+    "id": "requirements-gathering",
+    "displayNameEn": "Requirements Gathering",
+    "displayNameKo": "요구사항 수집",
+    "displayNameVi": "Thu thập yêu cầu",
+    "aliases": ["requirements-analysis"]
+  },
+  {
+    "id": "product-strategy",
+    "displayNameEn": "Product Strategy",
+    "displayNameKo": "제품 전략",
+    "displayNameVi": "Chiến lược sản phẩm",
+    "aliases": []
+  },
+  {
+    "id": "roadmap-planning",
+    "displayNameEn": "Roadmap Planning",
+    "displayNameKo": "로드맵 기획",
+    "displayNameVi": "Lập kế hoạch lộ trình",
+    "aliases": ["product-roadmap"]
+  },
+  {
+    "id": "tableau",
+    "displayNameEn": "Tableau",
+    "displayNameKo": "태블로",
+    "displayNameVi": "Tableau",
+    "aliases": []
+  },
+  {
+    "id": "power-bi",
+    "displayNameEn": "Power BI",
+    "displayNameKo": "파워 BI",
+    "displayNameVi": "Power BI",
+    "aliases": ["powerbi"]
+  },
+  {
+    "id": "social-media-marketing",
+    "displayNameEn": "Social Media Marketing",
+    "displayNameKo": "소셜 미디어 마케팅",
+    "displayNameVi": "Tiếp thị mạng xã hội",
+    "aliases": ["smm"]
+  },
+  {
+    "id": "marketing-automation",
+    "displayNameEn": "Marketing Automation",
+    "displayNameKo": "마케팅 자동화",
+    "displayNameVi": "Tự động hóa tiếp thị",
+    "aliases": []
+  },
+  {
+    "id": "customer-relationship-management",
+    "displayNameEn": "Customer Relationship Management",
+    "displayNameKo": "고객 관계 관리",
+    "displayNameVi": "Quản lý quan hệ khách hàng",
+    "aliases": ["crm"]
+  },
+  {
+    "id": "salesforce",
+    "displayNameEn": "Salesforce",
+    "displayNameKo": "세일즈포스",
+    "displayNameVi": "Salesforce",
+    "aliases": []
+  },
+  {
+    "id": "search-engine-marketing",
+    "displayNameEn": "Search Engine Marketing",
+    "displayNameKo": "검색 엔진 마케팅",
+    "displayNameVi": "Tiếp thị công cụ tìm kiếm",
+    "aliases": ["sem"]
+  },
+  {
+    "id": "campaign-management",
+    "displayNameEn": "Campaign Management",
+    "displayNameKo": "캠페인 관리",
+    "displayNameVi": "Quản lý chiến dịch",
+    "aliases": []
+  },
+  {
+    "id": "applicant-tracking-system",
+    "displayNameEn": "Applicant Tracking System",
+    "displayNameKo": "지원자 추적 시스템",
+    "displayNameVi": "Hệ thống theo dõi ứng viên",
+    "aliases": ["ats"]
+  },
+  {
+    "id": "hris",
+    "displayNameEn": "HRIS",
+    "displayNameKo": "인사정보시스템",
+    "displayNameVi": "Hệ thống thông tin nhân sự",
+    "aliases": ["human-resources-information-system"]
+  },
+  {
+    "id": "workday",
+    "displayNameEn": "Workday",
+    "displayNameKo": "워크데이",
+    "displayNameVi": "Workday",
+    "aliases": []
+  },
+  {
+    "id": "payroll-management",
+    "displayNameEn": "Payroll Management",
+    "displayNameKo": "급여 관리",
+    "displayNameVi": "Quản lý tiền lương",
+    "aliases": ["payroll"]
+  },
+  {
+    "id": "financial-reporting",
+    "displayNameEn": "Financial Reporting",
+    "displayNameKo": "재무 보고",
+    "displayNameVi": "Báo cáo tài chính",
+    "aliases": ["finance-reporting"]
+  },
+  {
+    "id": "ai-literacy",
+    "displayNameEn": "AI Literacy",
+    "displayNameKo": "AI 리터러시",
+    "displayNameVi": "Năng lực AI",
+    "aliases": ["ai-fluency"]
+  },
+  {
+    "id": "cybersecurity",
+    "displayNameEn": "Cybersecurity",
+    "displayNameKo": "사이버보안",
+    "displayNameVi": "An ninh mạng",
+    "aliases": ["cyber-security"]
+  }
+]

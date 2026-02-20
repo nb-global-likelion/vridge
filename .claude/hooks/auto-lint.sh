@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 # ABOUTME: Auto-lint hook that runs linting after code changes
 # ABOUTME: Uses npm scripts to maintain code quality standards
 
@@ -9,19 +9,20 @@ INPUT_JSON="$1"
 FILE_PATH=$(echo "$INPUT_JSON" | jq -r '.file_path // empty')
 
 # Skip if no file path
-if [[ -z "$FILE_PATH" ]]; then
+if [ -z "$FILE_PATH" ]; then
     exit 0
 fi
 
 # Only lint code files
-if [[ ! "$FILE_PATH" =~ \.(js|ts|jsx|tsx)$ ]]; then
-    exit 0
-fi
+case "$FILE_PATH" in
+    *.js|*.ts|*.jsx|*.tsx) ;;
+    *) exit 0 ;;
+esac
 
 echo "Running linter after code changes..."
 
 # Check if we have npm scripts available
-if [[ -f "package.json" ]]; then
+if [ -f "package.json" ]; then
     # Run next lint if available
     if npm run lint --silent 2>/dev/null; then
         echo "Linting passed"

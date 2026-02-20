@@ -1,0 +1,1117 @@
+# ATS MVP 구현 계획
+
+## 컨텍스트
+
+17개 순차 프롬프트로 vridge ATS MVP를 구현합니다.
+각 프롬프트는 TDD 기반이며, 이전 프롬프트 위에 빌드합니다.
+
+### 기존 스캐폴딩
+
+- Next.js 16 App Router + TypeScript strict + Tailwind CSS v4 + shadcn UI (new-york)
+- Prisma 7: 16 모델, 9 enum (출력: `lib/generated/prisma`, gitignored)
+- 의존성: better-auth 1.4.18, @tanstack/react-query 5, @tanstack/react-form 1, zustand 5, zod 4, radix-ui, lucide-react, react-markdown, pg, tsx
+- Jest 30 + @testing-library/react — **변환 없음, 경로 별칭 없음, 테스트 없음**
+- Storybook 10, ESLint 9, Prettier, Husky pre-commit, CI 워크플로우
+- `lib/utils.ts` (cn), `app/layout.tsx` (GA4 + Geist), `next.config.ts` (빈 설정)
+- shadcn 별칭: `@/components`, `@/components/ui`, `@/lib`, `@/hooks`
+
+### 아키텍처 기준
+
+1. **백엔드: Clean Architecture** — domain → use-cases → infrastructure → actions (어댑터)
+2. **프론트엔드: Feature-Sliced Design (FSD)** — shared → entities → features → widgets → app
+3. **상태 분리**: 서버 상태 (TanStack Query) / UI 상태 (Zustand)
+4. **폼**: TanStack Form + Zod
+5. **인증**: BetterAuth (앱 레이어 접근 제어, RLS 보류)
+6. **TDD**: 테스트 먼저, 커버리지 목표 ≥ 75%
+
+### 프로젝트 구조
+
+```
+# 백엔드 — Clean Architecture (lib/)
+lib/
+  domain/
+    errors.ts                 # 비즈니스 에러 클래스
+    authorization.ts          # 접근 제어 규칙 (순수 함수)
+  use-cases/
+    profile.ts                # 프로필 비즈니스 로직
+    applications.ts           # 지원 비즈니스 로직
+    catalog.ts                # 카탈로그 조회 로직
+    recruiter.ts              # 채용담당자 조회 로직
+  infrastructure/
+    db.ts                     # Prisma 클라이언트 싱글턴
+    auth.ts                   # BetterAuth 서버 설정
+    auth-client.ts            # BetterAuth 클라이언트
+    auth-utils.ts             # 세션 헬퍼 (getCurrentUser, requireUser)
+    s3.ts                     # S3 클라이언트
+  actions/                    # 서버 액션 (얇은 어댑터)
+    profile.ts
+    applications.ts           # 채용담당자 쿼리 포함 (getApplicationsForJd)
+    catalog.ts
+    attachments.ts
+  validations/                # Zod 스키마 (서버/클라이언트 공유)
+    profile.ts
+    application.ts
+    job-description.ts
+  utils.ts                    # cn() 유틸리티 (기존)
+
+# 프론트엔드 — Feature-Sliced Design
+entities/                     # 엔티티 표시 컴포넌트 (재사용)
+  profile/ui/                 # ProfileHeader, CareerList, SkillBadges ...
+  job/ui/                     # JdCard, JdDetail
+  application/ui/             # ApplicationStatus 뱃지
+
+features/                     # 기능별 UI + 로직
+  auth/ui/                    # LoginForm, SignupForm
+  auth/model/                 # useSession 래퍼
+  profile-edit/ui/            # 편집 폼들
+  profile-edit/model/         # 뮤테이션 훅
+  job-browse/ui/              # JdFilters
+  job-browse/model/           # 필터 훅
+  apply/ui/                   # ApplyButton
+  apply/model/                # 지원 뮤테이션
+  recruiter/ui/               # ApplicantCard, CandidateProfileView
+  recruiter/model/            # 채용담당자 훅
+
+widgets/                      # 복합 위젯
+  nav/ui/                     # MainNav, UserMenu
+
+components/ui/                # shadcn 프리미티브 (기존 설정 유지)
+hooks/                        # 공유 훅 (shadcn alias 유지)
+
+# Next.js 라우팅
+app/
+  page.tsx                          ← /jobs 리다이렉트
+  jobs/page.tsx                     ← 공개 채용공고 목록 (인증 불필요)
+  jobs/[id]/page.tsx                ← 공개 채용공고 상세
+  announcement/page.tsx             ← 공개 공지사항 목록 (미구현, 별도 계획 예정)
+  announcement/[id]/page.tsx        ← 공개 공지사항 상세 (미구현, 별도 계획 예정)
+  (dashboard)/                      ← 좌측 사이드바 레이아웃 적용
+    candidate/profile/page.tsx      ← 프로필 조회
+    candidate/profile/edit/page.tsx ← 프로필 편집 (별도 라우트)
+    candidate/applications/page.tsx ← 내 지원 목록 (Figma: "My Jobs")
+    candidate/jobs/page.tsx         ← 인증된 채용공고 목록
+    candidate/jobs/[id]/page.tsx    ← 인증된 채용공고 상세 + 지원 버튼
+    recruiter/page.tsx
+    recruiter/jd/[id]/applicants/page.tsx
+    recruiter/candidates/[id]/page.tsx
+  api/auth/[...all]/
+# 주: (auth) 라우트 그룹 없음 — 로그인/회원가입은 모달 다이얼로그로 구현
+
+prisma/
+  schema.prisma, seed.ts, seed-data/
+proxy.ts                              # 미들웨어 (함수명: proxy, 테스트: __tests__/proxy.test.ts)
+```
+
+**Clean Architecture 흐름**: Server Action → Zod 입력 검증 → 권한 확인 (domain) → use-case 호출 → use-case가 Prisma 호출 → 결과 반환. MVP에서는 use-case가 Prisma를 직접 호출 (repository 레이어 없음).
+
+---
+
+## 진행 상황
+
+| #   | 프롬프트                    | 레이어            | 산출물                         | 상태 |
+| --- | --------------------------- | ----------------- | ------------------------------ | ---- |
+| 1   | Jest + Prisma Client + Env  | Foundation        | 테스트 러너, DB 싱글턴         | ✅   |
+| 2   | BetterAuth Schema + Seed    | Foundation        | DB 테이블, 카탈로그 데이터     | 🔶   |
+| 3   | BetterAuth Server + API     | Auth              | 인증 인스턴스, API 엔드포인트  | ✅   |
+| 4   | Auth Client + Session       | Auth              | 클라이언트 SDK, getCurrentUser | ✅   |
+| 5   | Middleware + Signup Hooks   | Auth              | 라우트 보호, 유저 프로비저닝   | ✅   |
+| 6   | Zod Schemas                 | Validation        | 전체 도메인 입력 검증          | ✅   |
+| 7   | Authorization + Errors      | Domain            | 접근 제어, 도메인 에러         | ✅   |
+| 8   | Profile Use-Cases + Actions | Data              | 프로필 CRUD (15+ 액션)         | ✅   |
+| 9   | Catalog + JD Queries        | Data              | 카탈로그/채용공고 조회         | ✅   |
+| 10  | Application Management      | Data              | 지원, 철회, 채용담당자 조회    | ✅   |
+| 11  | Layout + Providers + Nav    | UI/Widget         | 프로바이더, 네비게이션 쉘      | ✅   |
+| 12  | Auth Modals                 | UI/Feature        | 로그인, 회원가입 모달          | ✅   |
+| 13  | Profile Display             | UI/Entity         | 재사용 프로필 섹션 컴포넌트    | ✅   |
+| 14  | Profile Edit                | UI/Feature        | 편집 폼 + 뮤테이션             | ✅   |
+| 15  | Job Browse + Apply          | UI/Feature+Entity | 채용공고 탐색, 지원            | ✅   |
+| 16  | Recruiter Dashboard         | UI/Feature        | 지원자 조회, 후보자 프로필     | ❌   |
+
+> **범례**: ✅ 완료 / 🔶 부분 완료 (DB 자격 증명 대기) / ⬜ 미착수 / ❌ 제외
+>
+> Phase 5 (Prompts 17-24) 상세 계획: [docs/implementation-plan-p5.md](./implementation-plan-p5.md)
+
+---
+
+## Phase 1: Foundation
+
+### Prompt 1: Jest Configuration + Prisma Client + Environment
+
+**목표**: 동작하는 테스트 러너 + DB 싱글턴 + 환경 변수 템플릿.
+**생성 파일**: `jest.config.js` (재작성), `lib/infrastructure/db.ts`, `.env.example`, `__tests__/smoke.test.ts`
+
+```
+프로젝트에 Jest 30이 설치되어 있지만 jest.config.js에 TypeScript 변환이 없고
+경로 별칭 매핑도 없습니다. 테스트를 실행할 수 없는 상태입니다.
+
+Task 1: Jest 설정 수정.
+- next/jest (next 패키지)를 사용하도록 jest.config.js 재작성.
+  next/jest가 SWC 변환과 tsconfig.json의 @/* 경로 별칭을 처리합니다.
+- 유지: coverageProvider "v8", testEnvironment "jest-environment-jsdom",
+  setupFilesAfterEnv ["@testing-library/jest-dom"].
+- 추가: .next/ 및 node_modules/ testPathIgnorePatterns.
+- 주석 처리된 모든 보일러플레이트 제거 — 설정을 깔끔하게 유지.
+- next/jest에 Jest 30 호환성 문제가 있으면 @swc/jest로 대체하고
+  수동 moduleNameMapper: { "^@/(.*)$": "<rootDir>/$1" } 설정.
+
+Task 2: lib/infrastructure/db.ts 생성 — Prisma 클라이언트 싱글턴.
+- @/lib/generated/prisma에서 PrismaClient import.
+- @prisma/adapter-pg에서 { PrismaPg }, pg에서 { Pool } import.
+- 싱글턴 생성:
+  - DATABASE_URL로 pg Pool 생성.
+  - Pool로 PrismaPg 어댑터 생성.
+  - 어댑터로 PrismaClient 생성.
+  - 개발 환경에서 HMR 생존을 위해 globalThis에 캐시.
+- `prisma`로 export.
+
+Task 3: .env.example 생성:
+  DATABASE_URL=postgresql://...          # Supabase pooler 연결
+  DIRECT_URL=postgresql://...            # Supabase 직접 연결 (마이그레이션용)
+  BETTER_AUTH_SECRET=your-secret-here
+  BETTER_AUTH_URL=http://localhost:3000
+  NEXT_PUBLIC_APP_URL=http://localhost:3000
+  NEXT_PUBLIC_GA_MEASUREMENT_ID=G-XXXXXXXXXX
+
+Task 4: __tests__/smoke.test.ts 스모크 테스트.
+- @/lib/utils에서 cn import, cn('a', 'b')가 예상 출력을 반환하는지 확인.
+- Jest + TypeScript + 경로 별칭이 모두 동작하는지 검증.
+
+검증: pnpm test 실행, 스모크 테스트 통과.
+```
+
+#### Prompt 1 결과
+
+**상태**: ✅ 완료 (커밋: `0c2c692`)
+
+완료 항목:
+
+- `jest.config.js`: `next/jest` 기반으로 재작성. SWC 변환 + `@/*` 경로 별칭 (`moduleNameMapper` 수동 설정) 동작 확인.
+- `lib/infrastructure/db.ts`: `PrismaPg({ connectionString })` 사용 (Pool 인스턴스 불필요 — Prisma 내부 풀 관리). `globalThis` 캐시로 HMR 생존.
+- `.env.example`: `DATABASE_URL`, `DIRECT_URL`, `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`, `NEXT_PUBLIC_APP_URL`, `NEXT_PUBLIC_GA_MEASUREMENT_ID`.
+- `__tests__/smoke.test.ts`: `cn('a', 'b')` 검증 — Jest + SWC + 경로 별칭 통합 확인.
+- `prisma.config.ts`: `DIRECT_URL` 우선 사용으로 수정 (앱은 pooler URL, 마이그레이션은 direct URL).
+- `package.json`: `"postinstall": "prisma generate"` 추가, `dotenv` devDependency 추가.
+- `.gitignore`: `!.env.example` 추가 (`.env*` 패턴 예외).
+
+계획 대비 변경 사항:
+
+- 계획에는 `pg.Pool` 인스턴스 생성 후 `PrismaPg`에 전달하는 방식이었으나, `PrismaPg({ connectionString })` 단축 API 사용. Prisma가 내부 풀을 관리하므로 별도 Pool 불필요.
+- `next/jest`가 tsconfig 경로 별칭을 자동 처리하지 않아 `moduleNameMapper` 수동 추가.
+
+---
+
+### Prompt 2: BetterAuth Schema + Migration + Catalog Seed Script
+
+**목표**: Prisma 스키마에 BetterAuth 테이블 추가, 첫 마이그레이션, 카탈로그 데이터 시드.
+**생성 파일**: 스키마 추가, `prisma/seed.ts`, `prisma/seed-data/*.json`, package.json 시드 설정
+
+```
+BetterAuth가 인증을 설정하기 전에 데이터베이스에 자체 테이블
+(user, session, account, verification)이 필요합니다.
+
+Task 1: prisma/schema.prisma에 BetterAuth 테이블 추가.
+- BetterAuth의 Prisma 어댑터 문서에서 필요한 모델을 확인.
+  일반적으로: User (id, name, email, emailVerified, image, createdAt, updatedAt),
+  Session (id, expiresAt, token, ipAddress, userAgent, userId),
+  Account (id, accountId, providerId, userId, accessToken, refreshToken 등),
+  Verification (id, identifier, value, expiresAt, createdAt, updatedAt).
+- snake_case 테이블 이름을 위해 @@map 사용.
+- 관계 추가: AppUser.id가 User.id를 참조 (app_users에서 betterauth user 테이블로 FK).
+- 실행: prisma validate
+
+Task 2: 초기 마이그레이션 생성 및 적용.
+- 실행: pnpm prisma migrate dev --name init
+
+Task 3: 카탈로그 시드 스크립트 생성.
+- prisma/seed-data/job-families.json: ~5개 패밀리 (engineering, design, marketing,
+  operations, sales) + ~20개 직무. slug ID, display_name_en.
+- prisma/seed-data/skills.json: ~30개 스킬 + aliases.
+  예: { id: "typescript", display_name_en: "TypeScript", aliases: ["ts"] }
+- prisma/seed.ts:
+  - @/lib/infrastructure/db에서 prisma import.
+  - JSON에서 모든 job family, job, skill, skill alias를 upsert.
+  - 기본 org 생성 ("Vridge Dev Org").
+  - 멱등성 (upsert 사용, create 아님). 진행 상황 로그.
+- package.json: "prisma": { "seed": "tsx prisma/seed.ts" } 추가
+
+Task 4: 시드 실행: pnpm prisma db seed. 멱등성 확인 (두 번 실행).
+```
+
+#### Prompt 2 결과
+
+**상태**: 🔶 부분 완료 — DB 자격 증명 대기
+
+완료 항목:
+
+- `prisma/schema.prisma`: BetterAuth 핵심 4 모델 추가 (User, Session, Account, Verification). `@@map()`으로 snake_case, `@db.Uuid`로 UUID 타입, `@default(dbgenerated("gen_random_uuid()"))`. AppUser에 `authUser User @relation(...)` 추가.
+- `prisma/seed-data/job-families.json`: 5 families (engineering, design, product, marketing, operations) + 20 jobs. en/ko/vi 3개 언어 display name.
+- `prisma/seed-data/skills.json`: 30 skills + aliases. 기술 스킬 (javascript, typescript, react 등) + 소프트 스킬 (communication, leadership 등) 혼합.
+- `prisma/seed.ts`: `tsx` 러너 사용, 상대 경로 import (`@/` 별칭은 Next.js 외부에서 미작동). upsert 기반 멱등 시드. PrismaPg 어댑터 직접 생성.
+- `package.json`: `"prisma": { "seed": "tsx prisma/seed.ts" }` 추가.
+- Prisma client 재생성 + 스모크 테스트 통과 확인.
+
+미완료 항목 (DB 자격 증명 필요):
+
+- `prisma migrate dev --create-only --name init` → 마이그레이션 SQL 생성
+- 생성된 `migration.sql`에 커스텀 SQL 삽입: `generate_profile_slug()` 함수 (앞), `profiles_public_slug_immutable()` 트리거 (뒤)
+- `prisma migrate dev` → 마이그레이션 적용
+- `prisma db seed` → 시드 실행 + 멱등성 검증
+- 커밋
+
+계획 대비 변경 사항:
+
+- 계획에 있던 "기본 org 생성" 제외 — orgId는 MVP에서 null 허용 결정.
+- seed.ts에서 `@/lib/infrastructure/db`의 prisma 싱글턴 대신 자체 PrismaPg 어댑터 생성. tsx 런타임에서 Next.js 경로 별칭 미지원 때문.
+- RLS 정책은 init 마이그레이션에 포함하지 않음 — 별도 마이그레이션에서 처리 예정.
+
+---
+
+## Phase 2: Authentication
+
+### Prompt 3: BetterAuth Server + API Route
+
+**목표**: 인증 서버 인스턴스 및 API 엔드포인트.
+**생성 파일**: `lib/infrastructure/auth.ts`, `app/api/auth/[...all]/route.ts`, `__tests__/lib/infrastructure/auth.test.ts`
+
+```
+이전: lib/infrastructure/db.ts에 Prisma 클라이언트. BetterAuth 테이블 마이그레이션 완료.
+
+Task 1: lib/infrastructure/auth.ts 생성 — BetterAuth 서버.
+- "better-auth"에서 { betterAuth } import.
+- "better-auth/adapters/prisma"에서 { prismaAdapter } import.
+- "@/lib/infrastructure/db"에서 { prisma } import.
+- 설정:
+  - database: prismaAdapter(prisma, { provider: "postgresql" })
+  - emailAndPassword: { enabled: true }
+  - secret: process.env.BETTER_AUTH_SECRET
+  - baseURL: process.env.BETTER_AUTH_URL
+- auth 인스턴스 export.
+- 아직 signup hook 추가하지 않음 (Prompt 5에서).
+
+Task 2: app/api/auth/[...all]/route.ts 생성.
+- auth import, toNextJsHandler로 GET과 POST export.
+
+Task 3: __tests__/lib/infrastructure/auth.test.ts 테스트.
+- @/lib/infrastructure/db 모킹.
+- auth 인스턴스가 정의되고 설정되었는지 확인.
+- emailAndPassword가 활성화되었는지 확인.
+
+검증: pnpm test 통과, tsc --noEmit 통과.
+```
+
+#### Prompt 3 결과
+
+**상태**: ✅ 완료
+
+완료 항목:
+
+- `lib/infrastructure/auth.ts`: `betterAuth` 서버 인스턴스. `prismaAdapter(prisma, { provider: 'postgresql' })`, `emailAndPassword: { enabled: true }`, `nextCookies()` 플러그인.
+- `app/api/auth/[...all]/route.ts`: `toNextJsHandler(auth)`로 GET/POST 핸들러 export.
+- `__tests__/lib/infrastructure/auth.test.ts`: `better-auth`, `better-auth/adapters/prisma`, `better-auth/next-js` 모킹 (ESM 배포 문제 우회). `betterAuth` mock 호출 config로 `emailAndPassword.enabled` 검증.
+
+계획 대비 변경 사항:
+
+- `socialProviders` 추가 (계획에 없었음): Google (`GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`)과 Facebook (`FACEBOOK_CLIENT_ID`, `FACEBOOK_CLIENT_SECRET`). `.env.example`에 해당 변수 추가 필요.
+- `nextCookies()` 플러그인 추가 (계획에 없었음) — Next.js App Router 서버 액션 쿠키 처리 필수.
+- 테스트에서 `better-auth` 모듈을 직접 mock — ESM 배포 패키지를 Jest jsdom 환경에서 변환 불가.
+
+---
+
+### Prompt 4: Auth Client + Session Helpers
+
+**목표**: 클라이언트 측 인증 SDK 및 서버 측 세션 유틸리티.
+**생성 파일**: `lib/infrastructure/auth-client.ts`, `lib/infrastructure/auth-utils.ts`, `__tests__/lib/infrastructure/auth-utils.test.ts`
+
+```
+이전: lib/infrastructure/auth.ts에 BetterAuth 서버, API 라우트 존재.
+
+Task 1: lib/infrastructure/auth-client.ts 생성.
+- "better-auth/react"에서 { createAuthClient } import.
+- NEXT_PUBLIC_APP_URL에서 baseURL로 auth 클라이언트 생성.
+- export: useSession, signIn, signUp, signOut.
+
+Task 2: lib/infrastructure/auth-utils.ts 생성 — 서버 측 세션 헬퍼.
+- getCurrentUser(): auth.api.getSession({ headers: await headers() }) 호출,
+  세션 없으면 null 반환. app_users에서 user id로 role과 orgId 조회.
+  { userId, role, orgId, email } 또는 null 반환.
+- requireUser(): getCurrentUser() 호출, null이면 throw.
+- requireRole(...roles): requireUser() 호출, role이 목록에 없으면 throw.
+
+Task 3: __tests__/lib/infrastructure/auth-utils.test.ts 테스트.
+- auth 모듈과 prisma 모킹.
+- getCurrentUser: 세션 존재 시 데이터 반환, 없을 때 null.
+- requireUser: 인증 시 유저 반환, 미인증 시 throw.
+- requireRole: 올바른 역할이면 통과, 잘못된 역할이면 throw.
+
+검증: pnpm test 통과.
+```
+
+#### Prompt 4 결과
+
+**상태**: ✅ 완료 (커밋: `561eb12`)
+
+완료 항목:
+
+- `lib/infrastructure/auth-client.ts`: `createAuthClient` from `better-auth/react`. `useSession`, `signIn`, `signUp`, `signOut` export.
+- `lib/infrastructure/auth-utils.ts`: `getCurrentUser` (세션 없음/appUser 없음 시 null), `requireUser` (미인증 시 throw), `requireRole` (역할 불일치 시 throw). `UserContext` 타입 export.
+- `__tests__/lib/infrastructure/auth-utils.test.ts`: 7개 테스트 모두 통과.
+
+계획 대비 변경 사항:
+
+- `AppRole` import: 계획에서 `@/lib/generated/prisma`로 명시했으나 실제 출력 구조상 `@/lib/generated/prisma/enums`에서 import. Prisma 7 생성기는 index 없이 개별 파일로 분리 출력.
+- 테스트 mock 캐스팅: `as jest.Mock` → `as unknown as jest.Mock`. TypeScript가 BetterAuth의 `getSession` 타입과 `jest.Mock` 간 오버랩 부족으로 직접 캐스팅 불허.
+
+---
+
+### Prompt 5: Auth Middleware + Signup Hooks
+
+**목표**: 라우트 보호 + 회원가입 시 자동 유저 프로비저닝.
+**생성 파일**: `middleware.ts`, auth.ts 수정, `__tests__/middleware.test.ts`
+
+```
+이전: Auth 서버, 클라이언트, 세션 헬퍼 모두 존재.
+
+Task 1: middleware.ts 생성.
+- 공개 라우트 (인증 불필요): /, /login, /signup, /api/auth/*, /jobs (브라우징).
+- 보호 라우트: /dashboard/*, /api/* (auth 제외).
+- 미인증 → /login으로 리다이렉트.
+- /login 또는 /signup에서 인증됨 → /dashboard로 리다이렉트.
+- BetterAuth의 세션 체크 사용.
+- 정적 파일과 _next 제외하는 matcher 설정 export.
+
+Task 2: lib/infrastructure/auth.ts에 signup hook 추가.
+- BetterAuth 설정에 user 생성 후 databaseHooks 추가.
+- 새 유저 생성 시 Prisma 트랜잭션으로 생성:
+  1. app_users (id = BetterAuth user id, role = 'candidate', orgId = 기본 org)
+  2. profiles_public (userId, 빈 firstName/lastName 또는 name에서 파싱)
+  3. profiles_private (userId)
+- 기본 org가 없으면 조회 또는 생성.
+- 에러 로깅하되 app_users 생성 실패 시 인증은 중단하지 않음.
+
+Task 3: __tests__/middleware.test.ts 테스트.
+- 공개 라우트는 통과.
+- 보호 라우트는 미인증 시 리다이렉트.
+- 인증 페이지는 인증 시 리다이렉트.
+
+검증: pnpm test 통과, tsc --noEmit 통과.
+```
+
+#### Prompt 5 결과
+
+**상태**: ✅ 완료 (커밋: `e979eb1`)
+
+완료 항목:
+
+- `proxy.ts`: 공개/보호 경로 분리. `isPublicPath` / `isAuthPage` 헬퍼 함수. 순수 공개 경로는 `getSession` 호출 없이 즉시 통과. 미인증 → `/login`, 인증 상태에서 `/login` / `/signup` → `/dashboard`.
+- `lib/infrastructure/auth.ts`: `databaseHooks.user.create.after` 추가. 신규 유저 생성 시 `$transaction` callback으로 `AppUser` + `ProfilesPublic` + `ProfilesPrivate` 원자적 생성. 오류 발생 시 로깅 후 회원가입 계속 진행.
+- `__tests__/proxy.test.ts`: 8개 테스트. `@jest-environment node` docblock으로 jsdom 충돌 회피. `NextRequest` 직접 사용.
+- `__tests__/lib/infrastructure/auth.test.ts`: databaseHooks 존재 확인 + 트랜잭션 3건 생성 검증 테스트 2개 추가.
+
+계획 대비 변경 사항:
+
+- `auth.api.getSession({ headers: request.headers })` — proxy.ts에서는 `next/headers`의 `headers()` 대신 `NextRequest.headers` 직접 전달. 미들웨어 컨텍스트에 맞는 올바른 방식.
+- `orgId = null` — Prompt 2 결정 재확인 (기본 org 생성 없음).
+- `prisma` import는 기존 `auth.ts`에 이미 없었음 — `databaseHooks` 추가 시 함께 import 필요 없음 (모듈 스코프에서 이미 사용 중).
+
+---
+
+## Phase 3: Data Access Layer
+
+### Prompt 6: Zod Validation Schemas
+
+**목표**: 서버 액션과 폼 간 공유되는 입력 검증 스키마.
+**생성 파일**: `lib/validations/*.ts`, `__tests__/lib/validations/*.test.ts`
+
+```
+Zod 4 설치됨. 이 스키마는 서버 액션 (검증)과 UI 폼 (클라이언트 검증) 모두에 사용됨
+— Clean Architecture 백엔드와 FSD 프론트엔드 간의 공유 레이어.
+
+Task 1: lib/validations/profile.ts 생성.
+- profilePublicSchema: firstName (string, 1-100), lastName (같음), aboutMe (max 2000, optional).
+- profilePrivateSchema: phoneNumber (string, optional, phone regex).
+- profileLanguageSchema: language (string, min 1), proficiency (enum: native/fluent/professional/basic), sortOrder (int, min 0).
+- profileCareerSchema: companyName, positionTitle, jobId (모두 string min 1), employmentType (enum), startDate (date string), endDate (optional, refinement: end >= start), description (max 5000, optional), sortOrder.
+- profileEducationSchema: institutionName, educationType (enum EducationTypeVn), field (optional), isGraduated (boolean), startDate, endDate (같은 refinement), sortOrder.
+- profileUrlSchema: label (string, min 1), url (string, http/https URL), sortOrder.
+- profileSkillSchema: skillId (string, min 1).
+
+Task 2: lib/validations/application.ts 생성.
+- applySchema: jdId (string, uuid 형식).
+
+Task 3: lib/validations/job-description.ts 생성.
+- jobDescriptionFilterSchema: jobId (optional), employmentType (optional), workArrangement (optional), page (int, min 1, default 1), pageSize (int, 1-50, default 20).
+
+Task 4: 각 파일에 대한 테스트 작성.
+- 유효한 데이터 통과, 유효하지 않은 데이터 실패 + 예상 에러.
+- 날짜 순서 강제. URL 형식 검증. enum 값이 Prisma enum과 일치.
+
+검증: pnpm test 통과. 모든 스키마가 유효하지 않은 데이터를 명확히 거부.
+```
+
+#### Prompt 6 결과
+
+**상태**: ✅ 완료 (커밋: `70606cd`)
+
+완료 항목:
+
+- `lib/validations/profile.ts`: 7개 스키마 (profilePublic/Private/Language/Career/Education/Url/Skill). Career/Education에 날짜 순서 정제 (`.refine()`).
+- `lib/validations/application.ts`: `applySchema` — UUID 검증.
+- `lib/validations/job-description.ts`: `jobDescriptionFilterSchema` — page/pageSize 기본값, enum 필터.
+- `__tests__/lib/validations/*.test.ts`: 32개 테스트 전체 통과.
+
+계획 대비 변경 사항:
+
+- `z.string().url()`이 ftp URI를 허용함 — `.refine(val => val.startsWith('http://') || val.startsWith('https://'))`로 추가 제한.
+- `z.nativeEnum(PrismaEnum)` 대신 `z.enum([...])` 사용 — gitignored 생성 디렉터리 의존 회피.
+
+---
+
+### Prompt 7: Domain Layer — Authorization + Errors
+
+**목표**: 접근 제어를 위한 순수 비즈니스 규칙 및 도메인 에러.
+**생성 파일**: `lib/domain/authorization.ts`, `lib/domain/errors.ts`, `__tests__/lib/domain/authorization.test.ts`
+
+```
+이전: lib/infrastructure/auth-utils.ts에 세션 컨텍스트를 제공하는 Auth 헬퍼.
+이 프롬프트는 도메인 레이어를 생성 — 인프라 의존성 없는 순수 함수
+(단, 도달 가능성 쿼리를 위한 Prisma는 MVP에서 허용).
+
+Task 1: lib/domain/errors.ts 생성.
+- Error를 확장하는 DomainError 클래스, code 속성 포함.
+- 사전 정의 코드: UNAUTHORIZED, FORBIDDEN, NOT_FOUND, CONFLICT, VALIDATION.
+- 팩토리 헬퍼: notFound(entity), forbidden(), conflict(message).
+
+Task 2: lib/domain/authorization.ts 생성.
+- assertOwnership(currentUserId, resourceUserId): 불일치 시 FORBIDDEN throw.
+- assertRole(currentRole, ...allowed): role이 목록에 없으면 FORBIDDEN throw.
+- canViewCandidate(candidateId): apply 테이블 쿼리, 후보자에 하나 이상의
+  지원 행이 있으면 true 반환. MVP "도달 가능성" 체크.
+- assertCanViewCandidate(viewerRole, candidateId): 뷰어가 recruiter/admin이 아니거나
+  후보자에 도달 불가능하면 throw. 역할 + 도달 가능성 조합.
+
+Task 3: __tests__/lib/domain/authorization.test.ts 테스트.
+- 도달 가능성을 위해 prisma.apply.findFirst 모킹.
+- assertOwnership: 일치하는 ID 통과, 불일치 시 throw.
+- assertRole: 허용된 역할 통과, 불허 시 throw.
+- canViewCandidate: apply 존재 시 true, 없을 때 false.
+- assertCanViewCandidate: recruiter+도달가능 통과, recruiter+도달불가 throw,
+  candidate 역할 throw.
+
+검증: pnpm test 통과.
+```
+
+#### Prompt 7 결과
+
+**상태**: ✅ 완료 (커밋: `da8baad`, PR #8)
+
+완료 항목:
+
+- `lib/domain/errors.ts`: `DomainError` 클래스 (`code` 속성, `Error` 확장). `notFound(entity)`, `forbidden()`, `conflict(message)` 팩토리 헬퍼.
+- `lib/domain/authorization.ts`: `assertOwnership`, `assertRole`, `canViewCandidate`, `assertCanViewCandidate` — 인프라 의존 없는 순수 도메인 함수. `ReachabilityChecker` 타입 export.
+- `__tests__/lib/domain/errors.test.ts`: 4개 테스트.
+- `__tests__/lib/domain/authorization.test.ts`: 10개 테스트. Prisma mock 불필요 — stub 함수 주입.
+
+계획 대비 변경 사항:
+
+- `canViewCandidate`의 Prisma 직접 의존 제거. `ReachabilityChecker` 타입을 매개변수로 받아 호출자가 주입하는 방식으로 변경. 도메인 레이어에 인프라 import 없음.
+- 계획에 없던 `__tests__/lib/domain/errors.test.ts` 추가 — TDD 원칙에 따라 DomainError + 팩토리 헬퍼 직접 테스트.
+- 테스트에서 Prisma mock 불필요 — 도달 가능성 체커를 `async () => true/false` stub으로 주입하여 순수 단위 테스트 달성.
+
+---
+
+### Prompt 8: Profile Use-Cases + Server Actions
+
+**목표**: use-case의 프로필 CRUD 비즈니스 로직, 얇은 서버 액션 어댑터.
+**생성 파일**: `lib/use-cases/profile.ts`, `lib/actions/profile.ts`, `__tests__/lib/use-cases/profile.test.ts`, `__tests__/lib/actions/profile.test.ts`
+
+```
+이전: Zod 스키마, 도메인 authorization, auth 헬퍼, Prisma 클라이언트.
+
+각 작업의 Clean Architecture 패턴:
+  Server Action (lib/actions/) → Zod 검증 → requireUser → authorize → use-case 호출
+  Use-Case (lib/use-cases/) → 비즈니스 로직 → Prisma 쿼리 → 결과 반환
+
+Task 1: lib/use-cases/profile.ts 생성 — 비즈니스 로직.
+함수 (모두 userId를 첫 번째 매개변수로):
+- getFullProfile(userId): profiles_public + profiles_private + 모든 이력서
+  관계 (careers with job, educations, languages, skills with skill, urls, attachments) 조회.
+- getProfileForViewer(candidateId, mode: 'partial' | 'full'): partial은
+  public + 이력서 내용 반환. Full은 private + attachments 추가.
+- updatePublicProfile(userId, data): profiles_public 업데이트.
+- updatePrivateProfile(userId, data): profiles_private 업데이트.
+- addCareer(userId, data), updateCareer(userId, id, data), deleteCareer(userId, id).
+- 동일 CRUD: education, language, url.
+- addSkill(userId, skillId), deleteSkill(userId, skillId).
+업데이트/삭제 작업: 레코드를 먼저 조회, userId에 속하는지 확인
+(use-case 레벨 소유권 검사), 그런 다음 변경.
+
+Task 2: lib/actions/profile.ts 생성 — 서버 액션 어댑터.
+각 액션:
+  1. 'use server' 디렉티브
+  2. requireUser()로 세션 가져오기
+  3. Zod 스키마로 입력 검증
+  4. 해당 use-case 함수 호출
+  5. revalidatePath('/dashboard/candidate/profile')
+  6. { success: true } 또는 { error: string } 반환 (DomainError 캐치)
+액션: updateProfilePublic, updateProfilePrivate, addProfileCareer,
+updateProfileCareer, deleteProfileCareer, (education, language, url 동일),
+addProfileSkill, deleteProfileSkill, getMyProfile, getProfileForRecruiter.
+
+Task 3: 테스트 작성.
+- Use-case 테스트 (__tests__/lib/use-cases/profile.test.ts): prisma 모킹.
+  각 함수 테스트: happy path 예상 형태 반환, 소유권 불일치 시
+  DomainError throw.
+- Action 테스트 (__tests__/lib/actions/profile.test.ts): use-case와 auth 모킹.
+  테스트: 성공 경로, 인증 실패, 검증 실패, 도메인 에러 처리.
+  가장 복잡한 액션에 집중 (날짜가 있는 career, 접근 레벨이 있는 getProfileForRecruiter).
+
+검증: pnpm test 통과.
+```
+
+#### Prompt 8 결과
+
+**상태**: ✅ 완료
+
+완료 항목:
+
+- `lib/use-cases/profile.ts`: 18개 함수. `getFullProfile`, `getProfileForViewer(mode: 'partial'|'full')`, `updatePublicProfile`, `updatePrivateProfile`, 경력/학력/언어/URL 각 add/update/delete (12개), `addSkill`, `deleteSkill`. update/delete는 `findFirst({ id, userId })`로 소유권 검사 후 처리. `addSkill`은 P2002 에러를 `conflict()` DomainError로 변환.
+- `lib/actions/profile.ts`: 18개 서버 액션. 공통 패턴: `requireUser` → Zod 검증 → use-case 호출 → `revalidatePath`. DomainError/ZodError → `{ error: string }`, 기타 에러는 재throw. `getProfileForRecruiter`는 `assertCanViewCandidate` + `ReachabilityChecker` 패턴 사용.
+- `__tests__/lib/use-cases/profile.test.ts`: 24개 테스트.
+- `__tests__/lib/actions/profile.test.ts`: 16개 테스트.
+
+계획 대비 변경 사항:
+
+- `jest.mock('@/lib/infrastructure/auth-utils')` 자동 모킹 시 better-auth ESM 로드 오류 발생 → 팩토리 함수 방식으로 변경: `jest.mock('@/lib/infrastructure/auth-utils', () => ({ requireUser: jest.fn(), requireRole: jest.fn() }))`. 기존 auth-utils.test.ts와 일관된 방식.
+- 테스트 106개 통과 (기존 66개 → +40개).
+
+---
+
+### Prompt 9: Catalog + Job Description Queries
+
+**목표**: 카탈로그 및 채용공고 읽기 전용 쿼리.
+**생성 파일**: `lib/use-cases/catalog.ts`, `lib/actions/catalog.ts`, `lib/actions/jd-queries.ts`, 테스트
+
+```
+이전: Prisma 클라이언트, JD용 Zod 필터 스키마.
+
+Task 1: lib/use-cases/catalog.ts 생성.
+- getJobFamilies(): 모든 패밀리 + jobs, sortOrder 정렬.
+- getJobs(familyId?): jobs, family로 선택적 필터링.
+- searchSkills(query): display_name_en과 skill_alias.alias_normalized에 ILIKE. 최대 20개.
+- getSkillById(id): aliases 포함 skill.
+모두 공개 쿼리 — 인증 불필요.
+
+Task 2: lib/actions/catalog.ts 생성 — 서버 액션 래퍼.
+- catalog use-case를 호출하는 얇은 어댑터. 인증 불필요 (공개 읽기).
+
+Task 3: lib/use-cases/jd-queries.ts 생성 (또는 catalog.ts에 추가).
+- getJobDescriptions(filters): jobDescriptionFilterSchema로 검증.
+  Prisma where 절 구성. 페이지네이션 (skip/take). job (with family),
+  skills (with display names), org name include. createdAt desc 정렬.
+  { items, total, page, pageSize } 반환.
+- getJobDescriptionById(id): 모든 관계 포함 전체 JD.
+
+Task 4: lib/actions/jd-queries.ts 생성 — 서버 액션 래퍼.
+
+Task 5: 테스트.
+- prisma 모킹, 올바른 쿼리 구성과 반환 형태 확인.
+- searchSkills가 ILIKE를 올바르게 구성.
+- JD 페이지네이션: 올바른 skip/take, 필터 적용.
+
+검증: pnpm test 통과.
+```
+
+#### Prompt 9 결과
+
+**상태**: ✅ 완료
+
+완료 항목:
+
+- `lib/use-cases/catalog.ts`: `getJobFamilies`, `getJobs(familyId?)`, `searchSkills(query)` (displayNameEn + aliasNormalized ILIKE, max 20), `getSkillById(id)` (null 반환, throw 없음).
+- `lib/use-cases/jd-queries.ts`: `getJobDescriptions(filters)` — 정의된 필터만 where에 포함, `Promise.all`로 findMany + count 병렬 실행, `{ items, total, page, pageSize }` 반환. `getJobDescriptionById(id)` — 없으면 `notFound('채용공고')` throw. 공통 `JD_INCLUDE` 상수로 중복 제거.
+- `lib/actions/catalog.ts`: `'use server'` 래퍼. `import * as catalogUC`로 use-case 이름 충돌 방지. 인증/Zod 검증 불필요.
+- `lib/actions/jd-queries.ts`: `'use server'` 래퍼. `getJobDescriptions(input: unknown)` — `jobDescriptionFilterSchema.parse()` 검증, ZodError → `{ error: '필터 값이 유효하지 않습니다' }`. `getJobDescriptionById(id: string)`.
+- `__tests__/lib/use-cases/catalog.test.ts`: 6개 테스트.
+- `__tests__/lib/use-cases/jd-queries.test.ts`: 8개 테스트.
+- `__tests__/lib/actions/catalog.test.ts`: 5개 테스트.
+- `__tests__/lib/actions/jd-queries.test.ts`: 5개 테스트.
+- 전체 테스트: 130개 통과 (기존 106개 → +24개).
+
+계획 대비 변경 사항:
+
+- `Promise.all([findMany, count])` 사용 — `$transaction` 대신 (읽기 전용 쿼리에 트랜잭션 불필요, 테스트 mock이 더 단순).
+- `JD_INCLUDE` 상수 도입 — `getJobDescriptions`와 `getJobDescriptionById` 간 include 중복 제거.
+- 액션 테스트에서 use-case 팩토리 mock 사용 — auto-mock 시 Prisma 생성 파일 의존 회피 (profile 액션 테스트의 auth-utils mock과 동일한 패턴).
+
+#### Prompt 10 결과
+
+**상태**: ✅ 완료 (커밋: `9dd075c`)
+
+완료 항목:
+
+- `lib/use-cases/applications.ts`: 5개 함수.
+  - `createApplication`: JD 존재 확인 → 중복 지원 확인 → `status='applied'`로 생성.
+  - `withdrawApplication`: `findUnique` → `assertOwnership` → 상태 검증(`'applied'`만 가능) → `'withdrawn'`으로 업데이트.
+  - `getUserApplications`: JD/직무/기관 include, `createdAt desc`.
+  - `getApplicationsForJd`: 채용담당자용. `AppUser.profilePublic` + `AppUser.profileSkills(skill)` include.
+  - `getApplicantStats`: `groupBy(['status'])`, `_count: { _all: true }`.
+- `lib/actions/applications.ts`: 4개 서버 액션.
+  - `createApply`, `withdrawApply`: `requireRole('candidate')`, `revalidatePath('/dashboard/candidate/applications')`.
+  - `getMyApplications`: `requireRole('candidate')`.
+  - `getApplicationsForJd`: `requireRole('recruiter', 'admin')`.
+- `__tests__/lib/use-cases/applications.test.ts`: 9개 테스트.
+- `__tests__/lib/actions/applications.test.ts`: 7개 테스트.
+- 전체 테스트: 146개 통과 (기존 130개 → +16개).
+
+계획 대비 변경 사항:
+
+- `getApplicationsForJd`의 include: 계획에서는 `profilePublic.skills`로 명시했으나, 실제 Prisma 스키마에서 스킬은 `AppUser.profileSkills` 직접 관계로 설계됨 → `profilePublic: true, profileSkills: { include: { skill: true } }` 구조로 수정.
+- Zod 4 UUID 검증: `z.string().uuid()`가 RFC 4122 변형 비트(4번째 그룹 첫 자리 `[89ab]`)를 엄격하게 검증 → 테스트 UUID를 검증 통과 형식으로 수정.
+
+---
+
+### Prompt 10: Application Management
+
+**목표**: 지원, 철회, 지원 목록; 채용담당자 지원 조회.
+**생성 파일**: `lib/use-cases/applications.ts`, `lib/actions/applications.ts`, 테스트
+
+```
+이전: Auth 헬퍼, 도메인 authorization, Zod applySchema, 프로필 use-case.
+
+Task 1: lib/use-cases/applications.ts 생성.
+후보자 작업:
+- createApplication(userId, jdId): JD 존재 확인 (없으면 NOT_FOUND throw),
+  이미 지원했는지 확인 (CONFLICT throw), apply 행 status='applied' 생성.
+- withdrawApplication(userId, applyId): apply 조회, assertOwnership,
+  status가 'applied'인지 확인 (accepted/rejected은 철회 불가), status='withdrawn' 설정.
+- getUserApplications(userId): JD 정보 (title, job, org, type) 포함 목록, createdAt desc 정렬.
+
+채용담당자 작업:
+- getApplicationsForJd(jdId): 부분 후보자 데이터
+  (profiles_public + skills) 포함 지원 목록. partial view 패턴 사용.
+- getApplicantStats(jdId): status별 카운트.
+
+Task 2: lib/actions/applications.ts 생성 — 서버 액션 어댑터.
+- createApply: requireRole('candidate'), 검증, use-case 호출.
+- withdrawApply: requireRole('candidate'), use-case 호출.
+- getMyApplications: requireRole('candidate'), use-case 호출.
+- getApplicationsForJd: requireRole('recruiter', 'admin'), use-case 호출.
+
+Task 3: 테스트.
+- createApplication: happy path, 중복 거부, JD 미존재, 잘못된 역할.
+- withdrawApplication: happy path, 소유권 불일치, 잘못된 상태 전환.
+- getMyApplications: 자기 것만 반환.
+- getApplicationsForJd: recruiter 부분 데이터, candidate 거부.
+
+검증: pnpm test 통과.
+```
+
+---
+
+## Phase 4: UI
+
+### Prompt 11: Layout + Providers + Navigation
+
+**목표**: Provider 래퍼, 네비게이션 위젯, 대시보드 레이아웃 (Figma 기반 재설계).
+**생성 파일**: `components/providers.tsx`, `widgets/nav/ui/*.tsx`, `hooks/use-session.ts`, 수정된 `app/layout.tsx`, `app/(dashboard)/layout.tsx`, `app/(dashboard)/dashboard-sidebar.tsx`, `jest.d.ts`, 테스트
+
+```
+이전: Auth 클라이언트, 모든 데이터 접근. 이제 UI 쉘 구축.
+
+설계 결정 (Figma 기반):
+- 단일 전역 상단 네비게이션 (공개/인증 페이지 동일): Jobs + Announcement 탭
+- (auth) 라우트 그룹 없음 — 로그인/회원가입은 Prompt 12에서 모달로 구현
+- 대시보드 레이아웃: 좌측 사이드바 (MY Page / My Profile / My Jobs / Logout)
+- 미인증 /dashboard/* → /jobs 리다이렉트 (Prompt 12에서 ?auth=required 파람 추가)
+
+Task 1: pnpm dlx shadcn@latest add button dropdown-menu avatar skeleton separator
+
+Task 2: components/providers.tsx 생성 — QueryClientProvider + ReactQueryDevtools.
+
+Task 3: app/layout.tsx 수정.
+- Inter 폰트 로드 (next/font/google), Geist Sans 제거
+- Providers 래핑, MainNav 렌더링
+
+Task 4: app/globals.css — @theme에서 --font-family-base: var(--font-inter)로 변경
+
+Task 5: hooks/use-session.ts — auth-client에서 useSession re-export
+
+Task 6: widgets/nav/ui/main-nav.tsx 생성 — "use client".
+- 로고(VRIDGE) / Jobs + Announcement 탭 / EN 스텁 / 로그아웃 or UserMenu
+
+Task 7: widgets/nav/ui/user-menu.tsx — Avatar + DropdownMenu, My Profile / My Jobs / Logout
+
+Task 8: app/(dashboard)/layout.tsx + dashboard-sidebar.tsx 생성.
+- 사이드바: MY Page 헤더, My Profile/My Jobs 링크, Logout 버튼
+- 메인 콘텐츠 영역
+
+Task 9: middleware.ts 수정 — /login, /signup 공개 경로 제거, 미인증 → /jobs
+
+Task 10: __tests__/widgets/nav/main-nav.test.tsx 작성
+
+검증: pnpm test 통과 (149개), tsc --noEmit 통과.
+```
+
+#### Prompt 11 결과
+
+- shadcn 컴포넌트 설치: `button`, `dropdown-menu`, `avatar`, `skeleton`, `separator`
+- `components/providers.tsx`: QueryClientProvider + ReactQueryDevtools 래퍼 생성
+- `app/layout.tsx`: Inter 폰트로 교체, Providers 래핑, MainNav 전역 렌더링
+- `app/globals.css`: `--font-family-base: var(--font-inter)` 연결
+- `hooks/use-session.ts`: auth-client의 useSession re-export
+- `widgets/nav/ui/main-nav.tsx`: Jobs/Announcement 탭, 로그인 상태별 UI
+- `widgets/nav/ui/user-menu.tsx`: Avatar 트리거 + DropdownMenu (My Profile / My Jobs / Logout)
+- `app/(dashboard)/layout.tsx` + `dashboard-sidebar.tsx`: 좌측 사이드바 레이아웃
+- `proxy.ts`: /login, /signup 경로 제거; 미인증 → /jobs 리다이렉트
+- `jest.d.ts`: @testing-library/jest-dom 타입 전역 참조
+- 테스트: 149개 통과, tsc --noEmit 클린
+
+---
+
+### Prompt 12: Auth Modals (Login + Signup)
+
+**목표**: Auth feature slice — 로그인/회원가입 모달 다이얼로그 (Figma 기반).
+**생성 파일**: `features/auth/ui/*.tsx`, `features/auth/model/use-auth-modal.ts`, 수정된 `widgets/nav/ui/main-nav.tsx`, 테스트
+
+```
+이전: 레이아웃 쉘, MainNav의 Log in / Sign Up 버튼 (스텁). Auth 모달 연결 필요.
+(auth) 라우트 그룹 없음 — 로그인/회원가입은 모달 다이얼로그로 구현.
+
+Task 1: pnpm dlx shadcn@latest add dialog input label
+
+Task 2: features/auth/model/use-auth-modal.ts 생성 — Zustand store.
+- isLoginOpen, isSignupOpen, openLogin, openSignup, closeAll
+
+Task 3: features/auth/ui/login-modal.tsx 생성 — "use client".
+- shadcn Dialog. TanStack Form: email, password.
+- Submit → signIn.email(). 로딩 상태, 에러 표시.
+- "Sign Up" 링크 → openSignup(). 성공 시 /dashboard/candidate/profile 이동.
+
+Task 4: features/auth/ui/signup-modal.tsx 생성 — "use client".
+- shadcn Dialog. TanStack Form: name, email, password, confirmPassword.
+- Submit → signUp.email(). 로딩, 에러, 완료 상태.
+- "Log in" 링크 → openLogin().
+
+Task 5: app/layout.tsx 수정 — LoginModal, SignupModal 전역 렌더링.
+
+Task 6: widgets/nav/ui/main-nav.tsx 수정.
+- Log in / Sign Up 버튼에 useAuthModal의 openLogin/openSignup 연결.
+
+Task 7: middleware.ts 수정.
+- 미인증 /dashboard/* → /jobs?auth=required 리다이렉트.
+- main-nav.tsx: useSearchParams로 auth=required 감지 → 자동 loginModal 오픈.
+
+Task 8: 테스트.
+- login-modal: 렌더링, 유효성 검사, signIn 호출, 에러 표시.
+- signup-modal: 이메일 형식, 비밀번호 일치 검증, signUp 호출.
+- middleware: /dashboard/* 미인증 → /jobs?auth=required.
+
+검증: pnpm test 통과 (161개), tsc --noEmit 통과.
+```
+
+#### Prompt 12 결과
+
+- shadcn 컴포넌트 설치: `dialog`, `input`, `label`
+- `features/auth/model/use-auth-modal.ts`: Zustand 스토어 (isLoginOpen/isSignupOpen/openLogin/openSignup/closeAll)
+- `features/auth/ui/login-modal.tsx`: shadcn Dialog + TanStack Form (email, password), signIn.email(), 성공 시 /dashboard/candidate/profile 이동
+- `features/auth/ui/signup-modal.tsx`: shadcn Dialog + TanStack Form (name, email, password, confirmPassword), signUp.email()
+- `features/auth/ui/auth-redirect-handler.tsx`: useSearchParams로 ?auth=required 감지 → 로그인 모달 자동 오픈 (Suspense 래핑)
+- `app/layout.tsx`: LoginModal, SignupModal, AuthRedirectHandler 전역 렌더링
+- `widgets/nav/ui/main-nav.tsx`: Log in/Sign Up 버튼에 openLogin/openSignup 연결
+- `proxy.ts`: /login,/signup 공개 경로 제거, /announcement 공개 추가, isAuthPage 로직 제거, 미인증 → /jobs?auth=required
+- 테스트: 161개 통과, tsc --noEmit 클린
+
+---
+
+### Prompt 13: Profile Entity Components (Display)
+
+**목표**: 프로필 데이터의 재사용 엔티티 표시 컴포넌트. 후보자 뷰와 채용담당자 뷰 모두 사용.
+**생성 파일**: `entities/profile/ui/*.tsx`, `app/(dashboard)/candidate/profile/page.tsx`, 테스트
+
+```
+이전: getMyProfile 액션 존재. 네비게이션 포함 레이아웃 쉘 존재.
+이것은 FSD "entity" 레이어 컴포넌트 — 순수 표시, 뮤테이션 없음.
+
+Task 1: shadcn 설치: npx shadcn@latest add badge card
+
+Task 2: 엔티티 표시 컴포넌트 생성 (Server Components):
+
+entities/profile/ui/profile-header.tsx:
+- Props: firstName, lastName, aboutMe. 제목 + 문단. 빈 상태.
+
+entities/profile/ui/career-list.tsx:
+- Props: careers 배열 (job 관계 포함). 회사, 직위, 직무명,
+  고용 유형 뱃지, 기간, 설명. sortOrder 정렬. 빈 상태.
+
+entities/profile/ui/education-list.tsx:
+- Props: educations. 기관, 유형, 전공, 졸업 여부, 기간. 빈 상태.
+
+entities/profile/ui/language-list.tsx:
+- Props: languages. 이름 + 숙련도 뱃지. 빈 상태.
+
+entities/profile/ui/skill-badges.tsx:
+- Props: skills (skill display name 포함). Flex-wrap Badge 목록. 빈 상태.
+
+entities/profile/ui/url-list.tsx:
+- Props: urls. 라벨 링크 (외부, 새 탭). 빈 상태.
+
+entities/profile/ui/contact-info.tsx:
+- Props: phoneNumber, email. 누락 필드에 "미제공".
+
+Task 3: app/(dashboard)/candidate/profile/page.tsx 생성.
+- Server Component. getMyProfile 액션 호출.
+- 모든 엔티티 컴포넌트 렌더링. 수정 버튼 → /dashboard/candidate/profile/edit.
+
+Task 4: career-list, skill-badges, profile-header 테스트.
+- 데이터 올바르게 렌더링, 빈 배열 처리, 날짜 포맷.
+
+검증: pnpm test 통과.
+```
+
+#### Prompt 13 결과
+
+- shadcn 컴포넌트 설치: `badge`, `card`
+- `entities/profile/ui/_utils.ts`: `formatDate` (UTC 기반), EMPLOYMENT_TYPE/PROFICIENCY/EDUCATION_TYPE 레이블 맵
+- `entities/profile/ui/profile-header.tsx`: 이름 + aboutMe
+- `entities/profile/ui/career-list.tsx`: 경력 목록 (Badge, 날짜 범위, 빈 상태)
+- `entities/profile/ui/education-list.tsx`: 학력 목록 (유형 Badge, 졸업여부 Badge)
+- `entities/profile/ui/language-list.tsx`: 언어 + 숙련도 Badge
+- `entities/profile/ui/skill-badges.tsx`: 스킬 뱃지 목록
+- `entities/profile/ui/url-list.tsx`: 외부 링크 목록
+- `entities/profile/ui/contact-info.tsx`: 연락처/이메일 (`미제공` 처리)
+- `app/(dashboard)/candidate/profile/page.tsx`: async Server Component, getMyProfile() + requireUser()로 데이터 조합, Card 섹션 구조
+- 단위 테스트: profile-header(3), career-list(7), skill-badges(2) — 12개 추가
+- 전체 테스트: 173개 통과, tsc --noEmit 클린
+
+계획 대비 변경 사항:
+
+- `QueryResult` 타입 좁히기: `!result.success`가 아닌 `'error' in result`로 분기 — 에러 브랜치에 `success` 프로퍼티 없음
+- 엔티티 컴포넌트 props에 Prisma 타입 미사용 — 로컬 타입 정의로 entity 레이어 독립성 유지
+
+---
+
+### Prompt 14: Profile Edit Feature
+
+**목표**: 폼과 뮤테이션 훅을 포함한 프로필 편집 feature slice.
+**생성 파일**: `features/profile-edit/ui/*.tsx`, `features/profile-edit/model/*.ts`, `app/(dashboard)/candidate/profile/edit/page.tsx`, 테스트
+
+```
+이전: 프로필 서버 액션, 엔티티 표시 컴포넌트, Zod 스키마,
+카탈로그 쿼리 (스킬 검색용).
+
+Task 1: shadcn 설치: npx shadcn@latest add dialog select textarea command popover
+
+Task 2: features/profile-edit/model/use-profile-mutations.ts 생성 — "use client".
+- 서버 액션을 래핑하는 TanStack Query useMutation 훅.
+- useUpdateProfilePublic, useAddCareer, useUpdateCareer, useDeleteCareer 등.
+- 각각: 서버 액션 호출, 성공 시 프로필 쿼리 캐시 무효화.
+
+Task 3: 편집 폼 컴포넌트 생성 (모두 "use client"):
+
+features/profile-edit/ui/profile-public-form.tsx:
+- TanStack Form, 사전 입력됨. Submit → useUpdateProfilePublic.
+
+features/profile-edit/ui/career-form.tsx:
+- 추가 + 편집 모드. 스키마의 필드. jobId: 카탈로그에서 그룹 select.
+- 날짜 검증: end >= start.
+
+features/profile-edit/ui/education-form.tsx: 같은 패턴.
+features/profile-edit/ui/language-form.tsx: language + proficiency select.
+features/profile-edit/ui/url-form.tsx: label + 검증된 URL.
+features/profile-edit/ui/contact-form.tsx: 전화번호.
+
+features/profile-edit/ui/skill-picker.tsx:
+- 검색 입력 → 디바운스된 searchSkills. 결과 드롭다운.
+- 클릭으로 추가, X로 제거. shadcn Command으로 combobox.
+
+Task 4: app/(dashboard)/candidate/profile/edit/page.tsx 생성.
+- Server Component가 현재 프로필 로드. 모든 편집 폼을 카드로 렌더링.
+- "프로필로 돌아가기" 링크.
+
+Task 5: career-form, skill-picker 테스트.
+- career-form: 렌더링, 날짜 검증, 올바르게 submit.
+- skill-picker: 검색, 추가, 제거.
+
+검증: pnpm test 통과.
+```
+
+#### Prompt 14 결과
+
+- **생성 파일**: 11개 파일
+  - `features/profile-edit/model/use-profile-mutations.ts` — 16개 뮤테이션 훅
+  - `features/profile-edit/ui/profile-public-form.tsx` — 기본 정보 편집
+  - `features/profile-edit/ui/contact-form.tsx` — 연락처 편집
+  - `features/profile-edit/ui/career-form.tsx` — CareerForm + CareerSection
+  - `features/profile-edit/ui/education-form.tsx` — EducationForm + EducationSection
+  - `features/profile-edit/ui/language-form.tsx` — LanguageForm + LanguageSection
+  - `features/profile-edit/ui/url-form.tsx` — UrlForm + UrlSection
+  - `features/profile-edit/ui/skill-picker.tsx` — 디바운스 검색 + 스킬 추가/삭제
+  - `app/(dashboard)/candidate/profile/edit/page.tsx` — RSC 편집 페이지
+  - `__tests__/features/profile-edit/career-form.test.tsx`
+  - `__tests__/features/profile-edit/skill-picker.test.tsx`
+- **테스트**: 179개 통과 (기존 173 + 신규 6)
+- **타입 체크**: tsc --noEmit 오류 없음
+- **주요 패턴**:
+  - TanStack Form `defaultValues`를 명시적 타입으로 선언해 optional 프로퍼티(`?`) 보존 → Zod 스키마 validator 타입 호환
+  - 선택 필드 Input onChange: `e.target.value || undefined` (빈 문자열 → undefined 변환)
+  - Prisma Date → string 변환: `toISOString().split('T')[0]`
+  - `useEffect` 내 setState: setTimeout 콜백 안으로 이동해 동기 호출 회피 (react-hooks/set-state-in-effect)
+
+---
+
+### Prompt 15: Job Browse + Apply Feature
+
+**목표**: 채용공고 탐색, 상세 보기, 지원 플로우.
+**생성 파일**: `entities/job/ui/*.tsx`, `features/job-browse/ui/*.tsx`, `features/apply/ui/*.tsx`, 페이지, 테스트
+
+```
+이전: JD 쿼리, 지원 액션, 레이아웃 쉘.
+
+Task 1: entities/job/ui/jd-card.tsx 생성.
+- Props: JD 데이터 (title, job, org, employment type, arrangement, salary, skills, date).
+- 뱃지가 있는 Card. 급여 포맷 (예: "50M - 80M VND/year"). 상세로 링크.
+
+Task 2: features/job-browse/ui/jd-filters.tsx 생성 — "use client".
+- 드롭다운: job family/job, employment type, work arrangement.
+- URL search params 업데이트 (shallow navigation).
+- 필터 초기화 버튼.
+
+Task 3: app/(dashboard)/candidate/jobs/page.tsx 생성.
+- Server Component. search params 읽기, getJobDescriptions(filters) 호출.
+- 필터 + 카드 그리드 렌더링. 페이지네이션. 빈 상태.
+
+Task 4: entities/job/ui/jd-detail.tsx 생성.
+- 전체 JD: title, 메타데이터, description (react-markdown), skills, 지원 버튼.
+
+Task 5: features/apply/ui/apply-button.tsx 생성 — "use client".
+- Props: jdId, initialApplied, applyId.
+- 상태: "지원하기" → pending → "지원완료 ✓" → "철회" 가능.
+- createApply/withdrawApply를 래핑하는 useMutation 사용.
+
+Task 6: app/(dashboard)/candidate/jobs/[id]/page.tsx 생성.
+- Server Component. getJobDescriptionById. JD 상세 + 지원 버튼. 없으면 404.
+
+Task 7: entities/application/ui/application-status.tsx 생성.
+- 상태 뱃지: applied=blue, accepted=green, rejected=red, withdrawn=gray.
+
+Task 8: app/(dashboard)/candidate/applications/page.tsx 생성.
+- Server Component. getMyApplications. JD title, org, 상태 뱃지, 날짜 테이블.
+
+Task 9: 테스트.
+- jd-card: 필드 렌더링, 급여 포맷.
+- apply-button: 올바른 상태, 액션 호출, 에러 처리.
+
+검증: pnpm test 통과.
+```
+
+#### Prompt 15 결과
+
+- **생성 파일**: 15개 파일
+  - `entities/job/ui/_utils.ts` — WORK_ARRANGEMENT_LABELS, APPLY_STATUS_LABELS, formatSalary
+  - `entities/job/ui/jd-card.tsx` — 채용공고 카드 (href prop으로 공개/대시보드 라우팅 분기)
+  - `entities/job/ui/jd-detail.tsx` — 채용공고 상세 (children slot으로 지원 버튼 주입)
+  - `entities/application/ui/application-status.tsx` — 지원 상태 뱃지
+  - `features/apply/model/use-apply-mutations.ts` — useCreateApply, useWithdrawApply
+  - `features/apply/ui/apply-button.tsx` — 지원하기/지원완료/철회 상태 관리
+  - `features/job-browse/ui/jd-filters.tsx` — 직무·고용형태·근무형태 필터 (URL 쿼리 파라미터)
+  - `app/page.tsx` — `/jobs`로 리다이렉트
+  - `app/jobs/page.tsx` — 공개 채용공고 목록 (인증 불필요)
+  - `app/jobs/[id]/page.tsx` — 공개 채용공고 상세
+  - `app/jobs/[id]/_login-to-apply-cta.tsx` — 로그인 유도 버튼 (useAuthModal)
+  - `app/(dashboard)/candidate/jobs/page.tsx` — 인증된 채용공고 목록
+  - `app/(dashboard)/candidate/jobs/[id]/page.tsx` — 인증된 채용공고 상세 + 지원 버튼
+  - `app/(dashboard)/candidate/applications/page.tsx` — 내 지원 목록
+  - `__tests__/entities/job/jd-card.test.tsx`, `__tests__/features/apply/apply-button.test.tsx`
+- **테스트**: 189개 통과 (기존 179 + 신규 10)
+- **타입 체크**: tsc --noEmit 오류 없음
+- **주요 패턴**:
+  - `Extract<Awaited<ReturnType<typeof action>>, { success: true }>['data']` — QueryResult 유니온 타입에서 성공 분기 추출
+  - JdFilters: initialFilters를 RSC에서 props로 전달 (useSearchParams 불필요)
+  - ApplyButton: 로컬 상태 + router.refresh()로 낙관적 UI 구현
+
+---
+
+### Prompt 16: Recruiter Feature
+
+**목표**: 채용담당자 대시보드, 지원자 목록, 후보자 프로필 조회.
+**생성 파일**: `features/recruiter/ui/*.tsx`, `features/recruiter/model/*.ts`, 페이지, 테스트
+
+```
+이전: 지원 쿼리, 프로필 쿼리 (getProfileForRecruiter),
+Prompt 13의 엔티티 표시 컴포넌트, authorization 헬퍼.
+
+Task 1: lib/use-cases/에 추가 — getOrgJobDescriptions(orgId): org의 JD
+  + 지원자 카운트 (applies에 _count).
+
+Task 2: app/(dashboard)/recruiter/page.tsx 생성 — 대시보드.
+- Server Component. requireRole('recruiter', 'admin').
+- org의 JD를 지원자 카운트와 함께 목록. 지원자 목록으로 링크.
+
+Task 3: features/recruiter/ui/applicant-card.tsx 생성.
+- 후보자 요약: 이름, 최근 직위, 상위 스킬, 지원일, 상태 뱃지.
+- 후보자 프로필 뷰로 링크.
+
+Task 4: app/(dashboard)/recruiter/jd/[id]/applicants/page.tsx 생성.
+- Server Component. getApplicationsForJd. JD 제목 + 지원자 카드 목록. 빈 상태.
+
+Task 5: features/recruiter/ui/candidate-profile-view.tsx 생성.
+- entities/profile/ui/의 엔티티 컴포넌트 재사용 (CareerList, SkillBadges 등).
+- Props: profileData, mode ('partial' | 'full').
+- Partial: public + 이력서. Private 섹션에 플레이스홀더.
+- Full: 연락처 정보와 첨부파일 목록 포함 전체.
+
+Task 6: app/(dashboard)/recruiter/candidates/[id]/page.tsx 생성.
+- Server Component. getProfileForRecruiter(candidateId, 'partial').
+- "전체 프로필 보기" 버튼으로 full 모드 전환 (클라이언트 토글 또는 쿼리 파라미터).
+
+Task 7: 테스트.
+- applicant-card: 요약 렌더링.
+- candidate-profile-view: partial은 연락처 숨김, full은 표시.
+
+검증: pnpm test 통과.
+```
+
+---
+
+## Phase 5: Figma MVP 정렬 (Prompts 17–24)
+
+Prompt 16 (Recruiter Dashboard)은 현재 계획에서 제외되었습니다.
+Phase 5는 Figma MVP 디자인과 현재 구현 간의 차이를 해소하기 위한 8개 프롬프트로 구성됩니다.
+
+→ **[docs/implementation-plan-p5.md](./implementation-plan-p5.md)**
+
+이전 Phase 5 계획 (구 Prompt 17-18): [docs/implementation-plan-p17.md](./implementation-plan-p17.md) (대체됨)
+
+---
+
+## 인프라 자격 증명 체크리스트
+
+구현 중 필요한 외부 서비스 접근 정보. Ori가 확보 시 `.env`에 설정.
+
+| 서비스                        | 환경 변수                                                                   | 필요 시점                   | 상태 |
+| ----------------------------- | --------------------------------------------------------------------------- | --------------------------- | ---- |
+| Supabase PostgreSQL           | `DATABASE_URL`, `DIRECT_URL`                                                | Prompt 1 (DB 싱글턴)        | ⬜   |
+| BetterAuth                    | `BETTER_AUTH_SECRET`                                                        | Prompt 3 (Auth 서버)        | ⬜   |
+| Google Analytics              | `NEXT_PUBLIC_GA_MEASUREMENT_ID`                                             | 기존 layout.tsx             | ⬜   |
+| AWS S3                        | `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_REGION`, `AWS_S3_BUCKET` | Prompt 17 (파일 업로드)     | ⬜   |
+| S3 호환 엔드포인트 (optional) | `S3_ENDPOINT`                                                               | Prompt 17 (non-AWS 사용 시) | ⬜   |
+
+> **참고**: `BETTER_AUTH_URL`과 `NEXT_PUBLIC_APP_URL`은 로컬 개발 시 `http://localhost:3000`으로 설정 가능 — 외부 자격 증명 불필요.
+
+---
+
+## 개발 워크플로우
+
+각 프롬프트 완료 후 표준 절차:
+
+1. **TDD**: 실패하는 테스트 먼저 작성 → 구현 → 테스트 통과 확인
+2. **커밋**: 논리적 단위로 자주 커밋 (`git commit`)
+3. **결과 문서화**: `docs/implementation-plan.md`의 해당 프롬프트에 `#### Prompt N 결과` 섹션 추가, 진행 상황 표 업데이트 (⬜ → ✅)
+4. **푸시**: `git push origin <feature-branch>`
+5. **PR 생성**: `gh pr create --base dev` — 제목/본문 한국어, base 브랜치는 `dev`
+
+---
+
+## 보류 작업
+
+- [ ] README.md에 개발 기준 섹션 추가 (Task #1)
