@@ -62,30 +62,23 @@ pnpm install
 pnpm dev
 ```
 
-테스트 환경 변수로 실행하려면:
-
-```bash
-pnpm dev:test
-```
-
 브라우저에서 `http://localhost:3000`을 열면 됩니다.
 
 ## 스크립트
 
-| Script                   | 설명                            |
-| ------------------------ | ------------------------------- |
-| `pnpm dev`               | 개발 서버 실행                  |
-| `pnpm dev:test`          | `.env.test` 기반 개발 서버 실행 |
-| `pnpm build`             | 프로덕션 빌드                   |
-| `pnpm start`             | 프로덕션 서버 실행              |
-| `pnpm lint`              | ESLint 실행                     |
-| `pnpm test`              | Jest 실행                       |
-| `pnpm db:test:bootstrap` | 테스트 DB bootstrap SQL 실행    |
-| `pnpm db:test:push`      | 테스트 DB push                  |
-| `pnpm db:test:seed`      | 테스트 DB seed                  |
-| `pnpm db:test:reset`     | 테스트 DB 초기화 + push + seed  |
-| `pnpm storybook`         | Storybook 실행                  |
-| `pnpm build-storybook`   | Storybook 빌드                  |
+| Script                   | 설명                           |
+| ------------------------ | ------------------------------ |
+| `pnpm dev`               | 개발 서버 실행                 |
+| `pnpm build`             | 프로덕션 빌드                  |
+| `pnpm start`             | 프로덕션 서버 실행             |
+| `pnpm lint`              | ESLint 실행                    |
+| `pnpm test`              | Jest 실행                      |
+| `pnpm db:test:bootstrap` | 테스트 DB bootstrap SQL 실행   |
+| `pnpm db:test:push`      | 테스트 DB push                 |
+| `pnpm db:test:seed`      | 테스트 DB seed                 |
+| `pnpm db:test:reset`     | 테스트 DB 초기화 + push + seed |
+| `pnpm storybook`         | Storybook 실행                 |
+| `pnpm build-storybook`   | Storybook 빌드                 |
 
 ## i18n 정책
 
@@ -97,5 +90,5 @@ pnpm dev:test
 
 ## 현재 품질 지표
 
-- 테스트: `70` suite, `457` tests 통과
+- 테스트: `85` suite, `542` tests 통과
 - 타입 체크: `pnpm exec tsc --noEmit` 통과

@@ -1,3 +1,9 @@
+---
+archived_on: 2026-02-21
+archive_reason: superseded
+replaced_by: docs/project-state.md
+---
+
 # 프로젝트 상태 (아카이브) — 컴포넌트 요구사항 체크리스트
 
 > 출처: 기존 `docs/project-state.md`의 Figma 요구사항 비교 섹션  

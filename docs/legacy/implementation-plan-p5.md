@@ -1,3 +1,9 @@
+---
+archived_on: 2026-02-21
+archive_reason: superseded
+replaced_by: docs/project-state.md
+---
+
 # Phase 5 Re-Plan: Figma MVP Alignment (Prompts 17–24)
 
 ## Context

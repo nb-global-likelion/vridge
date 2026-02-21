@@ -1,3 +1,9 @@
+---
+archived_on: 2026-02-21
+archive_reason: superseded
+replaced_by: docs/project-state.md
+---
+
 # ATS MVP 구현 계획
 
 ## 컨텍스트

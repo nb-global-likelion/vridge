@@ -1,3 +1,9 @@
+---
+archived_on: 2026-02-21
+archive_reason: historical_reference
+replaced_by: null
+---
+
 # ATS MVP Backend + Database Design Doc (Supabase Postgres + Prisma)
 
 ## 1) Purpose and scope

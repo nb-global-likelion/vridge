@@ -33,6 +33,7 @@ yarn-error.log*
 # env files (can opt-in for committing if needed)
 .env*
 !.env.example
+!.env.development.example
 
 # vercel
 .vercel
@@ -44,7 +45,12 @@ next-env.d.ts
 # mcp servers
 /mcp
 
+# storybook
 *storybook.log
 storybook-static
 
+# prisma
 /backend/generated/prisma
+
+# agent memory files
+/.codex-memory-*.md

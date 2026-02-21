@@ -1,20 +1,36 @@
-# 로컬 테스트 DB 설정 및 시드 계정
+# 로컬 개발 환경 온보딩 가이드
 
 ## 목적
 
-로컬에서 DB 기능 테스트를 빠르게 반복하기 위한 기준 문서입니다.
+신규 개발자가 로컬에서 vridge를 실행하고 기능 개발을 시작할 수 있도록 최소 필수 절차를 정리한 문서입니다.
 
-- 테스트 DB 초기화/재시드 명령
-- 스키마 의존 함수(`generate_profile_slug`) 부트스트랩
-- 역할별 로그인 가능한 시드 계정 정보
+## 1) 사전 요구사항
 
----
+- Node.js LTS
+- pnpm
+- Docker
 
-## 사전 준비
+## 2) 저장소 설치
 
-docker가 없는 경우 설치합니다.
+```bash
+pnpm install
+```
 
-테스트용 pg 이미지를 생성합니다.
+## 3) 환경 변수 설정
+
+`.env.development.example`를 복사해 `.env.development`를 준비합니다.
+
+```bash
+cp .env.development.example .env.development
+```
+
+기본 개발값은 로컬 테스트 DB(`localhost:54329`)를 기준으로 설정되어 있습니다.
+
+테스트 DB 스크립트(`db:test:*`)도 `.env.development`를 사용합니다.
+
+## 4) 로컬 PostgreSQL 실행
+
+최초 1회:
 
 ```bash
 docker run -d --name vridge-test-pg \
@@ -25,42 +41,38 @@ docker run -d --name vridge-test-pg \
   postgres:16
 ```
 
-`.env.test` 파일에 테스트 DB 연결 문자열을 설정합니다.
+이미 컨테이너가 있으면:
 
-```env
-DATABASE_URL=postgresql://postgres:postgres@localhost:54329/vridge_test
-DIRECT_URL=postgresql://postgres:postgres@localhost:54329/vridge_test
+```bash
+docker start vridge-test-pg
 ```
 
----
+## 5) 스키마/시드 초기화
 
-## 테스트 DB 명령어
-
-`package.json` 스크립트 기준:
-
-- `pnpm db:test:bootstrap`
-  - `backend/prisma/bootstrap.sql` 실행
-  - `pgcrypto` extension 및 `public.generate_profile_slug()` 함수 생성
-- `pnpm db:test:push`
-  - bootstrap 실행 후 `prisma db push --accept-data-loss`
-- `pnpm db:test:seed`
-  - `prisma db seed` 실행
-- `pnpm db:test:reset`
-  - `public` 스키마 drop/create
-  - bootstrap 재실행
-  - schema push + seed까지 한 번에 실행
-
-권장 루틴:
+개발 시작 전 권장 명령:
 
 ```bash
 pnpm db:test:reset
 ```
 
----
+이 명령은 아래를 한 번에 수행합니다.
 
-## 역할별 시드 로그인 계정
+- `public` 스키마 초기화
+- `backend/prisma/bootstrap.sql` 실행
+- `prisma db push --accept-data-loss`
+- `prisma db seed`
 
-`backend/prisma/seed.ts`에서 email/password 로그인 가능한 credential 계정을 함께 생성합니다.
+## 6) 개발 서버 실행
+
+```bash
+pnpm dev
+```
+
+브라우저에서 `http://localhost:3000` 접속
+
+## 7) 로컬 시드 로그인 계정
+
+`backend/prisma/seed.ts` 기준 기본 계정:
 
 - candidate: `candidate@likelion.net` / `@Aaa111!`
 - recruiter: `recruiter@likelion.net` / `@Aaa111!`
@@ -68,20 +80,29 @@ pnpm db:test:reset
 
 추가 후보자 계정:
 
-- candidate: `anh.nguyen@example.com` / `@Aaa111!`
-- candidate: `seed.candidate1@likelion.net` (candidate1, candidate2, ...) / `@Aaa111!`
+- `anh.nguyen@example.com` / `@Aaa111!`
+- `seed.candidate1@likelion.net` (candidate1, candidate2, ...) / `@Aaa111!`
 
-> 주의: 위 비밀번호는 로컬 테스트 전용 고정값입니다. 운영/공용 환경에서 사용 금지.
+## 8) 기본 검증 명령
 
----
+```bash
+pnpm exec tsc --noEmit
+pnpm lint
+BETTER_AUTH_SECRET=dev-secret-dev-secret-dev-secret BETTER_AUTH_URL=http://localhost:3000 NEXT_PUBLIC_APP_URL=http://localhost:3000 pnpm test
+```
 
-## 포함되는 샘플 데이터
+## 9) 자주 쓰는 명령
 
-- 샘플 조직 1개
-- 샘플 JD 1000개 (모든 JD는 마크다운 필수 섹션 포함)
-- 공지사항 100개
-- 사용자 20명 이상 (역할 3종 포함)
-- 후보자 프로필(경력/학력/언어/URL/자격증/첨부/스킬)
-- 지원서(`apply`) 데이터 (상태별 cardinality 포함)
+- DB 부트스트랩만: `pnpm db:test:bootstrap`
+- 스키마 반영: `pnpm db:test:push`
+- 시드만 재실행: `pnpm db:test:seed`
+- Storybook: `pnpm storybook`
 
-채용담당자 뷰에서 후보자가 조회되도록 지원 데이터가 함께 시드됩니다.
+## 10) 트러블슈팅
+
+- 포트 충돌:
+  - `54329`가 사용 중이면 기존 컨테이너를 중지하거나 포트를 변경합니다.
+- DB 연결 실패:
+  - `.env.development`의 `DATABASE_URL`, `DIRECT_URL` 값과 Docker 컨테이너 상태를 먼저 확인합니다.
+- 인증 테스트 실패:
+  - 테스트 실행 시 `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`, `NEXT_PUBLIC_APP_URL` 환경 변수가 누락되지 않았는지 확인합니다.

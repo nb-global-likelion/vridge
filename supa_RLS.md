@@ -12,21 +12,21 @@
 
 1. 인증/권한은 현재 Supabase Auth가 아니라 **Better Auth + 서버 사이드 Prisma** 경로를 사용한다.
 
-- `lib/infrastructure/db.ts`
-- `lib/infrastructure/auth.ts`
-- `lib/infrastructure/auth-utils.ts`
+- `backend/infrastructure/db.ts`
+- `backend/infrastructure/auth.ts`
+- `backend/infrastructure/auth-utils.ts`
 
 2. 데이터 접근은 서버 액션에서 역할 검사를 수행한다.
 
-- 후보자/리크루터 역할 검사: `lib/actions/applications.ts`
-- 후보자 도달성 검사: `lib/actions/profile.ts`, `lib/domain/authorization.ts`
+- 후보자/리크루터 역할 검사: `backend/actions/applications.ts`
+- 후보자 도달성 검사: `backend/actions/profile.ts`, `backend/domain/authorization.ts`
 
 3. 공개 프로필 라우트는 `/candidate/[slug]` 및 `/candidate/[slug]/profile` 이다.
 
 - `app/candidate/[slug]/page.tsx`
 - `app/candidate/[slug]/profile/page.tsx`
 
-4. 슬러그 생성 기본 함수는 `prisma/bootstrap.sql` 기준이다.
+4. 슬러그 생성 기본 함수는 `backend/prisma/bootstrap.sql` 기준이다.
 
 ## 3) 감사 결과: 기존 RLS 문서 대비 불일치
 
@@ -61,7 +61,7 @@
 
 ### D. 슬러그 함수 정의 불일치
 
-기존 문서의 슬러그 함수 예시는 `prisma/bootstrap.sql`과 불일치한다. v0.1 기준 소스 오브 트루스는 `bootstrap.sql`에 정의된 함수다.
+기존 문서의 슬러그 함수 예시는 `backend/prisma/bootstrap.sql`과 불일치한다. v0.1 기준 소스 오브 트루스는 `bootstrap.sql`에 정의된 함수다.
 
 ### E. 이력서 콘텐츠 범위 누락
 
@@ -83,7 +83,7 @@
 
 ### 5.1 전제 함수: `generate_profile_slug`
 
-`prisma/bootstrap.sql`과 동일해야 한다.
+`backend/prisma/bootstrap.sql`과 동일해야 한다.
 
 ```sql
 create or replace function public.generate_profile_slug()
