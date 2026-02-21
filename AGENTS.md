@@ -106,6 +106,7 @@ YOU MUST follow this debugging framework for ANY technical issue:
 ## Learning and Memory Management
 
 - Create a temporary markdown file to capture technical insights, failed approaches, and user preferences
+- Repository-local temporary memory files MUST use the `.codex-memory-*.md` naming pattern.
 - Search it before starting complex tasks for relevant past experiences
 - Document architectural decisions and their outcomes
 - Track patterns in user feedback to improve collaboration
