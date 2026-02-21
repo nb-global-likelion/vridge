@@ -118,3 +118,8 @@ YOU MUST follow this debugging framework for ANY technical issue:
 - Conversation with Ori is in English
 - Skill files (`SKILL.md`) and prompt plan files are instructions optimized for Codex — write them in English for clarity
 - All other written artifacts must be in Korean: PR titles/descriptions, commit messages, code comments, documentation files, and issue descriptions
+
+## Sandboxing
+
+- In sandboxed environments, treat `pnpm build` as a concrete example of a script that may require elevated permissions; ask Ori before requesting escalation.
+- If `gh pr create` fails, DO NOT assume `gh auth login` is missing; treat it as a separate failure mode first and ask Ori before escalating.
