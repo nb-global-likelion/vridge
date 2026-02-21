@@ -1,16 +1,19 @@
 import { screen } from '@testing-library/react';
-import { CareerForm } from '@/features/profile-edit/ui/career-form';
+import { CareerForm } from '@/frontend/features/profile-edit/ui/career-form';
 import {
   useAddCareer,
   useUpdateCareer,
-} from '@/features/profile-edit/model/use-profile-mutations';
+} from '@/frontend/features/profile-edit/model/use-profile-mutations';
 import { renderWithI18n } from '@/__tests__/test-utils/render-with-i18n';
 
-jest.mock('@/features/profile-edit/model/use-profile-mutations', () => ({
-  useAddCareer: jest.fn(),
-  useUpdateCareer: jest.fn(),
-  useDeleteCareer: jest.fn(),
-}));
+jest.mock(
+  '@/frontend/features/profile-edit/model/use-profile-mutations',
+  () => ({
+    useAddCareer: jest.fn(),
+    useUpdateCareer: jest.fn(),
+    useDeleteCareer: jest.fn(),
+  })
+);
 jest.mock('next/navigation', () => ({
   useRouter: jest.fn(() => ({ refresh: jest.fn() })),
 }));

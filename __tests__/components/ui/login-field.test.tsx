@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import { LoginField } from '@/components/ui/login-field';
+import { LoginField } from '@/frontend/components/ui/login-field';
 
 describe('LoginField', () => {
   it('기본 상태 placeholder 톤을 사용한다', () => {

@@ -8,15 +8,15 @@ jest.mock('better-auth/next-js', () => ({
   nextCookies: jest.fn(() => 'mock-next-cookies-plugin'),
   toNextJsHandler: jest.fn(),
 }));
-jest.mock('@/lib/infrastructure/db', () => ({
+jest.mock('@/backend/infrastructure/db', () => ({
   prisma: {
     $transaction: jest.fn(),
   },
 }));
 
 import { betterAuth } from 'better-auth';
-import { auth } from '@/lib/infrastructure/auth';
-import { prisma } from '@/lib/infrastructure/db';
+import { auth } from '@/backend/infrastructure/auth';
+import { prisma } from '@/backend/infrastructure/db';
 
 describe('auth', () => {
   it('auth 인스턴스가 정의됨', () => {

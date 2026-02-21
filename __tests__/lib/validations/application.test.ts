@@ -1,4 +1,4 @@
-import { applySchema } from '@/lib/validations/application';
+import { applySchema } from '@/backend/validations/application';
 
 describe('applySchema', () => {
   it('유효한 UUID 통과', () => {

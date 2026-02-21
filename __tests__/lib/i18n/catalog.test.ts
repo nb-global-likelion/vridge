@@ -1,4 +1,4 @@
-import { getLocalizedCatalogName } from '@/lib/i18n/catalog';
+import { getLocalizedCatalogName } from '@/shared/i18n/catalog';
 
 describe('getLocalizedCatalogName', () => {
   const base = {

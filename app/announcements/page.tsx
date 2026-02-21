@@ -1,8 +1,8 @@
 import Link from 'next/link';
-import { NumberedPagination } from '@/components/ui/numbered-pagination';
-import { getAnnouncements } from '@/lib/actions/announcements';
-import { getServerI18n } from '@/lib/i18n/server';
-import { getActionErrorMessage } from '@/lib/i18n/action-error';
+import { NumberedPagination } from '@/frontend/components/ui/numbered-pagination';
+import { getAnnouncements } from '@/backend/actions/announcements';
+import { getServerI18n } from '@/shared/i18n/server';
+import { getActionErrorMessage } from '@/shared/i18n/action-error';
 
 function parsePage(input: string | string[] | undefined): number {
   if (Array.isArray(input)) return parsePage(input[0]);

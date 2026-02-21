@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import { TabItem } from '@/components/ui/tab-item';
+import { TabItem } from '@/frontend/components/ui/tab-item';
 
 describe('TabItem', () => {
   it('라벨 텍스트 렌더링', () => {

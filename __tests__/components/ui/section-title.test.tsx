@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { SectionTitle } from '@/components/ui/section-title';
+import { SectionTitle } from '@/frontend/components/ui/section-title';
 
 describe('SectionTitle', () => {
   it('제목 텍스트 렌더링', () => {

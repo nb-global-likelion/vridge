@@ -1,4 +1,4 @@
-import { toDateOnlyUtc } from '@/lib/date-only';
+import { toDateOnlyUtc } from '@/backend/domain/date-only';
 
 describe('toDateOnlyUtc', () => {
   it('YYYY-MM-DD 문자열을 UTC 자정 Date로 변환한다', () => {

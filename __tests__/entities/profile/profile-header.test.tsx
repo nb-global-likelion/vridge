@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import { ProfileHeader } from '@/entities/profile/ui/profile-header';
+import { ProfileHeader } from '@/frontend/entities/profile/ui/profile-header';
 
 describe('ProfileHeader', () => {
   it('renders full name', () => {

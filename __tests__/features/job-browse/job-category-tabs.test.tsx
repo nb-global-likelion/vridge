@@ -1,5 +1,5 @@
 import { screen } from '@testing-library/react';
-import { JobCategoryTabs } from '@/features/job-browse/ui/job-category-tabs';
+import { JobCategoryTabs } from '@/frontend/features/job-browse/ui/job-category-tabs';
 import { renderWithI18n } from '@/__tests__/test-utils/render-with-i18n';
 
 const families = [

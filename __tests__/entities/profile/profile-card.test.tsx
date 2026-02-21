@@ -1,5 +1,5 @@
 import { screen } from '@testing-library/react';
-import { ProfileCard } from '@/entities/profile/ui/profile-card';
+import { ProfileCard } from '@/frontend/entities/profile/ui/profile-card';
 import { renderWithI18n } from '@/__tests__/test-utils/render-with-i18n';
 
 const baseProps = {

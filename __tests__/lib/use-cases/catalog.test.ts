@@ -3,10 +3,10 @@ import {
   getJobs,
   searchSkills,
   getSkillById,
-} from '@/lib/use-cases/catalog';
-import { prisma } from '@/lib/infrastructure/db';
+} from '@/backend/use-cases/catalog';
+import { prisma } from '@/backend/infrastructure/db';
 
-jest.mock('@/lib/infrastructure/db', () => ({
+jest.mock('@/backend/infrastructure/db', () => ({
   prisma: {
     jobFamily: { findMany: jest.fn() },
     job: { findMany: jest.fn() },

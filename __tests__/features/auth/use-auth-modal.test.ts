@@ -1,5 +1,5 @@
 import { act, renderHook } from '@testing-library/react';
-import { useAuthModal } from '@/features/auth/model/use-auth-modal';
+import { useAuthModal } from '@/frontend/features/auth/model/use-auth-modal';
 
 // Zustand 스토어 초기화 — 각 테스트 후 상태 리셋
 beforeEach(() => {

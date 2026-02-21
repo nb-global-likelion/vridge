@@ -2,11 +2,11 @@ import {
   getAnnouncements,
   getAnnouncementById,
   getAnnouncementNeighbors,
-} from '@/lib/actions/announcements';
-import { DomainError } from '@/lib/domain/errors';
-import * as announcementsUC from '@/lib/use-cases/announcements';
+} from '@/backend/actions/announcements';
+import { DomainError } from '@/backend/domain/errors';
+import * as announcementsUC from '@/backend/use-cases/announcements';
 
-jest.mock('@/lib/use-cases/announcements', () => ({
+jest.mock('@/backend/use-cases/announcements', () => ({
   getAnnouncements: jest.fn(),
   getAnnouncementById: jest.fn(),
   getAnnouncementNeighbors: jest.fn(),

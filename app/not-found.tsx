@@ -1,6 +1,6 @@
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { getServerI18n } from '@/lib/i18n/server';
+import { Button } from '@/frontend/components/ui/button';
+import { getServerI18n } from '@/shared/i18n/server';
 
 export default async function GlobalNotFound() {
   const { t } = await getServerI18n();

@@ -1,45 +1,45 @@
 import { screen } from '@testing-library/react';
 import type { ReactNode } from 'react';
 import JobsPage from '@/app/jobs/page';
-import { getJobDescriptions } from '@/lib/actions/jd-queries';
-import { getJobFamilies } from '@/lib/actions/catalog';
-import { getMyApplications } from '@/lib/actions/applications';
-import { getCurrentUser } from '@/lib/infrastructure/auth-utils';
+import { getJobDescriptions } from '@/backend/actions/jd-queries';
+import { getJobFamilies } from '@/backend/actions/catalog';
+import { getMyApplications } from '@/backend/actions/applications';
+import { getCurrentUser } from '@/backend/infrastructure/auth-utils';
 import { renderWithI18n } from '@/__tests__/test-utils/render-with-i18n';
 
-jest.mock('@/lib/actions/jd-queries', () => ({
+jest.mock('@/backend/actions/jd-queries', () => ({
   getJobDescriptions: jest.fn(),
 }));
 
-jest.mock('@/lib/actions/catalog', () => ({
+jest.mock('@/backend/actions/catalog', () => ({
   getJobFamilies: jest.fn(),
 }));
 
-jest.mock('@/lib/actions/applications', () => ({
+jest.mock('@/backend/actions/applications', () => ({
   getMyApplications: jest.fn(),
 }));
 
-jest.mock('@/lib/infrastructure/auth-utils', () => ({
+jest.mock('@/backend/infrastructure/auth-utils', () => ({
   requireUser: jest.fn(),
   getCurrentUser: jest.fn(),
   requireRole: jest.fn(),
 }));
 
-jest.mock('@/features/job-browse/ui/job-search-form', () => ({
+jest.mock('@/frontend/features/job-browse/ui/job-search-form', () => ({
   JobSearchForm: ({ initialSearch }: { initialSearch?: string }) => (
     <div data-testid="job-search-form">{initialSearch ?? ''}</div>
   ),
 }));
 
-jest.mock('@/features/job-browse/ui/job-category-tabs', () => ({
+jest.mock('@/frontend/features/job-browse/ui/job-category-tabs', () => ({
   JobCategoryTabs: () => <div data-testid="job-category-tabs">tabs</div>,
 }));
 
-jest.mock('@/features/job-browse/ui/job-sort-control', () => ({
+jest.mock('@/frontend/features/job-browse/ui/job-sort-control', () => ({
   JobSortControl: () => <div data-testid="job-sort-control">sort</div>,
 }));
 
-jest.mock('@/entities/job/ui/posting-list-item', () => ({
+jest.mock('@/frontend/entities/job/ui/posting-list-item', () => ({
   PostingListItem: ({ title, cta }: { title: string; cta?: ReactNode }) => (
     <div data-testid="posting-list-item">
       <span>{title}</span>
@@ -48,7 +48,7 @@ jest.mock('@/entities/job/ui/posting-list-item', () => ({
   ),
 }));
 
-jest.mock('@/components/ui/numbered-pagination', () => ({
+jest.mock('@/frontend/components/ui/numbered-pagination', () => ({
   NumberedPagination: ({
     currentPage,
     totalPages,
@@ -74,8 +74,8 @@ jest.mock('@/app/jobs/_jobs-list-apply-cta', () => ({
   ),
 }));
 
-jest.mock('@/lib/i18n/server', () => {
-  const { enMessages } = jest.requireActual('@/lib/i18n/messages/en');
+jest.mock('@/shared/i18n/server', () => {
+  const { enMessages } = jest.requireActual('@/shared/i18n/messages/en');
   return {
     getServerI18n: jest.fn(async () => ({
       locale: 'en',

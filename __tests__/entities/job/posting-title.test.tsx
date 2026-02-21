@@ -1,5 +1,5 @@
 import { screen } from '@testing-library/react';
-import { PostingTitle } from '@/entities/job/ui/posting-title';
+import { PostingTitle } from '@/frontend/entities/job/ui/posting-title';
 import { renderWithI18n } from '@/__tests__/test-utils/render-with-i18n';
 
 describe('PostingTitle', () => {

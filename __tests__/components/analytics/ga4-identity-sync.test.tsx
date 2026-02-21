@@ -1,14 +1,14 @@
 import { waitFor } from '@testing-library/react';
 import { renderWithI18n } from '@/__tests__/test-utils/render-with-i18n';
-import { Ga4IdentitySync } from '@/components/analytics/ga4-identity-sync';
-import { useSession } from '@/hooks/use-session';
-import { setUserId } from '@/lib/analytics/ga4';
+import { Ga4IdentitySync } from '@/frontend/components/analytics/ga4-identity-sync';
+import { useSession } from '@/frontend/hooks/use-session';
+import { setUserId } from '@/frontend/lib/analytics/ga4';
 
-jest.mock('@/hooks/use-session', () => ({
+jest.mock('@/frontend/hooks/use-session', () => ({
   useSession: jest.fn(),
 }));
 
-jest.mock('@/lib/analytics/ga4', () => ({
+jest.mock('@/frontend/lib/analytics/ga4', () => ({
   setUserId: jest.fn(),
 }));
 

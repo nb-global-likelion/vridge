@@ -5,7 +5,7 @@ import {
   setUserId,
   trackEvent,
   trackPageView,
-} from '@/lib/analytics/ga4';
+} from '@/frontend/lib/analytics/ga4';
 
 describe('ga4 analytics helpers', () => {
   beforeEach(() => {

@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { LangPicker } from '@/components/ui/lang-picker';
+import { LangPicker } from '@/frontend/components/ui/lang-picker';
 
 describe('LangPicker', () => {
   const options = [

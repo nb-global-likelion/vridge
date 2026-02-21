@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import { NumberedPagination } from '@/components/ui/numbered-pagination';
+import { NumberedPagination } from '@/frontend/components/ui/numbered-pagination';
 
 function buildHref(page: number) {
   return `/jobs?page=${page}`;

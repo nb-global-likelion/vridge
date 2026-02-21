@@ -7,7 +7,7 @@ import {
   profileUrlSchema,
   profileSkillSchema,
   profileCertificationSchema,
-} from '@/lib/validations/profile';
+} from '@/backend/validations/profile';
 
 describe('profilePublicSchema', () => {
   it('유효한 데이터 통과', () => {

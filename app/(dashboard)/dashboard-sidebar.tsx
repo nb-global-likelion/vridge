@@ -2,8 +2,8 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { signOut } from '@/lib/infrastructure/auth-client';
-import { useI18n } from '@/lib/i18n/client';
+import { signOut } from '@/backend/infrastructure/auth-client';
+import { useI18n } from '@/shared/i18n/client';
 
 const SIDEBAR_LINKS = [
   { labelKey: 'nav.myProfile', href: '/candidate/profile' },

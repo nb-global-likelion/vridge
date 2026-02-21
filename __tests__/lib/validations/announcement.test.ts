@@ -1,4 +1,4 @@
-import { announcementFilterSchema } from '@/lib/validations/announcement';
+import { announcementFilterSchema } from '@/backend/validations/announcement';
 
 describe('announcementFilterSchema', () => {
   it('유효한 필터 통과', () => {

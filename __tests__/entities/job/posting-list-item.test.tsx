@@ -1,5 +1,5 @@
 import { screen } from '@testing-library/react';
-import { PostingListItem } from '@/entities/job/ui/posting-list-item';
+import { PostingListItem } from '@/frontend/entities/job/ui/posting-list-item';
 import { renderWithI18n } from '@/__tests__/test-utils/render-with-i18n';
 
 const baseProps = {

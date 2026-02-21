@@ -1,16 +1,19 @@
 import { screen } from '@testing-library/react';
-import { CertificationForm } from '@/features/profile-edit/ui/certification-form';
+import { CertificationForm } from '@/frontend/features/profile-edit/ui/certification-form';
 import {
   useAddCertification,
   useUpdateCertification,
-} from '@/features/profile-edit/model/use-profile-mutations';
+} from '@/frontend/features/profile-edit/model/use-profile-mutations';
 import { renderWithI18n } from '@/__tests__/test-utils/render-with-i18n';
 
-jest.mock('@/features/profile-edit/model/use-profile-mutations', () => ({
-  useAddCertification: jest.fn(),
-  useUpdateCertification: jest.fn(),
-  useDeleteCertification: jest.fn(),
-}));
+jest.mock(
+  '@/frontend/features/profile-edit/model/use-profile-mutations',
+  () => ({
+    useAddCertification: jest.fn(),
+    useUpdateCertification: jest.fn(),
+    useDeleteCertification: jest.fn(),
+  })
+);
 jest.mock('next/navigation', () => ({
   useRouter: jest.fn(() => ({ refresh: jest.fn() })),
 }));

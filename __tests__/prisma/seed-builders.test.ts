@@ -11,7 +11,7 @@ import {
   type SampleApplySeed,
   type SampleJobDescriptionSeed,
   type SampleUserSeed,
-} from '@/prisma/seed-builders';
+} from '@/backend/prisma/seed-builders';
 
 describe('seed-builders', () => {
   const orgId = '00000000-0000-0000-0000-000000000101';

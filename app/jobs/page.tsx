@@ -1,21 +1,21 @@
-import { getJobDescriptions } from '@/lib/actions/jd-queries';
-import { getJobFamilies } from '@/lib/actions/catalog';
-import { getMyApplications } from '@/lib/actions/applications';
-import { getCurrentUser } from '@/lib/infrastructure/auth-utils';
-import { PostingListItem } from '@/entities/job/ui/posting-list-item';
-import { NumberedPagination } from '@/components/ui/numbered-pagination';
-import { JobSearchForm } from '@/features/job-browse/ui/job-search-form';
-import { JobCategoryTabs } from '@/features/job-browse/ui/job-category-tabs';
-import { JobSortControl } from '@/features/job-browse/ui/job-sort-control';
+import { getJobDescriptions } from '@/backend/actions/jd-queries';
+import { getJobFamilies } from '@/backend/actions/catalog';
+import { getMyApplications } from '@/backend/actions/applications';
+import { getCurrentUser } from '@/backend/infrastructure/auth-utils';
+import { PostingListItem } from '@/frontend/entities/job/ui/posting-list-item';
+import { NumberedPagination } from '@/frontend/components/ui/numbered-pagination';
+import { JobSearchForm } from '@/frontend/features/job-browse/ui/job-search-form';
+import { JobCategoryTabs } from '@/frontend/features/job-browse/ui/job-category-tabs';
+import { JobSortControl } from '@/frontend/features/job-browse/ui/job-sort-control';
 import {
   applyJobsQueryPatch,
   buildJobsHref,
   getEffectiveJobsSort,
   parseJobsQueryFromRecord,
-} from '@/features/job-browse/model/query-state';
-import { getServerI18n } from '@/lib/i18n/server';
-import { getActionErrorMessage } from '@/lib/i18n/action-error';
-import { getLocalizedCatalogName } from '@/lib/i18n/catalog';
+} from '@/frontend/features/job-browse/model/query-state';
+import { getServerI18n } from '@/shared/i18n/server';
+import { getActionErrorMessage } from '@/shared/i18n/action-error';
+import { getLocalizedCatalogName } from '@/shared/i18n/catalog';
 import { JobsListApplyCta } from './_jobs-list-apply-cta';
 
 export default async function JobsPage({

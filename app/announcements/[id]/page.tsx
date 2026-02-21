@@ -1,13 +1,13 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import ReactMarkdown from 'react-markdown';
-import { Icon } from '@/components/ui/icon';
+import { Icon } from '@/frontend/components/ui/icon';
 import {
   getAnnouncementById,
   getAnnouncementNeighbors,
-} from '@/lib/actions/announcements';
-import { getServerI18n } from '@/lib/i18n/server';
-import type { ActionError } from '@/lib/actions/_shared';
+} from '@/backend/actions/announcements';
+import { getServerI18n } from '@/shared/i18n/server';
+import type { ActionError } from '@/backend/actions/_shared';
 
 function formatDate(date: Date): string {
   const year = date.getUTCFullYear();

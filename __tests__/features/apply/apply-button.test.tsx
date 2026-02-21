@@ -1,12 +1,12 @@
 import { screen, fireEvent } from '@testing-library/react';
-import { ApplyButton } from '@/features/apply/ui/apply-button';
+import { ApplyButton } from '@/frontend/features/apply/ui/apply-button';
 import {
   useCreateApply,
   useWithdrawApply,
-} from '@/features/apply/model/use-apply-mutations';
+} from '@/frontend/features/apply/model/use-apply-mutations';
 import { renderWithI18n } from '@/__tests__/test-utils/render-with-i18n';
 
-jest.mock('@/features/apply/model/use-apply-mutations', () => ({
+jest.mock('@/frontend/features/apply/model/use-apply-mutations', () => ({
   useCreateApply: jest.fn(),
   useWithdrawApply: jest.fn(),
 }));

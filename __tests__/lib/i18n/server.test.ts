@@ -1,5 +1,8 @@
-import { DEFAULT_LOCALE, LOCALE_COOKIE_NAME } from '@/lib/i18n/config';
-import { resolveLocale, readLocaleFromCookieHeader } from '@/lib/i18n/server';
+import { DEFAULT_LOCALE, LOCALE_COOKIE_NAME } from '@/shared/i18n/config';
+import {
+  resolveLocale,
+  readLocaleFromCookieHeader,
+} from '@/shared/i18n/server';
 
 describe('resolveLocale', () => {
   it('지원하는 로케일이면 그대로 반환한다', () => {

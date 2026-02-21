@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { FormDropdown } from '@/components/ui/form-dropdown';
+import { FormDropdown } from '@/frontend/components/ui/form-dropdown';
 
 const OPTIONS = [
   { label: 'React', value: 'react' },

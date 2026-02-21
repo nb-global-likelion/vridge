@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { SearchBar } from '@/components/ui/search-bar';
+import { SearchBar } from '@/frontend/components/ui/search-bar';
 
 describe('SearchBar', () => {
   it('main variant: rounded-[60px] border 스타일', () => {

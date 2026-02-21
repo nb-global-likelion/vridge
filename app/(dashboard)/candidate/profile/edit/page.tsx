@@ -1,9 +1,9 @@
-import { requireUser } from '@/lib/infrastructure/auth-utils';
-import { getMyProfile } from '@/lib/actions/profile';
-import { getJobFamilies } from '@/lib/actions/catalog';
-import { ProfileEditPageClient } from '@/features/profile-edit/ui/profile-edit-page-client';
-import { getServerI18n } from '@/lib/i18n/server';
-import { getActionErrorMessage } from '@/lib/i18n/action-error';
+import { requireUser } from '@/backend/infrastructure/auth-utils';
+import { getMyProfile } from '@/backend/actions/profile';
+import { getJobFamilies } from '@/backend/actions/catalog';
+import { ProfileEditPageClient } from '@/frontend/features/profile-edit/ui/profile-edit-page-client';
+import { getServerI18n } from '@/shared/i18n/server';
+import { getActionErrorMessage } from '@/shared/i18n/action-error';
 
 export default async function CandidateProfileEditPage() {
   const { t } = await getServerI18n();

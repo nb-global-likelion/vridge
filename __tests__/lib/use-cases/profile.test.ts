@@ -21,11 +21,11 @@ import {
   addCertification,
   updateCertification,
   deleteCertification,
-} from '@/lib/use-cases/profile';
-import { DomainError } from '@/lib/domain/errors';
-import { prisma } from '@/lib/infrastructure/db';
+} from '@/backend/use-cases/profile';
+import { DomainError } from '@/backend/domain/errors';
+import { prisma } from '@/backend/infrastructure/db';
 
-jest.mock('@/lib/infrastructure/db', () => ({
+jest.mock('@/backend/infrastructure/db', () => ({
   prisma: {
     appUser: {
       findUnique: jest.fn(),

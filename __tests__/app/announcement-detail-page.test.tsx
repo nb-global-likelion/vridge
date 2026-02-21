@@ -4,7 +4,7 @@ import AnnouncementDetailPage from '@/app/announcements/[id]/page';
 import {
   getAnnouncementById,
   getAnnouncementNeighbors,
-} from '@/lib/actions/announcements';
+} from '@/backend/actions/announcements';
 import { notFound } from 'next/navigation';
 import { renderWithI18n } from '@/__tests__/test-utils/render-with-i18n';
 
@@ -13,15 +13,15 @@ jest.mock('react-markdown', () => ({
   default: ({ children }: { children: ReactNode }) => <div>{children}</div>,
 }));
 
-jest.mock('@/lib/actions/announcements', () => ({
+jest.mock('@/backend/actions/announcements', () => ({
   getAnnouncementById: jest.fn(),
   getAnnouncementNeighbors: jest.fn(),
 }));
 jest.mock('next/navigation', () => ({
   notFound: jest.fn(),
 }));
-jest.mock('@/lib/i18n/server', () => {
-  const { enMessages } = jest.requireActual('@/lib/i18n/messages/en');
+jest.mock('@/shared/i18n/server', () => {
+  const { enMessages } = jest.requireActual('@/shared/i18n/messages/en');
   return {
     getServerI18n: jest.fn(async () => ({
       locale: 'en',

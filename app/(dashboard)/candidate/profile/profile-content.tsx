@@ -1,16 +1,16 @@
 import Image from 'next/image';
-import { Chip } from '@/components/ui/chip';
-import { Icon } from '@/components/ui/icon';
-import { PostStatus } from '@/components/ui/post-status';
-import { SectionTitle } from '@/components/ui/section-title';
+import { Chip } from '@/frontend/components/ui/chip';
+import { Icon } from '@/frontend/components/ui/icon';
+import { PostStatus } from '@/frontend/components/ui/post-status';
+import { SectionTitle } from '@/frontend/components/ui/section-title';
 import {
   getEducationTypeLabel,
   getEmploymentTypeLabel,
   getExperienceLevelLabel,
   getGraduationStatusLabel,
   getProficiencyLabel,
-} from '@/lib/frontend/presentation';
-import type { AppLocale, Translator } from '@/lib/i18n/types';
+} from '@/frontend/lib/presentation';
+import type { AppLocale, Translator } from '@/shared/i18n/types';
 
 type ProfilePublic = {
   firstName: string;

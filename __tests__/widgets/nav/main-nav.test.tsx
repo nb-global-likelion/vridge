@@ -1,27 +1,27 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import MainNav from '@/widgets/nav/ui/main-nav';
+import MainNav from '@/frontend/widgets/nav/ui/main-nav';
 
-jest.mock('@/hooks/use-session', () => ({
+jest.mock('@/frontend/hooks/use-session', () => ({
   useSession: jest.fn(),
 }));
 jest.mock('next/navigation', () => ({
   usePathname: jest.fn(() => '/jobs'),
   useRouter: jest.fn(() => ({ refresh: jest.fn() })),
 }));
-jest.mock('@/lib/i18n/client', () => ({
+jest.mock('@/shared/i18n/client', () => ({
   useI18n: jest.fn(),
   serializeLocaleCookie: jest.fn(() => 'vridge_locale=ko; path=/; max-age=1'),
 }));
 // UserMenu는 별도 테스트 — 여기서는 렌더링 여부만 확인
-jest.mock('@/widgets/nav/ui/user-menu', () => ({
+jest.mock('@/frontend/widgets/nav/ui/user-menu', () => ({
   __esModule: true,
   default: () => <div data-testid="user-menu" />,
 }));
 
-import { useSession } from '@/hooks/use-session';
+import { useSession } from '@/frontend/hooks/use-session';
 import { usePathname, useRouter } from 'next/navigation';
-import { useI18n } from '@/lib/i18n/client';
+import { useI18n } from '@/shared/i18n/client';
 
 const mockUseSession = useSession as unknown as jest.Mock;
 const mockUsePathname = usePathname as unknown as jest.Mock;

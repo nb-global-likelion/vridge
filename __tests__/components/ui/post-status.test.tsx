@@ -1,5 +1,5 @@
 import { screen } from '@testing-library/react';
-import { PostStatus } from '@/components/ui/post-status';
+import { PostStatus } from '@/frontend/components/ui/post-status';
 import { renderWithI18n } from '@/__tests__/test-utils/render-with-i18n';
 
 describe('PostStatus', () => {

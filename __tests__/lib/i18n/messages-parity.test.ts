@@ -1,6 +1,6 @@
-import { enMessages } from '@/lib/i18n/messages/en';
-import { koMessages } from '@/lib/i18n/messages/ko';
-import { viMessages } from '@/lib/i18n/messages/vi';
+import { enMessages } from '@/shared/i18n/messages/en';
+import { koMessages } from '@/shared/i18n/messages/ko';
+import { viMessages } from '@/shared/i18n/messages/vi';
 
 function flattenKeys(
   source: Record<string, string>,

@@ -1,5 +1,5 @@
 import { fireEvent, screen } from '@testing-library/react';
-import { JobSortControl } from '@/features/job-browse/ui/job-sort-control';
+import { JobSortControl } from '@/frontend/features/job-browse/ui/job-sort-control';
 import { renderWithI18n } from '@/__tests__/test-utils/render-with-i18n';
 
 const mockPush = jest.fn();

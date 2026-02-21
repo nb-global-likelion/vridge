@@ -1,14 +1,14 @@
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { JobsListApplyCta } from '@/app/jobs/_jobs-list-apply-cta';
-import { useCreateApply } from '@/features/apply/model/use-apply-mutations';
-import { useAuthModal } from '@/features/auth/model/use-auth-modal';
+import { useCreateApply } from '@/frontend/features/apply/model/use-apply-mutations';
+import { useAuthModal } from '@/frontend/features/auth/model/use-auth-modal';
 import { renderWithI18n } from '@/__tests__/test-utils/render-with-i18n';
 
-jest.mock('@/features/apply/model/use-apply-mutations', () => ({
+jest.mock('@/frontend/features/apply/model/use-apply-mutations', () => ({
   useCreateApply: jest.fn(),
 }));
 
-jest.mock('@/features/auth/model/use-auth-modal', () => ({
+jest.mock('@/frontend/features/auth/model/use-auth-modal', () => ({
   useAuthModal: jest.fn(),
 }));
 

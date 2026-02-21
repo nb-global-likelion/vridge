@@ -1,16 +1,19 @@
 import { screen, fireEvent } from '@testing-library/react';
-import { SkillPicker } from '@/features/profile-edit/ui/skill-picker';
+import { SkillPicker } from '@/frontend/features/profile-edit/ui/skill-picker';
 import {
   useAddSkill,
   useDeleteSkill,
-} from '@/features/profile-edit/model/use-profile-mutations';
+} from '@/frontend/features/profile-edit/model/use-profile-mutations';
 import { renderWithI18n } from '@/__tests__/test-utils/render-with-i18n';
 
-jest.mock('@/lib/actions/catalog', () => ({ searchSkills: jest.fn() }));
-jest.mock('@/features/profile-edit/model/use-profile-mutations', () => ({
-  useAddSkill: jest.fn(),
-  useDeleteSkill: jest.fn(),
-}));
+jest.mock('@/backend/actions/catalog', () => ({ searchSkills: jest.fn() }));
+jest.mock(
+  '@/frontend/features/profile-edit/model/use-profile-mutations',
+  () => ({
+    useAddSkill: jest.fn(),
+    useDeleteSkill: jest.fn(),
+  })
+);
 jest.mock('next/navigation', () => ({
   useRouter: jest.fn(() => ({ refresh: jest.fn() })),
 }));

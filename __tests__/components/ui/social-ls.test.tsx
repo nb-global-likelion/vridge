@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { SocialLs } from '@/components/ui/social-ls';
+import { SocialLs } from '@/frontend/components/ui/social-ls';
 
 describe('SocialLs', () => {
   it('Google/Facebook/Email 문구를 올바르게 렌더링한다', () => {

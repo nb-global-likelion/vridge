@@ -1,5 +1,5 @@
 import { screen } from '@testing-library/react';
-import { FormInput } from '@/components/ui/form-input';
+import { FormInput } from '@/frontend/components/ui/form-input';
 import { renderWithI18n } from '@/__tests__/test-utils/render-with-i18n';
 
 describe('FormInput', () => {

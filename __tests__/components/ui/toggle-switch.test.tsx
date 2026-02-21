@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import { ToggleSwitch } from '@/components/ui/toggle-switch';
+import { ToggleSwitch } from '@/frontend/components/ui/toggle-switch';
 
 describe('ToggleSwitch', () => {
   it('unchecked 상태: 회색 트랙', () => {

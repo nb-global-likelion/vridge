@@ -3,11 +3,11 @@ import {
   getJobs,
   searchSkills,
   getSkillById,
-} from '@/lib/actions/catalog';
-import { DomainError } from '@/lib/domain/errors';
-import * as catalogUC from '@/lib/use-cases/catalog';
+} from '@/backend/actions/catalog';
+import { DomainError } from '@/backend/domain/errors';
+import * as catalogUC from '@/backend/use-cases/catalog';
 
-jest.mock('@/lib/use-cases/catalog', () => ({
+jest.mock('@/backend/use-cases/catalog', () => ({
   getJobFamilies: jest.fn(),
   getJobs: jest.fn(),
   searchSkills: jest.fn(),

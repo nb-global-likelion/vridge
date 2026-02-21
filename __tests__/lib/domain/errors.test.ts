@@ -3,7 +3,7 @@ import {
   notFound,
   forbidden,
   conflict,
-} from '@/lib/domain/errors';
+} from '@/backend/domain/errors';
 
 describe('DomainError', () => {
   it('code, message, key를 가진 인스턴스 생성', () => {

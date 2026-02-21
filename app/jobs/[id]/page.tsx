@@ -1,18 +1,18 @@
 import { headers } from 'next/headers';
 import ReactMarkdown from 'react-markdown';
-import { auth } from '@/lib/infrastructure/auth';
-import { getJobDescriptionById } from '@/lib/actions/jd-queries';
-import { getMyApplications } from '@/lib/actions/applications';
-import { PostingTitle } from '@/entities/job/ui/posting-title';
-import { SummaryCard } from '@/entities/job/ui/summary-card';
-import { ApplyButton } from '@/features/apply/ui/apply-button';
+import { auth } from '@/backend/infrastructure/auth';
+import { getJobDescriptionById } from '@/backend/actions/jd-queries';
+import { getMyApplications } from '@/backend/actions/applications';
+import { PostingTitle } from '@/frontend/entities/job/ui/posting-title';
+import { SummaryCard } from '@/frontend/entities/job/ui/summary-card';
+import { ApplyButton } from '@/frontend/features/apply/ui/apply-button';
 import { LoginToApplyCta } from './_login-to-apply-cta';
 import { ShareJobButton } from './_share-job-button';
 import { JobDetailAnalytics } from './_job-detail-analytics';
-import { getServerI18n } from '@/lib/i18n/server';
-import { getActionErrorMessage } from '@/lib/i18n/action-error';
-import { getLocalizedCatalogName } from '@/lib/i18n/catalog';
-import { getWorkArrangementLabel } from '@/lib/frontend/presentation';
+import { getServerI18n } from '@/shared/i18n/server';
+import { getActionErrorMessage } from '@/shared/i18n/action-error';
+import { getLocalizedCatalogName } from '@/shared/i18n/catalog';
+import { getWorkArrangementLabel } from '@/frontend/lib/presentation';
 
 export default async function JobDetailPage({
   params,

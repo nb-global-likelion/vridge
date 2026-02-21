@@ -1,5 +1,5 @@
 import { screen, fireEvent } from '@testing-library/react';
-import { JobSearchForm } from '@/features/job-browse/ui/job-search-form';
+import { JobSearchForm } from '@/frontend/features/job-browse/ui/job-search-form';
 import { renderWithI18n } from '@/__tests__/test-utils/render-with-i18n';
 
 const mockPush = jest.fn();

@@ -1,5 +1,5 @@
 import { screen } from '@testing-library/react';
-import { CareerList } from '@/entities/profile/ui/career-list';
+import { CareerList } from '@/frontend/entities/profile/ui/career-list';
 import { renderWithI18n } from '@/__tests__/test-utils/render-with-i18n';
 
 const baseCareer = {

@@ -1,5 +1,5 @@
 import { screen } from '@testing-library/react';
-import { JdCard } from '@/entities/job/ui/jd-card';
+import { JdCard } from '@/frontend/entities/job/ui/jd-card';
 import { renderWithI18n } from '@/__tests__/test-utils/render-with-i18n';
 
 const baseProps = {

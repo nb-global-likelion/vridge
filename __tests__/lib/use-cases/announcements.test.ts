@@ -2,11 +2,11 @@ import {
   getAnnouncements,
   getAnnouncementById,
   getAnnouncementNeighbors,
-} from '@/lib/use-cases/announcements';
-import { DomainError } from '@/lib/domain/errors';
-import { prisma } from '@/lib/infrastructure/db';
+} from '@/backend/use-cases/announcements';
+import { DomainError } from '@/backend/domain/errors';
+import { prisma } from '@/backend/infrastructure/db';
 
-jest.mock('@/lib/infrastructure/db', () => ({
+jest.mock('@/backend/infrastructure/db', () => ({
   prisma: {
     announcement: {
       findMany: jest.fn(),

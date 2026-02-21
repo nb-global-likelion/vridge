@@ -5,7 +5,7 @@ import {
   getEffectiveJobsSort,
   parseJobsQueryFromRecord,
   parseJobsQueryFromSearchParams,
-} from '@/features/job-browse/model/query-state';
+} from '@/frontend/features/job-browse/model/query-state';
 
 describe('jobs query-state helpers', () => {
   it('record 파싱: known key만 파싱 + page/sort 정규화', () => {

@@ -1,19 +1,19 @@
 import { screen } from '@testing-library/react';
 import MyApplicationsPage from '@/app/(dashboard)/candidate/applications/page';
-import { requireUser } from '@/lib/infrastructure/auth-utils';
-import { getMyApplications } from '@/lib/actions/applications';
+import { requireUser } from '@/backend/infrastructure/auth-utils';
+import { getMyApplications } from '@/backend/actions/applications';
 import { renderWithI18n } from '@/__tests__/test-utils/render-with-i18n';
 
-jest.mock('@/lib/infrastructure/auth-utils', () => ({
+jest.mock('@/backend/infrastructure/auth-utils', () => ({
   requireUser: jest.fn(),
   getCurrentUser: jest.fn(),
   requireRole: jest.fn(),
 }));
-jest.mock('@/lib/actions/applications', () => ({
+jest.mock('@/backend/actions/applications', () => ({
   getMyApplications: jest.fn(),
 }));
-jest.mock('@/lib/i18n/server', () => {
-  const { enMessages } = jest.requireActual('@/lib/i18n/messages/en');
+jest.mock('@/shared/i18n/server', () => {
+  const { enMessages } = jest.requireActual('@/shared/i18n/messages/en');
   return {
     getServerI18n: jest.fn(async () => ({
       locale: 'en',

@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect } from 'react';
-import { trackEvent } from '@/lib/analytics/ga4';
-import type { AppLocale } from '@/lib/i18n/types';
+import { trackEvent } from '@/frontend/lib/analytics/ga4';
+import type { AppLocale } from '@/shared/i18n/types';
 
 type Props = {
   jdId: string;

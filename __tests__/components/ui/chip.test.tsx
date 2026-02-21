@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { Chip } from '@/components/ui/chip';
+import { Chip } from '@/frontend/components/ui/chip';
 
 describe('Chip', () => {
   describe('variant="displayed"', () => {

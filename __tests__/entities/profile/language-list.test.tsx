@@ -1,5 +1,5 @@
 import { screen } from '@testing-library/react';
-import { LanguageList } from '@/entities/profile/ui/language-list';
+import { LanguageList } from '@/frontend/entities/profile/ui/language-list';
 import { renderWithI18n } from '@/__tests__/test-utils/render-with-i18n';
 
 const baseLanguage = {

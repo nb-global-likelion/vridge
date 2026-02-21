@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { DialcodePicker } from '@/components/ui/dialcode-picker';
+import { DialcodePicker } from '@/frontend/components/ui/dialcode-picker';
 
 describe('DialcodePicker', () => {
   it('현재 코드 표시', () => {

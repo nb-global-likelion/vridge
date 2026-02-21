@@ -1,20 +1,20 @@
 import { fireEvent, screen } from '@testing-library/react';
 import { renderWithI18n } from '@/__tests__/test-utils/render-with-i18n';
-import { Ga4Bootstrap } from '@/components/analytics/ga4-bootstrap';
-import { readConsent, writeConsent } from '@/lib/analytics/consent';
-import { initGa4, setConsent } from '@/lib/analytics/ga4';
+import { Ga4Bootstrap } from '@/frontend/components/analytics/ga4-bootstrap';
+import { readConsent, writeConsent } from '@/frontend/lib/analytics/consent';
+import { initGa4, setConsent } from '@/frontend/lib/analytics/ga4';
 
 jest.mock('next/script', () => ({
   __esModule: true,
   default: (props: React.ComponentProps<'script'>) => <script {...props} />,
 }));
 
-jest.mock('@/lib/analytics/consent', () => ({
+jest.mock('@/frontend/lib/analytics/consent', () => ({
   readConsent: jest.fn(),
   writeConsent: jest.fn(),
 }));
 
-jest.mock('@/lib/analytics/ga4', () => ({
+jest.mock('@/frontend/lib/analytics/ga4', () => ({
   initGa4: jest.fn(),
   setConsent: jest.fn(),
 }));

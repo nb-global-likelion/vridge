@@ -16,14 +16,30 @@ const eslintConfig = defineConfig([
         {
           paths: [
             {
-              name: '@/entities/profile/ui/_utils',
+              name: '@/frontend/entities/profile/ui/_utils',
               message:
-                '공유 프레젠테이션 유틸은 "@/lib/frontend/presentation"에서 가져오세요.',
+                '공유 프레젠테이션 유틸은 "@/frontend/lib/presentation"에서 가져오세요.',
             },
             {
-              name: '@/entities/job/ui/_utils',
+              name: '@/frontend/entities/job/ui/_utils',
               message:
-                '공유 프레젠테이션 유틸은 "@/lib/frontend/presentation"에서 가져오세요.',
+                '공유 프레젠테이션 유틸은 "@/frontend/lib/presentation"에서 가져오세요.',
+            },
+          ],
+          patterns: [
+            {
+              group: [
+                '@/components/*',
+                '@/entities/*',
+                '@/features/*',
+                '@/widgets/*',
+                '@/hooks/*',
+                '@/lib/*',
+                '@/prisma/*',
+                '@/stories/*',
+              ],
+              message:
+                '루트 별칭 대신 "@/frontend/*", "@/backend/*", "@/shared/*" 경로를 사용하세요.',
             },
           ],
         },
@@ -40,7 +56,7 @@ const eslintConfig = defineConfig([
     // Storybook build output should not be linted.
     'storybook-static/**',
     // Generated output should not be linted.
-    'lib/generated/prisma/**',
+    'backend/generated/prisma/**',
   ]),
   ...storybook.configs['flat/recommended'],
 ]);

@@ -1,5 +1,5 @@
 import { screen } from '@testing-library/react';
-import { CertificationList } from '@/entities/profile/ui/certification-list';
+import { CertificationList } from '@/frontend/entities/profile/ui/certification-list';
 import { renderWithI18n } from '@/__tests__/test-utils/render-with-i18n';
 
 describe('CertificationList', () => {

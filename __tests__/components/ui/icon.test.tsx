@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import { Icon } from '@/components/ui/icon';
+import { Icon } from '@/frontend/components/ui/icon';
 
 describe('Icon', () => {
   it('src가 /icons/{name}.svg 형식으로 렌더링', () => {

@@ -1,4 +1,4 @@
-import { jobDescriptionFilterSchema } from '@/lib/validations/job-description';
+import { jobDescriptionFilterSchema } from '@/backend/validations/job-description';
 
 describe('jobDescriptionFilterSchema', () => {
   it('빈 객체에 기본값 적용', () => {

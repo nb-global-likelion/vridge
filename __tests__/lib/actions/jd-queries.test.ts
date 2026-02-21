@@ -1,11 +1,11 @@
 import {
   getJobDescriptions,
   getJobDescriptionById,
-} from '@/lib/actions/jd-queries';
-import { DomainError } from '@/lib/domain/errors';
-import * as jdQueriesUC from '@/lib/use-cases/jd-queries';
+} from '@/backend/actions/jd-queries';
+import { DomainError } from '@/backend/domain/errors';
+import * as jdQueriesUC from '@/backend/use-cases/jd-queries';
 
-jest.mock('@/lib/use-cases/jd-queries', () => ({
+jest.mock('@/backend/use-cases/jd-queries', () => ({
   getJobDescriptions: jest.fn(),
   getJobDescriptionById: jest.fn(),
 }));

@@ -1,4 +1,4 @@
-import { cn } from '@/lib/utils';
+import { cn } from '@/frontend/lib/utils';
 
 describe('smoke', () => {
   it('jest + SWC + path alias 동작 확인', () => {

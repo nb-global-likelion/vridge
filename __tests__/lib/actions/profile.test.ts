@@ -12,22 +12,22 @@ import {
   addProfileCertification,
   updateProfileCertification,
   deleteProfileCertification,
-} from '@/lib/actions/profile';
-import { DomainError } from '@/lib/domain/errors';
-import * as profileUseCases from '@/lib/use-cases/profile';
-import * as authUtils from '@/lib/infrastructure/auth-utils';
-import * as domainAuth from '@/lib/domain/authorization';
+} from '@/backend/actions/profile';
+import { DomainError } from '@/backend/domain/errors';
+import * as profileUseCases from '@/backend/use-cases/profile';
+import * as authUtils from '@/backend/infrastructure/auth-utils';
+import * as domainAuth from '@/backend/domain/authorization';
 
-jest.mock('@/lib/use-cases/profile');
-jest.mock('@/lib/infrastructure/auth-utils', () => ({
+jest.mock('@/backend/use-cases/profile');
+jest.mock('@/backend/infrastructure/auth-utils', () => ({
   requireUser: jest.fn(),
   requireRole: jest.fn(),
 }));
-jest.mock('@/lib/domain/authorization', () => ({
-  ...jest.requireActual('@/lib/domain/authorization'),
+jest.mock('@/backend/domain/authorization', () => ({
+  ...jest.requireActual('@/backend/domain/authorization'),
   assertCanViewCandidate: jest.fn(),
 }));
-jest.mock('@/lib/infrastructure/db', () => ({
+jest.mock('@/backend/infrastructure/db', () => ({
   prisma: {
     apply: { findFirst: jest.fn() },
   },

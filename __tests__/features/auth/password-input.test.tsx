@@ -1,6 +1,6 @@
 import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
-import { PasswordInput } from '@/features/auth/ui/password-input';
+import { PasswordInput } from '@/frontend/features/auth/ui/password-input';
 import { renderWithI18n } from '@/__tests__/test-utils/render-with-i18n';
 
 describe('PasswordInput', () => {

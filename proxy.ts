@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@/lib/infrastructure/auth';
+import { auth } from '@/backend/infrastructure/auth';
 
 function isStaticAssetPath(pathname: string): boolean {
   return /\.[^/]+$/.test(pathname);

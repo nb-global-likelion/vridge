@@ -8,7 +8,7 @@ import {
   getGraduationStatusLabel,
   getProficiencyLabel,
   getWorkArrangementLabel,
-} from '@/lib/frontend/presentation';
+} from '@/frontend/lib/presentation';
 
 const t = (key: string) => {
   const table: Record<string, string> = {

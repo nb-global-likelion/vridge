@@ -1,11 +1,11 @@
 import {
   getJobDescriptions,
   getJobDescriptionById,
-} from '@/lib/use-cases/jd-queries';
-import { DomainError } from '@/lib/domain/errors';
-import { prisma } from '@/lib/infrastructure/db';
+} from '@/backend/use-cases/jd-queries';
+import { DomainError } from '@/backend/domain/errors';
+import { prisma } from '@/backend/infrastructure/db';
 
-jest.mock('@/lib/infrastructure/db', () => ({
+jest.mock('@/backend/infrastructure/db', () => ({
   prisma: {
     jobDescription: {
       findMany: jest.fn(),

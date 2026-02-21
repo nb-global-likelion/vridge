@@ -1,7 +1,7 @@
 'use client';
 
-import { Icon } from '@/components/ui/icon';
-import { useI18n } from '@/lib/i18n/client';
+import { Icon } from '@/frontend/components/ui/icon';
+import { useI18n } from '@/shared/i18n/client';
 
 type Props = {
   title: string;

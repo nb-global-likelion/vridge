@@ -1,13 +1,13 @@
 import { screen } from '@testing-library/react';
 import AnnouncementsPage from '@/app/announcements/page';
-import { getAnnouncements } from '@/lib/actions/announcements';
+import { getAnnouncements } from '@/backend/actions/announcements';
 import { renderWithI18n } from '@/__tests__/test-utils/render-with-i18n';
 
-jest.mock('@/lib/actions/announcements', () => ({
+jest.mock('@/backend/actions/announcements', () => ({
   getAnnouncements: jest.fn(),
 }));
-jest.mock('@/lib/i18n/server', () => {
-  const { enMessages } = jest.requireActual('@/lib/i18n/messages/en');
+jest.mock('@/shared/i18n/server', () => {
+  const { enMessages } = jest.requireActual('@/shared/i18n/messages/en');
   return {
     getServerI18n: jest.fn(async () => ({
       locale: 'en',

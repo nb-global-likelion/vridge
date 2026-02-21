@@ -3,19 +3,19 @@ import {
   withdrawApply,
   getMyApplications,
   getApplicationsForJd,
-} from '@/lib/actions/applications';
-import { DomainError } from '@/lib/domain/errors';
-import * as applicationsUC from '@/lib/use-cases/applications';
-import * as authUtils from '@/lib/infrastructure/auth-utils';
+} from '@/backend/actions/applications';
+import { DomainError } from '@/backend/domain/errors';
+import * as applicationsUC from '@/backend/use-cases/applications';
+import * as authUtils from '@/backend/infrastructure/auth-utils';
 
-jest.mock('@/lib/use-cases/applications', () => ({
+jest.mock('@/backend/use-cases/applications', () => ({
   createApplication: jest.fn(),
   withdrawApplication: jest.fn(),
   getUserApplications: jest.fn(),
   getApplicationsForJd: jest.fn(),
   getApplicantStats: jest.fn(),
 }));
-jest.mock('@/lib/infrastructure/auth-utils', () => ({
+jest.mock('@/backend/infrastructure/auth-utils', () => ({
   requireUser: jest.fn(),
   requireRole: jest.fn(),
 }));

@@ -3,18 +3,18 @@ import userEvent from '@testing-library/user-event';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import type { ReactElement } from 'react';
 import CandidateProfileEditPage from '@/app/(dashboard)/candidate/profile/edit/page';
-import { getMyProfile } from '@/lib/actions/profile';
-import { getJobFamilies } from '@/lib/actions/catalog';
-import { requireUser } from '@/lib/infrastructure/auth-utils';
+import { getMyProfile } from '@/backend/actions/profile';
+import { getJobFamilies } from '@/backend/actions/catalog';
+import { requireUser } from '@/backend/infrastructure/auth-utils';
 import { renderWithI18n } from '@/__tests__/test-utils/render-with-i18n';
 
-jest.mock('@/lib/actions/profile', () => ({
+jest.mock('@/backend/actions/profile', () => ({
   getMyProfile: jest.fn(),
 }));
-jest.mock('@/lib/actions/catalog', () => ({
+jest.mock('@/backend/actions/catalog', () => ({
   getJobFamilies: jest.fn(),
 }));
-jest.mock('@/lib/infrastructure/auth-utils', () => ({
+jest.mock('@/backend/infrastructure/auth-utils', () => ({
   requireUser: jest.fn(),
   getCurrentUser: jest.fn(),
   requireRole: jest.fn(),
@@ -22,8 +22,8 @@ jest.mock('@/lib/infrastructure/auth-utils', () => ({
 jest.mock('next/navigation', () => ({
   useRouter: jest.fn(() => ({ refresh: jest.fn() })),
 }));
-jest.mock('@/lib/i18n/server', () => {
-  const { enMessages } = jest.requireActual('@/lib/i18n/messages/en');
+jest.mock('@/shared/i18n/server', () => {
+  const { enMessages } = jest.requireActual('@/shared/i18n/messages/en');
   return {
     getServerI18n: jest.fn(async () => ({
       locale: 'en',

@@ -1,15 +1,15 @@
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { SectionTitle } from '@/components/ui/section-title';
-import { ProfileCard } from '@/entities/profile/ui/profile-card';
-import { EducationList } from '@/entities/profile/ui/education-list';
-import { SkillBadges } from '@/entities/profile/ui/skill-badges';
-import { CareerList } from '@/entities/profile/ui/career-list';
-import { CertificationList } from '@/entities/profile/ui/certification-list';
-import { LanguageList } from '@/entities/profile/ui/language-list';
-import { UrlList } from '@/entities/profile/ui/url-list';
-import { getProfileBySlug } from '@/lib/actions/profile';
-import { getServerI18n } from '@/lib/i18n/server';
-import { getActionErrorMessage } from '@/lib/i18n/action-error';
+import { Card, CardContent, CardHeader } from '@/frontend/components/ui/card';
+import { SectionTitle } from '@/frontend/components/ui/section-title';
+import { ProfileCard } from '@/frontend/entities/profile/ui/profile-card';
+import { EducationList } from '@/frontend/entities/profile/ui/education-list';
+import { SkillBadges } from '@/frontend/entities/profile/ui/skill-badges';
+import { CareerList } from '@/frontend/entities/profile/ui/career-list';
+import { CertificationList } from '@/frontend/entities/profile/ui/certification-list';
+import { LanguageList } from '@/frontend/entities/profile/ui/language-list';
+import { UrlList } from '@/frontend/entities/profile/ui/url-list';
+import { getProfileBySlug } from '@/backend/actions/profile';
+import { getServerI18n } from '@/shared/i18n/server';
+import { getActionErrorMessage } from '@/shared/i18n/action-error';
 
 export default async function CandidatePublicProfilePage({
   params,

@@ -8,10 +8,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "db:test:bootstrap": "sh -c 'set -a; . ./.env.test; set +a; prisma db execute --file prisma/bootstrap.sql'",
-    "db:test:push": "sh -c 'set -a; . ./.env.test; set +a; prisma db execute --file prisma/bootstrap.sql && prisma db push --accept-data-loss'",
+    "db:test:bootstrap": "sh -c 'set -a; . ./.env.test; set +a; prisma db execute --file backend/prisma/bootstrap.sql'",
+    "db:test:push": "sh -c 'set -a; . ./.env.test; set +a; prisma db execute --file backend/prisma/bootstrap.sql && prisma db push --accept-data-loss'",
     "db:test:seed": "sh -c 'set -a; . ./.env.test; set +a; prisma db seed'",
-    "db:test:reset": "sh -c 'set -a; . ./.env.test; set +a; printf \"%s\\n\" \"drop schema if exists public cascade;\" \"create schema public;\" | prisma db execute --stdin && prisma db execute --file prisma/bootstrap.sql && prisma db push --accept-data-loss && prisma db seed'",
+    "db:test:reset": "sh -c 'set -a; . ./.env.test; set +a; printf \"%s\\n\" \"drop schema if exists public cascade;\" \"create schema public;\" | prisma db execute --stdin && prisma db execute --file backend/prisma/bootstrap.sql && prisma db push --accept-data-loss && prisma db seed'",
     "db:prod:seed:v0.1": "sh -c 'SEED_SCOPE=prod_v0_1_core3 prisma db seed'",
     "prepare": "husky",
     "storybook": "storybook dev -p 6006",
@@ -77,6 +77,6 @@
     "typescript": "^5"
   },
   "prisma": {
-    "seed": "tsx prisma/seed.ts"
+    "seed": "tsx backend/prisma/seed.ts"
   }
 }

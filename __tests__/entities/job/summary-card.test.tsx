@@ -1,5 +1,5 @@
 import { screen } from '@testing-library/react';
-import { SummaryCard } from '@/entities/job/ui/summary-card';
+import { SummaryCard } from '@/frontend/entities/job/ui/summary-card';
 import { renderWithI18n } from '@/__tests__/test-utils/render-with-i18n';
 
 const baseProps = {

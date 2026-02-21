@@ -1,6 +1,6 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { DatePicker } from '@/components/ui/date-picker';
+import { DatePicker } from '@/frontend/components/ui/date-picker';
 import { renderWithI18n } from '@/__tests__/test-utils/render-with-i18n';
 
 describe('DatePicker', () => {

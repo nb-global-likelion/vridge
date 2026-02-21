@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/frontend/components/ui/button';
 
 describe('Button brand variants', () => {
   describe('variant="brand"', () => {

@@ -1,9 +1,9 @@
 'use client';
 
-import { useAuthModal } from '@/features/auth/model/use-auth-modal';
-import { Button } from '@/components/ui/button';
-import { trackEvent } from '@/lib/analytics/ga4';
-import { useI18n } from '@/lib/i18n/client';
+import { useAuthModal } from '@/frontend/features/auth/model/use-auth-modal';
+import { Button } from '@/frontend/components/ui/button';
+import { trackEvent } from '@/frontend/lib/analytics/ga4';
+import { useI18n } from '@/shared/i18n/client';
 
 export function LoginToApplyCta() {
   const { openLogin } = useAuthModal();

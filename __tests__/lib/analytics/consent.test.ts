@@ -2,7 +2,7 @@ import {
   ANALYTICS_CONSENT_COOKIE_NAME,
   readConsent,
   writeConsent,
-} from '@/lib/analytics/consent';
+} from '@/frontend/lib/analytics/consent';
 
 describe('analytics consent utils', () => {
   beforeEach(() => {

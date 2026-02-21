@@ -1,11 +1,11 @@
 'use client';
 
 import { useState, type MouseEvent } from 'react';
-import { useCreateApply } from '@/features/apply/model/use-apply-mutations';
-import { useAuthModal } from '@/features/auth/model/use-auth-modal';
-import { trackEvent } from '@/lib/analytics/ga4';
-import { useI18n } from '@/lib/i18n/client';
-import { cn } from '@/lib/utils';
+import { useCreateApply } from '@/frontend/features/apply/model/use-apply-mutations';
+import { useAuthModal } from '@/frontend/features/auth/model/use-auth-modal';
+import { trackEvent } from '@/frontend/lib/analytics/ga4';
+import { useI18n } from '@/shared/i18n/client';
+import { cn } from '@/frontend/lib/utils';
 
 type Props = {
   jdId: string;

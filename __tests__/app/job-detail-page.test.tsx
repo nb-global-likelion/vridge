@@ -2,9 +2,9 @@ import { screen } from '@testing-library/react';
 import type { ReactNode } from 'react';
 import JobDetailPage from '@/app/jobs/[id]/page';
 import { headers } from 'next/headers';
-import { auth } from '@/lib/infrastructure/auth';
-import { getJobDescriptionById } from '@/lib/actions/jd-queries';
-import { getMyApplications } from '@/lib/actions/applications';
+import { auth } from '@/backend/infrastructure/auth';
+import { getJobDescriptionById } from '@/backend/actions/jd-queries';
+import { getMyApplications } from '@/backend/actions/applications';
 import { renderWithI18n } from '@/__tests__/test-utils/render-with-i18n';
 
 jest.mock('next/headers', () => ({
@@ -16,7 +16,7 @@ jest.mock('react-markdown', () => ({
   default: ({ children }: { children: ReactNode }) => <div>{children}</div>,
 }));
 
-jest.mock('@/lib/infrastructure/auth', () => ({
+jest.mock('@/backend/infrastructure/auth', () => ({
   auth: {
     api: {
       getSession: jest.fn(),
@@ -24,30 +24,30 @@ jest.mock('@/lib/infrastructure/auth', () => ({
   },
 }));
 
-jest.mock('@/lib/actions/jd-queries', () => ({
+jest.mock('@/backend/actions/jd-queries', () => ({
   getJobDescriptionById: jest.fn(),
 }));
 
-jest.mock('@/lib/actions/applications', () => ({
+jest.mock('@/backend/actions/applications', () => ({
   getMyApplications: jest.fn(),
 }));
 
-jest.mock('@/lib/i18n/catalog', () => ({
+jest.mock('@/shared/i18n/catalog', () => ({
   getLocalizedCatalogName: jest.fn(() => 'UI/UX Designer'),
 }));
 
-jest.mock('@/lib/frontend/presentation', () => ({
+jest.mock('@/frontend/lib/presentation', () => ({
   getWorkArrangementLabel: jest.fn(() => 'Remote'),
 }));
 
-jest.mock('@/lib/i18n/action-error', () => ({
+jest.mock('@/shared/i18n/action-error', () => ({
   getActionErrorMessage: jest.fn(
     (error: { errorMessage?: string }) =>
       error.errorMessage ?? '알 수 없는 오류가 발생했습니다.'
   ),
 }));
 
-jest.mock('@/entities/job/ui/posting-title', () => ({
+jest.mock('@/frontend/entities/job/ui/posting-title', () => ({
   PostingTitle: ({ backHref, title }: { backHref?: string; title: string }) => (
     <div data-testid="posting-title" data-back-href={backHref ?? ''}>
       {title}
@@ -55,7 +55,7 @@ jest.mock('@/entities/job/ui/posting-title', () => ({
   ),
 }));
 
-jest.mock('@/entities/job/ui/summary-card', () => ({
+jest.mock('@/frontend/entities/job/ui/summary-card', () => ({
   SummaryCard: ({
     cta,
     secondaryAction,
@@ -70,7 +70,7 @@ jest.mock('@/entities/job/ui/summary-card', () => ({
   ),
 }));
 
-jest.mock('@/features/apply/ui/apply-button', () => ({
+jest.mock('@/frontend/features/apply/ui/apply-button', () => ({
   ApplyButton: ({ allowWithdraw }: { allowWithdraw?: boolean }) => (
     <div
       data-testid="apply-button"
@@ -83,8 +83,8 @@ jest.mock('@/app/jobs/[id]/_login-to-apply-cta', () => ({
   LoginToApplyCta: () => <div data-testid="login-to-apply-cta">Login CTA</div>,
 }));
 
-jest.mock('@/lib/i18n/server', () => {
-  const { enMessages } = jest.requireActual('@/lib/i18n/messages/en');
+jest.mock('@/shared/i18n/server', () => {
+  const { enMessages } = jest.requireActual('@/shared/i18n/messages/en');
   return {
     getServerI18n: jest.fn(async () => ({
       locale: 'en',

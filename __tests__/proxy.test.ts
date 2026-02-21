@@ -1,13 +1,13 @@
 /**
  * @jest-environment node
  */
-jest.mock('@/lib/infrastructure/auth', () => ({
+jest.mock('@/backend/infrastructure/auth', () => ({
   auth: { api: { getSession: jest.fn() } },
 }));
 
 import { NextRequest } from 'next/server';
 import { proxy } from '@/proxy';
-import { auth } from '@/lib/infrastructure/auth';
+import { auth } from '@/backend/infrastructure/auth';
 
 const mockGetSession = auth.api.getSession as unknown as jest.Mock;
 

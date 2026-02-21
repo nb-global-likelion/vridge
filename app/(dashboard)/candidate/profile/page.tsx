@@ -1,9 +1,9 @@
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { getMyProfile } from '@/lib/actions/profile';
-import { requireUser } from '@/lib/infrastructure/auth-utils';
-import { getServerI18n } from '@/lib/i18n/server';
-import { getActionErrorMessage } from '@/lib/i18n/action-error';
+import { Button } from '@/frontend/components/ui/button';
+import { getMyProfile } from '@/backend/actions/profile';
+import { requireUser } from '@/backend/infrastructure/auth-utils';
+import { getServerI18n } from '@/shared/i18n/server';
+import { getActionErrorMessage } from '@/shared/i18n/action-error';
 import { CandidateProfileContent } from './profile-content';
 
 export default async function CandidateProfilePage() {

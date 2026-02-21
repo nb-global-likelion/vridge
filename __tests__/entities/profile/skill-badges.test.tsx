@@ -1,5 +1,5 @@
 import { screen } from '@testing-library/react';
-import { SkillBadges } from '@/entities/profile/ui/skill-badges';
+import { SkillBadges } from '@/frontend/entities/profile/ui/skill-badges';
 import { renderWithI18n } from '@/__tests__/test-utils/render-with-i18n';
 
 describe('SkillBadges', () => {

@@ -1,11 +1,14 @@
 import { screen } from '@testing-library/react';
-import { ProfilePublicForm } from '@/features/profile-edit/ui/profile-public-form';
-import { useUpdateProfilePublic } from '@/features/profile-edit/model/use-profile-mutations';
+import { ProfilePublicForm } from '@/frontend/features/profile-edit/ui/profile-public-form';
+import { useUpdateProfilePublic } from '@/frontend/features/profile-edit/model/use-profile-mutations';
 import { renderWithI18n } from '@/__tests__/test-utils/render-with-i18n';
 
-jest.mock('@/features/profile-edit/model/use-profile-mutations', () => ({
-  useUpdateProfilePublic: jest.fn(),
-}));
+jest.mock(
+  '@/frontend/features/profile-edit/model/use-profile-mutations',
+  () => ({
+    useUpdateProfilePublic: jest.fn(),
+  })
+);
 jest.mock('next/navigation', () => ({
   useRouter: jest.fn(() => ({ refresh: jest.fn() })),
 }));

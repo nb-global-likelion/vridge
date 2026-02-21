@@ -1,15 +1,15 @@
 import React from 'react';
 import { screen, fireEvent, waitFor } from '@testing-library/react';
 import { renderWithI18n } from '@/__tests__/test-utils/render-with-i18n';
-import { LoginModal } from '@/features/auth/ui/login-modal';
-import { useAuthModal } from '@/features/auth/model/use-auth-modal';
-import { signIn } from '@/lib/infrastructure/auth-client';
+import { LoginModal } from '@/frontend/features/auth/ui/login-modal';
+import { useAuthModal } from '@/frontend/features/auth/model/use-auth-modal';
+import { signIn } from '@/backend/infrastructure/auth-client';
 
-jest.mock('@/features/auth/model/use-auth-modal', () => ({
+jest.mock('@/frontend/features/auth/model/use-auth-modal', () => ({
   useAuthModal: jest.fn(),
 }));
 
-jest.mock('@/lib/infrastructure/auth-client', () => ({
+jest.mock('@/backend/infrastructure/auth-client', () => ({
   signIn: { email: jest.fn(), social: jest.fn() },
 }));
 

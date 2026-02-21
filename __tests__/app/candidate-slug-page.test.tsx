@@ -1,24 +1,24 @@
 import { screen } from '@testing-library/react';
 import CandidateSlugPage from '@/app/candidate/[slug]/page';
-import { getProfileBySlug } from '@/lib/actions/profile';
-import { getCurrentUser } from '@/lib/infrastructure/auth-utils';
-import { getMyApplications } from '@/lib/actions/applications';
+import { getProfileBySlug } from '@/backend/actions/profile';
+import { getCurrentUser } from '@/backend/infrastructure/auth-utils';
+import { getMyApplications } from '@/backend/actions/applications';
 import { renderWithI18n } from '@/__tests__/test-utils/render-with-i18n';
 
-jest.mock('@/lib/actions/profile', () => ({
+jest.mock('@/backend/actions/profile', () => ({
   getProfileBySlug: jest.fn(),
 }));
-jest.mock('@/lib/infrastructure/auth-utils', () => ({
+jest.mock('@/backend/infrastructure/auth-utils', () => ({
   getCurrentUser: jest.fn(),
   requireUser: jest.fn(),
   requireRole: jest.fn(),
 }));
-jest.mock('@/lib/actions/applications', () => ({
+jest.mock('@/backend/actions/applications', () => ({
   getMyApplications: jest.fn(),
 }));
-jest.mock('@/lib/i18n/server', () => {
-  const { enMessages } = jest.requireActual('@/lib/i18n/messages/en');
-  const { koMessages } = jest.requireActual('@/lib/i18n/messages/ko');
+jest.mock('@/shared/i18n/server', () => {
+  const { enMessages } = jest.requireActual('@/shared/i18n/messages/en');
+  const { koMessages } = jest.requireActual('@/shared/i18n/messages/ko');
   const messagesByLocale = {
     en: enMessages,
     ko: koMessages,
@@ -40,7 +40,7 @@ jest.mock('@/lib/i18n/server', () => {
 const mockGetProfileBySlug = getProfileBySlug as unknown as jest.Mock;
 const mockGetCurrentUser = getCurrentUser as unknown as jest.Mock;
 const mockGetMyApplications = getMyApplications as unknown as jest.Mock;
-const mockI18nServer = jest.requireMock('@/lib/i18n/server') as {
+const mockI18nServer = jest.requireMock('@/shared/i18n/server') as {
   __setLocaleForTest: (locale: 'en' | 'ko') => void;
 };
 

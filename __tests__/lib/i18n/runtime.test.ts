@@ -1,4 +1,4 @@
-import { createTranslator } from '@/lib/i18n/runtime';
+import { createTranslator } from '@/shared/i18n/runtime';
 
 describe('createTranslator', () => {
   it('현재 로케일 메시지가 있으면 해당 값을 반환한다', () => {

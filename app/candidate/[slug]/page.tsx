@@ -1,9 +1,9 @@
-import { ProfileCard } from '@/entities/profile/ui/profile-card';
-import { getMyApplications } from '@/lib/actions/applications';
-import { getProfileBySlug } from '@/lib/actions/profile';
-import { getCurrentUser } from '@/lib/infrastructure/auth-utils';
-import { getServerI18n } from '@/lib/i18n/server';
-import { getActionErrorMessage } from '@/lib/i18n/action-error';
+import { ProfileCard } from '@/frontend/entities/profile/ui/profile-card';
+import { getMyApplications } from '@/backend/actions/applications';
+import { getProfileBySlug } from '@/backend/actions/profile';
+import { getCurrentUser } from '@/backend/infrastructure/auth-utils';
+import { getServerI18n } from '@/shared/i18n/server';
+import { getActionErrorMessage } from '@/shared/i18n/action-error';
 
 export default async function CandidateLandingPage({
   params,

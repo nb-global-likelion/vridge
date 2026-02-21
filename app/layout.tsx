@@ -2,15 +2,15 @@ import type { Metadata } from 'next';
 import { Inter, Geist_Mono } from 'next/font/google';
 import { Suspense } from 'react';
 import './globals.css';
-import Providers from '@/components/providers';
-import { Ga4Bootstrap } from '@/components/analytics/ga4-bootstrap';
-import { Ga4IdentitySync } from '@/components/analytics/ga4-identity-sync';
-import { PageViewTracker } from '@/components/analytics/page-view-tracker';
-import MainNav from '@/widgets/nav/ui/main-nav';
-import { LoginModal } from '@/features/auth/ui/login-modal';
-import { SignupModal } from '@/features/auth/ui/signup-modal';
-import { AuthRedirectHandler } from '@/features/auth/ui/auth-redirect-handler';
-import { getServerI18n } from '@/lib/i18n/server';
+import Providers from '@/frontend/components/providers';
+import { Ga4Bootstrap } from '@/frontend/components/analytics/ga4-bootstrap';
+import { Ga4IdentitySync } from '@/frontend/components/analytics/ga4-identity-sync';
+import { PageViewTracker } from '@/frontend/components/analytics/page-view-tracker';
+import MainNav from '@/frontend/widgets/nav/ui/main-nav';
+import { LoginModal } from '@/frontend/features/auth/ui/login-modal';
+import { SignupModal } from '@/frontend/features/auth/ui/signup-modal';
+import { AuthRedirectHandler } from '@/frontend/features/auth/ui/auth-redirect-handler';
+import { getServerI18n } from '@/shared/i18n/server';
 
 const inter = Inter({
   variable: '--font-inter',

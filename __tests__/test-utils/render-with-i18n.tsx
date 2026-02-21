@@ -1,10 +1,10 @@
 import { render, type RenderOptions } from '@testing-library/react';
 import type { ReactElement } from 'react';
-import { I18nProvider } from '@/lib/i18n/client';
-import { enMessages } from '@/lib/i18n/messages/en';
-import { koMessages } from '@/lib/i18n/messages/ko';
-import { viMessages } from '@/lib/i18n/messages/vi';
-import type { AppLocale, TranslationMessages } from '@/lib/i18n/types';
+import { I18nProvider } from '@/shared/i18n/client';
+import { enMessages } from '@/shared/i18n/messages/en';
+import { koMessages } from '@/shared/i18n/messages/ko';
+import { viMessages } from '@/shared/i18n/messages/vi';
+import type { AppLocale, TranslationMessages } from '@/shared/i18n/types';
 
 type RenderWithI18nOptions = Omit<RenderOptions, 'wrapper'> & {
   locale?: AppLocale;

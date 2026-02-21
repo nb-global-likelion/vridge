@@ -1,5 +1,5 @@
 import { screen } from '@testing-library/react';
-import { EducationList } from '@/entities/profile/ui/education-list';
+import { EducationList } from '@/frontend/entities/profile/ui/education-list';
 import { renderWithI18n } from '@/__tests__/test-utils/render-with-i18n';
 
 const baseEducation = {

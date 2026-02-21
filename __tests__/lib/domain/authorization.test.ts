@@ -3,8 +3,8 @@ import {
   assertRole,
   canViewCandidate,
   assertCanViewCandidate,
-} from '@/lib/domain/authorization';
-import { DomainError } from '@/lib/domain/errors';
+} from '@/backend/domain/authorization';
+import { DomainError } from '@/backend/domain/errors';
 
 describe('assertOwnership', () => {
   it('ID 일치 시 통과', () => {

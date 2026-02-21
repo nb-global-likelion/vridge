@@ -1,9 +1,9 @@
-import { PostingListItem } from '@/entities/job/ui/posting-list-item';
-import { getMyApplications } from '@/lib/actions/applications';
-import { requireUser } from '@/lib/infrastructure/auth-utils';
-import { getServerI18n } from '@/lib/i18n/server';
-import { getActionErrorMessage } from '@/lib/i18n/action-error';
-import { getLocalizedCatalogName } from '@/lib/i18n/catalog';
+import { PostingListItem } from '@/frontend/entities/job/ui/posting-list-item';
+import { getMyApplications } from '@/backend/actions/applications';
+import { requireUser } from '@/backend/infrastructure/auth-utils';
+import { getServerI18n } from '@/shared/i18n/server';
+import { getActionErrorMessage } from '@/shared/i18n/action-error';
+import { getLocalizedCatalogName } from '@/shared/i18n/catalog';
 
 function toPostingStatus(status: string): 'recruiting' | 'done' {
   if (status === 'rejected' || status === 'withdrawn') return 'done';
