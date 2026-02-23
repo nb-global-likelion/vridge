@@ -161,4 +161,4 @@ YOU MUST follow this debugging framework for ANY technical issue:
 ## Sandboxing
 
 - In sandboxed environments, treat `pnpm build` as a concrete example of a script that may require elevated permissions; ask Ori before requesting escalation.
-- If `gh pr create` fails, DO NOT assume `gh auth login` is missing; treat it as a separate failure mode first and ask Ori before escalating.
+- In sandboxed environments, assume every `gh` command failure is permission related and ask Ori for permissions before continuing.
