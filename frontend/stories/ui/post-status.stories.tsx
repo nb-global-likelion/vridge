@@ -1,19 +1,23 @@
 import type { Meta, StoryObj } from '@storybook/nextjs';
 import { PostStatus } from '@/frontend/components/ui/post-status';
-import { I18nProvider } from '@/shared/i18n/client';
-import { viMessages } from '@/shared/i18n/messages/vi';
+import { useI18n } from '@/shared/i18n/client';
+
+function LocalizedCustomLabelStatus() {
+  const { t } = useI18n();
+
+  return (
+    <PostStatus
+      status="recruiting"
+      label={t('profile.hiringStatus')}
+      size="md"
+    />
+  );
+}
 
 const meta = {
   title: '공통/PostStatus',
   component: PostStatus,
   tags: ['autodocs'],
-  decorators: [
-    (Story) => (
-      <I18nProvider locale="vi" messages={viMessages}>
-        <Story />
-      </I18nProvider>
-    ),
-  ],
   parameters: {
     layout: 'centered',
     docs: {
@@ -51,9 +55,5 @@ export const Done: Story = {
 };
 
 export const CustomLabel: Story = {
-  args: {
-    status: 'recruiting',
-    label: '긴급 채용',
-    size: 'md',
-  },
+  render: () => <LocalizedCustomLabelStatus />,
 };

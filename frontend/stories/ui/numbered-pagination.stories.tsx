@@ -1,5 +1,20 @@
 import type { Meta, StoryObj } from '@storybook/nextjs';
 import { NumberedPagination } from '@/frontend/components/ui/numbered-pagination';
+import { useI18n } from '@/shared/i18n/client';
+
+function LocalizedNumberedPagination(
+  args: React.ComponentProps<typeof NumberedPagination>
+) {
+  const { t } = useI18n();
+
+  return (
+    <NumberedPagination
+      {...args}
+      prevAriaLabel={t('jobs.pagination.prevAria')}
+      nextAriaLabel={t('jobs.pagination.nextAria')}
+    />
+  );
+}
 
 const meta = {
   title: '공통/NumberedPagination',
@@ -18,8 +33,8 @@ const meta = {
     currentPage: 2,
     totalPages: 5,
     buildHref: (page: number) => `/jobs?page=${page}`,
-    prevAriaLabel: '이전 페이지',
-    nextAriaLabel: '다음 페이지',
+    prevAriaLabel: '',
+    nextAriaLabel: '',
   },
   argTypes: {
     buildHref: { control: false },
@@ -29,13 +44,16 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Basic: Story = {};
+export const Basic: Story = {
+  render: (args) => <LocalizedNumberedPagination {...args} />,
+};
 
 export const EllipsisCase: Story = {
   args: {
     currentPage: 6,
     totalPages: 12,
   },
+  render: (args) => <LocalizedNumberedPagination {...args} />,
 };
 
 export const FirstPageDisabledPrev: Story = {
@@ -43,6 +61,7 @@ export const FirstPageDisabledPrev: Story = {
     currentPage: 1,
     totalPages: 7,
   },
+  render: (args) => <LocalizedNumberedPagination {...args} />,
 };
 
 export const LastPageDisabledNext: Story = {
@@ -50,4 +69,5 @@ export const LastPageDisabledNext: Story = {
     currentPage: 7,
     totalPages: 7,
   },
+  render: (args) => <LocalizedNumberedPagination {...args} />,
 };

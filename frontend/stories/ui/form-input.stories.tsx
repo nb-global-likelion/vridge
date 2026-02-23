@@ -1,5 +1,28 @@
 import type { Meta, StoryObj } from '@storybook/nextjs';
 import { FormInput } from '@/frontend/components/ui/form-input';
+import { useI18n } from '@/shared/i18n/client';
+import type { MessageKey } from '@/shared/i18n/messages/en';
+
+type LocalizedFormInputProps = React.ComponentProps<typeof FormInput> & {
+  placeholderKey?: MessageKey;
+  valueKey?: MessageKey;
+};
+
+function LocalizedFormInput({
+  placeholderKey,
+  valueKey,
+  ...props
+}: LocalizedFormInputProps) {
+  const { t } = useI18n();
+
+  return (
+    <FormInput
+      {...props}
+      placeholder={placeholderKey ? t(placeholderKey) : props.placeholder}
+      value={valueKey ? t(valueKey) : props.value}
+    />
+  );
+}
 
 const meta = {
   title: '공통/FormInput',
@@ -15,7 +38,6 @@ const meta = {
     },
   },
   args: {
-    placeholder: '입력해 주세요',
     size: 'md',
   },
   argTypes: {
@@ -32,29 +54,37 @@ type Story = StoryObj<typeof meta>;
 export const Small: Story = {
   args: {
     size: 'sm',
-    placeholder: 'Small 입력',
   },
+  render: (args) => (
+    <LocalizedFormInput {...args} placeholderKey="form.firstName" />
+  ),
 };
 
 export const MediumDefault: Story = {
   args: {
     size: 'md',
-    placeholder: 'Medium 입력',
   },
+  render: (args) => (
+    <LocalizedFormInput {...args} placeholderKey="form.email" />
+  ),
 };
 
 export const LargeTextarea: Story = {
   args: {
     size: 'lg',
-    placeholder: 'Large textarea 입력',
   },
+  render: (args) => (
+    <LocalizedFormInput {...args} placeholderKey="form.description" />
+  ),
 };
 
 export const FilledRequired: Story = {
   args: {
     filled: true,
     required: true,
-    value: '이미 입력된 값',
     readOnly: true,
   },
+  render: (args) => (
+    <LocalizedFormInput {...args} valueKey="profile.myProfile" />
+  ),
 };

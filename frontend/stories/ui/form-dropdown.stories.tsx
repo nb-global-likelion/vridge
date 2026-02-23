@@ -2,12 +2,53 @@ import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/nextjs';
 import { fn } from 'storybook/test';
 import { FormDropdown } from '@/frontend/components/ui/form-dropdown';
+import { useI18n } from '@/shared/i18n/client';
 
-const OPTIONS = [
-  { label: '한국', value: 'kr' },
-  { label: '베트남', value: 'vn' },
-  { label: '미국', value: 'us' },
-];
+function getLocalizedOptions(
+  t: ReturnType<typeof useI18n>['t']
+): React.ComponentProps<typeof FormDropdown>['options'] {
+  return [
+    { label: t('locale.koName'), value: 'ko' },
+    { label: t('locale.viName'), value: 'vi' },
+    { label: t('locale.enName'), value: 'en' },
+  ];
+}
+
+function LocalizedFormDropdown(
+  args: React.ComponentProps<typeof FormDropdown>
+) {
+  const { t } = useI18n();
+
+  return (
+    <FormDropdown
+      {...args}
+      options={getLocalizedOptions(t)}
+      placeholder={t('form.select')}
+    />
+  );
+}
+
+function LocalizedInteractiveFormDropdown(
+  args: React.ComponentProps<typeof FormDropdown>
+) {
+  const { t } = useI18n();
+  const [value, setValue] = useState(args.value);
+
+  return (
+    <div className="w-[280px]">
+      <FormDropdown
+        {...args}
+        value={value}
+        options={getLocalizedOptions(t)}
+        placeholder={t('form.select')}
+        onChange={(next) => {
+          setValue(next);
+          args.onChange(next);
+        }}
+      />
+    </div>
+  );
+}
 
 const meta = {
   title: '공통/FormDropdown',
@@ -23,41 +64,31 @@ const meta = {
     },
   },
   args: {
-    options: OPTIONS,
-    placeholder: '국가를 선택하세요',
+    options: [],
+    placeholder: '',
     onChange: fn(),
   },
   argTypes: {
     onChange: { control: false },
+    options: { control: false },
+    placeholder: { control: false },
   },
 } satisfies Meta<typeof FormDropdown>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Placeholder: Story = {};
+export const Placeholder: Story = {
+  render: (args) => <LocalizedFormDropdown {...args} />,
+};
 
 export const SelectedValue: Story = {
   args: {
-    value: 'vn',
+    value: 'vi',
   },
+  render: (args) => <LocalizedFormDropdown {...args} />,
 };
 
 export const InteractiveSelection: Story = {
-  render: (args) => {
-    const [value, setValue] = useState(args.value);
-
-    return (
-      <div className="w-[280px]">
-        <FormDropdown
-          {...args}
-          value={value}
-          onChange={(next) => {
-            setValue(next);
-            args.onChange(next);
-          }}
-        />
-      </div>
-    );
-  },
+  render: (args) => <LocalizedInteractiveFormDropdown {...args} />,
 };

@@ -1,5 +1,20 @@
 import type { Meta, StoryObj } from '@storybook/nextjs';
 import { TabItem } from '@/frontend/components/ui/tab-item';
+import { useI18n } from '@/shared/i18n/client';
+import type { MessageKey } from '@/shared/i18n/messages/en';
+
+type LocalizedTabItemProps = Omit<
+  React.ComponentProps<typeof TabItem>,
+  'label'
+> & {
+  labelKey: MessageKey;
+};
+
+function LocalizedTabItem({ labelKey, ...props }: LocalizedTabItemProps) {
+  const { t } = useI18n();
+
+  return <TabItem {...props} label={t(labelKey)} />;
+}
 
 const meta = {
   title: '공통/TabItem',
@@ -15,7 +30,7 @@ const meta = {
     },
   },
   args: {
-    label: '프론트엔드',
+    label: '',
     href: '/jobs?family=frontend',
     isActive: false,
   },
@@ -24,10 +39,13 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Inactive: Story = {};
+export const Inactive: Story = {
+  render: (args) => <LocalizedTabItem {...args} labelKey="profile.skills" />,
+};
 
 export const Active: Story = {
   args: {
     isActive: true,
   },
+  render: (args) => <LocalizedTabItem {...args} labelKey="profile.skills" />,
 };
