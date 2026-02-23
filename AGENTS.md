@@ -68,6 +68,35 @@ Rule #1: If you want exception to ANY rule, YOU MUST STOP and get explicit permi
 - Keep in the main conversation: implementation, iterative work, decisions requiring context
 - Agents don't share context with each other — route information through the main conversation
 
+## Planning and Task handling
+
+- YOU MUST ALWAYS create an executable step-by-step plan where each step includes: action intent, exact command/action, and done-check.
+- YOU MUST NEVER assume executor context. Every handoff MUST include: goal, scope, constraints, exact steps/commands, touched files, and acceptance checks.
+- If new evidence invalidates the plan, YOU MUST pause, publish a plan delta, and continue only after the revised steps are explicit.
+
+### Preflight 1: Feature Branch Creation (BEFORE implementing plan)
+
+- ALWAYS identify the remote default base branch (for example `origin/HEAD` -> `main` or `master`).
+- ALWAYS update the base branch using fetch + fast-forward-only. If sync fails, STOP and ask Ori.
+- ALWAYS create a feature branch using `type/scope-topic` naming.
+- ALWAYS use `git worktree` by default. A normal branch checkout is allowed only when work is single-threaded or worktree setup is blocked.
+- ALWAYS ensure dependencies are ready when needed. Use manager-native strict install only if lock/manifests changed, dependencies are missing, or bootstrap fails (`pnpm install --frozen-lockfile`, `yarn install --immutable`, `npm ci`).
+
+### Preflight 2: Issue Opening (BEFORE implementing plan)
+
+- ALWAYS open an Issue unless Ori explicitly provided an existing issue ID or URL.
+- ALWAYS choose template by intent: defect/debug work uses bug report template; feature/refactor/task work uses feature request template.
+- ALWAYS use a template if one exists.
+- YOU MUST fill all required sections. If a required section is not applicable, write `N/A` with a reason.
+
+### Cleanup: PR Opening
+
+- ALWAYS open a PR for merge-intent changes.
+- ALWAYS use a template if one exists.
+- YOU MUST fill all required sections. If a required section is not applicable, write `N/A` with a reason.
+- ALWAYS keep the linked Issue open during review and close it on merge/completion, not at PR creation.
+- If PR creation is blocked by auth/permission/remote issues, STOP and ask Ori with branch name, commit status, and blocker details.
+
 ## Systematic Debugging Process
 
 YOU MUST ALWAYS find the root cause of any issue you are debugging
