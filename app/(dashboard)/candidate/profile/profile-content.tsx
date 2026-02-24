@@ -94,7 +94,7 @@ type Props = {
   t: Translator;
 };
 
-const CARD_CLASS = 'rounded-[20px] bg-[#fbfbfb] px-[40px] pt-[20px] pb-[40px]';
+const CARD_CLASS = 'rounded-[20px] bg-bg px-[40px] pt-[20px] pb-[40px]';
 
 function normalizeText(value?: string | null) {
   const text = value?.trim();
@@ -157,12 +157,12 @@ function resolvePortfolioLabel(item: Url) {
 }
 
 function Divider() {
-  return <span aria-hidden className="h-[10px] w-px bg-[#808080]" />;
+  return <span aria-hidden className="h-[10px] w-px bg-text-sub-2" />;
 }
 
 function ContactItem({ iconName, text }: { iconName: string; text: string }) {
   return (
-    <span className="inline-flex items-center gap-[4px] text-[16px] leading-[1.5] font-medium text-[#333]">
+    <span className="inline-flex items-center gap-[4px] text-body-2 text-text-body-1">
       <Icon name={iconName} size={24} />
       {text}
     </span>
@@ -190,12 +190,10 @@ function BasicProfileCard({
 
   return (
     <section className={`${CARD_CLASS} flex flex-col gap-[25px]`}>
-      <h2 className="text-[22px] leading-[1.5] font-bold text-[#1a1a1a]">
-        {t('profile.basicProfile')}
-      </h2>
+      <h2 className="text-h2 text-text-title-2">{t('profile.basicProfile')}</h2>
       <div className="flex items-center gap-[25px]">
         <div className="flex flex-col items-center gap-[10px]">
-          <div className="flex h-[200px] w-[200px] items-center justify-center overflow-hidden rounded-full bg-[#e6e6e6]">
+          <div className="flex h-[200px] w-[200px] items-center justify-center overflow-hidden rounded-full bg-gray-100">
             {profilePublic?.profileImageUrl ? (
               <Image
                 src={profilePublic.profileImageUrl}
@@ -226,11 +224,11 @@ function BasicProfileCard({
 
         <div className="flex min-w-0 flex-1 flex-col gap-[20px]">
           <div className="flex flex-col pb-px">
-            <h3 className="text-[30px] leading-[1.5] font-bold text-[#1f1d1b]">
+            <h3 className="text-title text-text-title-2">
               {firstName} {lastName}
             </h3>
             {profilePublic?.dateOfBirth && (
-              <p className="text-[16px] leading-[1.5] font-medium text-[#666]">
+              <p className="text-body-2 text-text-sub-1">
                 {formatDob(profilePublic.dateOfBirth, locale)}
               </p>
             )}
@@ -258,9 +256,7 @@ function BasicProfileCard({
 
           {summary && (
             <div className="rounded-[10px] bg-white p-[20px]">
-              <p className="text-[18px] leading-[1.5] font-medium text-[#333]">
-                {summary}
-              </p>
+              <p className="text-body-1 text-text-body-1">{summary}</p>
             </div>
           )}
         </div>
@@ -282,7 +278,7 @@ function EducationSection({
     <section className={`${CARD_CLASS} flex flex-col gap-[25px]`}>
       <SectionTitle title={t('profile.education')} />
       {educations.length === 0 ? (
-        <p className="text-[16px] leading-[1.5] font-medium text-[#666]">
+        <p className="text-body-2 text-text-sub-1">
           {t('profile.empty.education')}
         </p>
       ) : (
@@ -298,10 +294,10 @@ function EducationSection({
 
             return (
               <li key={education.id} className="flex flex-col">
-                <p className="text-[20px] leading-[1.5] font-bold text-[#333]">
+                <p className="text-h3 text-text-body-1">
                   {education.institutionName}
                 </p>
-                <div className="flex flex-wrap items-center gap-[10px] text-[16px] leading-[1.5] font-medium text-[#666]">
+                <div className="flex flex-wrap items-center gap-[10px] text-body-2 text-text-sub-1">
                   <span>{formatMonthYear(education.startDate, locale)}</span>
                   <span>-</span>
                   <span>
@@ -328,7 +324,7 @@ function SkillsSection({ skills, t }: { skills: Skill[]; t: Translator }) {
     <section className={`${CARD_CLASS} flex flex-col gap-[40px]`}>
       <SectionTitle title={t('profile.skills')} />
       {skills.length === 0 ? (
-        <p className="text-[16px] leading-[1.5] font-medium text-[#666]">
+        <p className="text-body-2 text-text-sub-1">
           {t('profile.empty.skills')}
         </p>
       ) : (
@@ -358,7 +354,7 @@ function ExperienceSection({
     <section className={`${CARD_CLASS} flex flex-col gap-[40px]`}>
       <SectionTitle title={t('profile.experience')} />
       {careers.length === 0 ? (
-        <p className="text-[16px] leading-[1.5] font-medium text-[#666]">
+        <p className="text-body-2 text-text-sub-1">
           {t('profile.empty.career')}
         </p>
       ) : (
@@ -376,11 +372,11 @@ function ExperienceSection({
               <li key={career.id} className="flex flex-col gap-[20px]">
                 <div className="flex flex-col gap-[10px]">
                   <div className="flex flex-wrap items-center gap-[10px]">
-                    <p className="text-[20px] leading-[1.5] font-bold text-[#333]">
+                    <p className="text-h3 text-text-body-1">
                       {career.companyName}
                     </p>
                     <Divider />
-                    <div className="flex items-center gap-[4px] text-[14px] leading-[1.5] font-medium text-[#808080]">
+                    <div className="flex items-center gap-[4px] text-caption-1 text-text-sub-2">
                       <span>{formatYear(career.startDate)}</span>
                       <span>-</span>
                       <span>
@@ -390,7 +386,7 @@ function ExperienceSection({
                       </span>
                     </div>
                   </div>
-                  <div className="flex flex-wrap items-center gap-[10px] text-[16px] leading-[1.5] font-medium text-[#4c4c4c]">
+                  <div className="flex flex-wrap items-center gap-[10px] text-body-2 text-text-body-2">
                     <span>{career.positionTitle}</span>
                     <Divider />
                     <span>{secondValue}</span>
@@ -403,7 +399,7 @@ function ExperienceSection({
                   </div>
                 </div>
                 {descriptions.length > 0 && (
-                  <ul className="list-disc space-y-[4px] pl-6 text-[16px] leading-[1.5] font-medium text-[#4c4c4c]">
+                  <ul className="list-disc space-y-[4px] pl-6 text-body-2 text-text-body-2">
                     {descriptions.map((line) => (
                       <li key={line}>{line}</li>
                     ))}
@@ -429,7 +425,7 @@ function CertificationSection({
     <section className={`${CARD_CLASS} flex flex-col gap-[40px]`}>
       <SectionTitle title={t('profile.certification')} />
       {certifications.length === 0 ? (
-        <p className="text-[16px] leading-[1.5] font-medium text-[#666]">
+        <p className="text-body-2 text-text-sub-1">
           {t('profile.empty.certifications')}
         </p>
       ) : (
@@ -437,16 +433,14 @@ function CertificationSection({
           {certifications.map((certification) => (
             <li key={certification.id} className="flex flex-col gap-[10px]">
               <div className="flex flex-wrap items-center gap-[10px]">
-                <p className="text-[20px] leading-[1.5] font-bold text-[#333]">
-                  {certification.name}
-                </p>
+                <p className="text-h3 text-text-body-1">{certification.name}</p>
                 <Divider />
-                <span className="text-[14px] leading-[1.5] font-medium text-[#808080]">
+                <span className="text-caption-1 text-text-sub-2">
                   {formatYear(certification.date)}
                 </span>
               </div>
               {normalizeText(certification.institutionName) && (
-                <p className="text-[16px] leading-[1.5] font-medium text-[#4c4c4c]">
+                <p className="text-body-2 text-text-body-2">
                   {normalizeText(certification.institutionName)}
                 </p>
               )}
@@ -469,7 +463,7 @@ function LanguageSection({
     <section className={`${CARD_CLASS} flex flex-col gap-[40px]`}>
       <SectionTitle title={t('profile.languages')} />
       {languages.length === 0 ? (
-        <p className="text-[16px] leading-[1.5] font-medium text-[#666]">
+        <p className="text-body-2 text-text-sub-1">
           {t('profile.empty.languages')}
         </p>
       ) : (
@@ -477,17 +471,15 @@ function LanguageSection({
           {languages.map((language) => (
             <li key={language.id} className="flex flex-col gap-[10px]">
               <div className="flex flex-wrap items-center gap-[10px]">
-                <p className="text-[20px] leading-[1.5] font-bold text-[#333]">
-                  {language.language}
-                </p>
+                <p className="text-h3 text-text-body-1">{language.language}</p>
                 <Divider />
-                <span className="text-[16px] leading-[1.5] font-medium text-[#808080]">
+                <span className="text-body-2 text-text-sub-2">
                   {getProficiencyLabel(language.proficiency, t)}
                 </span>
               </div>
               {normalizeText(language.testName) &&
                 normalizeText(language.testScore) && (
-                  <p className="text-[16px] leading-[1.5] font-medium text-[#4c4c4c]">
+                  <p className="text-body-2 text-text-body-2">
                     {language.testName} · {language.testScore}
                   </p>
                 )}

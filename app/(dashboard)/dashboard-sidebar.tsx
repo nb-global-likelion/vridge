@@ -17,7 +17,7 @@ export default function DashboardSidebar() {
 
   return (
     <aside className="flex w-[220px] shrink-0 flex-col px-5 py-8">
-      <p className="mb-[40px] text-[30px] leading-[1.5] font-bold text-[#1a1a1a]">
+      <p className="mb-[40px] text-title text-text-title-2">
         {t('nav.myPage')}
       </p>
       <nav className="flex flex-1 flex-col gap-[10px]">
@@ -28,8 +28,8 @@ export default function DashboardSidebar() {
               key={href}
               href={href}
               className={[
-                'py-0 text-[26px] leading-[1.5] font-bold transition-colors',
-                isActive ? 'text-brand' : 'text-[#666] hover:text-brand',
+                'py-0 text-h1 transition-colors',
+                isActive ? 'text-brand' : 'text-text-sub-1 hover:text-brand',
               ].join(' ')}
             >
               {t(labelKey)}
@@ -41,7 +41,7 @@ export default function DashboardSidebar() {
         onClick={() =>
           signOut({ fetchOptions: { onSuccess: () => router.push('/jobs') } })
         }
-        className="mt-4 text-left text-[18px] leading-[1.5] font-medium text-[#999] transition-colors hover:text-[#333]"
+        className="mt-4 text-left text-body-1 text-text-info transition-colors hover:text-text-body-1"
       >
         {t('nav.logout')}
       </button>

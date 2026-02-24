@@ -17,7 +17,7 @@ export default function JobsLoading() {
         {Array.from({ length: 4 }).map((_, index) => (
           <div
             key={`jobs-loading-item-${index}`}
-            className="rounded-[20px] border border-[#ffefe5] bg-white px-[40px] py-[20px]"
+            className="rounded-[20px] border border-brand-sub bg-white px-[40px] py-[20px]"
           >
             <div className="flex items-center gap-[20px]">
               <div className="flex w-[160px] shrink-0 items-center gap-[10px]">

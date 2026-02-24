@@ -125,6 +125,10 @@
   --text-caption-2: 0.75rem;
   --text-caption-2--line-height: 1.5;
   --text-caption-2--font-weight: 500;
+
+  --text-display: 4.5rem;
+  --text-display--line-height: 1;
+  --text-display--font-weight: 700;
 }
 
 @custom-variant dark (&:is(.dark *));

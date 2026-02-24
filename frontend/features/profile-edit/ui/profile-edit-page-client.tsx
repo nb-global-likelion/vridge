@@ -223,7 +223,7 @@ function SectionHeader({
   return (
     <div className="flex flex-col gap-[10px]">
       <div className="flex items-start justify-between">
-        <h2 className="text-h2 text-gray-950">{title}</h2>
+        <h2 className="text-h2 text-text-title-2">{title}</h2>
         {onAdd && (
           <button
             type="button"
@@ -231,7 +231,7 @@ function SectionHeader({
             className="flex size-[42px] items-center justify-center"
             aria-label={addAriaLabel ?? title}
           >
-            <span className="text-title text-gray-950">+</span>
+            <span className="text-title text-text-title-2">+</span>
           </button>
         )}
       </div>
@@ -700,7 +700,9 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
     <>
       <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-[40px] px-6 py-10 pb-[140px]">
         <section className={BASIC_SECTION_CLASS}>
-          <h2 className="text-h2 text-gray-950">{t('profile.basicProfile')}</h2>
+          <h2 className="text-h2 text-text-title-2">
+            {t('profile.basicProfile')}
+          </h2>
 
           <div className="mt-[25px] flex flex-col gap-6 lg:flex-row lg:items-start">
             <div className="flex flex-col items-center gap-4">
@@ -712,7 +714,7 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
                 />
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-sm font-medium text-gray-950">
+                <span className="text-sm font-medium text-text-title-2">
                   {t('profile.hiringStatus')}
                 </span>
                 <ToggleSwitch
@@ -747,7 +749,7 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
               </div>
 
               <div className="flex items-center gap-3">
-                <span className="text-sm font-medium text-gray-950">
+                <span className="text-sm font-medium text-text-title-2">
                   {t('form.dateOfBirth')}
                 </span>
                 <DatePicker
@@ -1523,16 +1525,16 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
           <div className="mt-[25px] flex flex-col gap-[25px]">
             <button
               type="button"
-              className="flex h-[52px] w-full items-center justify-center gap-1 rounded-[10px] bg-[#f8f8f8] px-[20px] text-caption-1 text-gray-600"
+              className="flex h-[52px] w-full items-center justify-center gap-1 rounded-[10px] bg-bg px-[20px] text-caption-1 text-text-sub-1"
             >
               <Icon name="plus" size={16} />
               {t('profile.upload.file')}
             </button>
             <div className="flex items-center justify-between">
-              <p className="text-body-1 text-gray-800">
+              <p className="text-body-1 text-text-body-1">
                 {t('profile.upload.uploadedFile')}
               </p>
-              <p className="text-body-2 text-gray-500">-</p>
+              <p className="text-body-2 text-text-sub-2">-</p>
             </div>
           </div>
         </section>

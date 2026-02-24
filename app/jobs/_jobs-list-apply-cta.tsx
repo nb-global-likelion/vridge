@@ -101,10 +101,10 @@ export function JobsListApplyCta({
       type="button"
       aria-disabled={isDisabled}
       className={cn(
-        'inline-flex h-[35px] min-w-[123px] items-center justify-center rounded-[60px] px-[20px] py-[8px] text-[16px] leading-none font-medium text-white transition-colors',
+        'inline-flex h-[35px] min-w-[123px] items-center justify-center rounded-[60px] px-[20px] py-[8px] text-body-2 leading-none text-white transition-colors',
         isDisabled
-          ? 'cursor-not-allowed bg-[#ccc]'
-          : 'bg-[#ff6000] hover:bg-[#e55600]'
+          ? 'cursor-not-allowed bg-gray-200'
+          : 'bg-brand hover:bg-orange-600'
       )}
       onClick={handleClick}
     >

@@ -112,7 +112,7 @@ export function LoginModal() {
       >
         <div className="flex flex-col items-center gap-10 px-5 pt-5 pb-20">
           <div className="flex w-full items-center justify-between">
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-text-sub-1">
               {t('auth.login.noAccount')}{' '}
               <button
                 type="button"
@@ -136,14 +136,14 @@ export function LoginModal() {
               type="button"
               onClick={closeAll}
               aria-label={t('auth.login.closeAria')}
-              className="rounded-sm p-1 text-gray-950 hover:bg-[#f5f5f5]"
+              className="rounded-sm p-1 text-text-title-2 hover:bg-gray-50"
             >
               <Icon name="close" size={16} />
             </button>
           </div>
 
           <div className="flex max-w-[240px] grow-0 flex-col items-center gap-10">
-            <DialogTitle className="text-h1 text-gray-950">
+            <DialogTitle className="text-h1 text-text-title-2">
               {t('auth.login.title')}
             </DialogTitle>
             <DialogDescription className="sr-only">
@@ -191,7 +191,7 @@ export function LoginModal() {
 
             <div className="flex w-full items-center gap-2.5 overflow-hidden">
               <div className="h-px flex-1 bg-gray-300" />
-              <span className="text-sm font-medium text-gray-400">
+              <span className="text-sm font-medium text-text-info">
                 {t('common.or')}
               </span>
               <div className="h-px flex-1 bg-gray-300" />
@@ -282,7 +282,7 @@ export function LoginModal() {
                       )}
                       <button
                         type="button"
-                        className="text-right text-sm font-medium text-gray-600 hover:underline"
+                        className="text-right text-sm font-medium text-text-sub-1 hover:underline"
                       >
                         {t('auth.login.forgotPassword')}
                       </button>

@@ -46,9 +46,7 @@ export default async function CandidateLandingPage({
   return (
     <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-[40px] px-6 py-8">
       <section className="flex flex-col gap-[10px]">
-        <h2 className="text-[26px] leading-[1.5] font-bold text-[#1a1a1a]">
-          {t('profile.myProfile')}
-        </h2>
+        <h2 className="text-h1 text-text-title-2">{t('profile.myProfile')}</h2>
         <ProfileCard
           firstName={profilePublic?.firstName ?? ''}
           lastName={profilePublic?.lastName ?? ''}
@@ -64,25 +62,19 @@ export default async function CandidateLandingPage({
 
       {isOwner && (
         <section className="flex flex-col gap-[20px]">
-          <h2 className="text-[26px] leading-[1.5] font-bold text-[#1a1a1a]">
-            {t('profile.myJobs')}
-          </h2>
+          <h2 className="text-h1 text-text-title-2">{t('profile.myJobs')}</h2>
           <div className="grid grid-cols-1 gap-[10px] md:grid-cols-2">
-            <div className="rounded-[20px] bg-[#fbfbfb] px-10 py-[50px] text-center">
-              <p className="text-[22px] leading-[1.5] font-bold text-[#1a1a1a]">
+            <div className="rounded-[20px] bg-bg px-10 py-[50px] text-center">
+              <p className="text-h2 text-text-title-2">
                 {t('profile.applied')}
               </p>
-              <p className="text-[22px] leading-[1.5] font-bold text-[#1a1a1a]">
-                {appliedCount}
-              </p>
+              <p className="text-h2 text-text-title-2">{appliedCount}</p>
             </div>
-            <div className="rounded-[20px] bg-[#fbfbfb] px-10 py-[50px] text-center">
-              <p className="text-[22px] leading-[1.5] font-bold text-[#333]">
+            <div className="rounded-[20px] bg-bg px-10 py-[50px] text-center">
+              <p className="text-h2 text-text-body-1">
                 {t('profile.inProgress')}
               </p>
-              <p className="text-[22px] leading-[1.5] font-bold text-[#333]">
-                {inProgressCount}
-              </p>
+              <p className="text-h2 text-text-body-1">{inProgressCount}</p>
             </div>
           </div>
         </section>

@@ -160,7 +160,7 @@ export function SignupModal() {
         >
           {step !== 'success' && (
             <div className="flex w-full items-center justify-between">
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-text-sub-1">
                 {t('auth.signup.haveAccount')}{' '}
                 <button
                   type="button"
@@ -184,7 +184,7 @@ export function SignupModal() {
                 type="button"
                 onClick={closeAll}
                 aria-label={t('auth.signup.closeAria')}
-                className="rounded-sm p-1 text-gray-950 hover:bg-[#f5f5f5]"
+                className="rounded-sm p-1 text-text-title-2 hover:bg-gray-50"
               >
                 <Icon name="close" size={16} />
               </button>
@@ -197,7 +197,7 @@ export function SignupModal() {
             </DialogDescription>
             {step === 'method' && (
               <>
-                <DialogTitle className="text-h1 text-gray-950">
+                <DialogTitle className="text-h1 text-text-title-2">
                   {t('auth.signup.title')}
                 </DialogTitle>
 
@@ -243,7 +243,7 @@ export function SignupModal() {
 
                 <div className="flex w-full items-center gap-2.5 overflow-hidden">
                   <div className="h-px flex-1 bg-gray-300" />
-                  <span className="text-sm font-medium text-gray-400">
+                  <span className="text-sm font-medium text-text-info">
                     {t('common.or')}
                   </span>
                   <div className="h-px flex-1 bg-gray-300" />
@@ -269,7 +269,7 @@ export function SignupModal() {
 
             {step === 'form' && (
               <>
-                <DialogTitle className="text-h1 text-gray-950">
+                <DialogTitle className="text-h1 text-text-title-2">
                   {t('auth.signup.title')}
                 </DialogTitle>
 
@@ -393,7 +393,7 @@ export function SignupModal() {
                   </div>
 
                   <div className="flex w-full flex-col gap-[10px]">
-                    <label className="flex h-[24px] w-full cursor-pointer items-center gap-[5px] text-sm leading-[1.5] font-medium text-gray-600">
+                    <label className="flex h-[24px] w-full cursor-pointer items-center gap-[5px] text-sm leading-[1.5] font-medium text-text-sub-1">
                       <input
                         type="checkbox"
                         className="sr-only"
@@ -463,18 +463,15 @@ export function SignupModal() {
               <div className="flex w-full flex-col items-center gap-10">
                 <div className="flex flex-col items-center gap-5">
                   <div className="flex size-[150px] items-center justify-center rounded-full bg-brand">
-                    <span
-                      aria-hidden
-                      className="text-[72px] leading-none font-bold text-white"
-                    >
+                    <span aria-hidden className="text-display text-white">
                       ✓
                     </span>
                   </div>
-                  <DialogTitle className="text-h2 text-black">
+                  <DialogTitle className="text-h2 text-text-title-1">
                     {t('auth.signup.successTitle')}
                   </DialogTitle>
                 </div>
-                <p className="text-center text-h4 text-gray-600">
+                <p className="text-center text-h4 text-text-sub-1">
                   {t('auth.signup.successDescription')}
                 </p>
                 <Button
