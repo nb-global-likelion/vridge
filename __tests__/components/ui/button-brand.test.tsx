@@ -6,7 +6,7 @@ describe('Button brand variants', () => {
     it('brand 배경 + 흰색 텍스트', () => {
       render(<Button variant="brand">Apply</Button>);
       const btn = screen.getByRole('button', { name: 'Apply' });
-      expect(btn).toHaveClass('bg-[#ff6000]');
+      expect(btn).toHaveClass('bg-brand');
       expect(btn).toHaveClass('text-white');
       expect(btn).toHaveClass('rounded-[60px]');
     });
@@ -16,8 +16,8 @@ describe('Button brand variants', () => {
     it('brand 테두리 + brand 텍스트', () => {
       render(<Button variant="brand-outline">Cancel</Button>);
       const btn = screen.getByRole('button', { name: 'Cancel' });
-      expect(btn).toHaveClass('border-[#ff6000]');
-      expect(btn).toHaveClass('text-[#ff6000]');
+      expect(btn).toHaveClass('border-brand');
+      expect(btn).toHaveClass('text-brand');
       expect(btn).toHaveClass('bg-white');
       expect(btn).toHaveClass('rounded-[60px]');
     });
@@ -27,7 +27,7 @@ describe('Button brand variants', () => {
     it('회색 배경 + 흰색 텍스트 + cursor-not-allowed', () => {
       render(<Button variant="brand-disabled">Disabled</Button>);
       const btn = screen.getByRole('button', { name: 'Disabled' });
-      expect(btn).toHaveClass('bg-[#ccc]');
+      expect(btn).toHaveClass('bg-gray-200');
       expect(btn).toHaveClass('text-white');
       expect(btn).toHaveClass('cursor-not-allowed');
       expect(btn).toHaveClass('rounded-[60px]');

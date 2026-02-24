@@ -160,7 +160,7 @@ export function SignupModal() {
         >
           {step !== 'success' && (
             <div className="flex w-full items-center justify-between">
-              <p className="text-sm text-[#666]">
+              <p className="text-sm text-gray-600">
                 {t('auth.signup.haveAccount')}{' '}
                 <button
                   type="button"
@@ -184,7 +184,7 @@ export function SignupModal() {
                 type="button"
                 onClick={closeAll}
                 aria-label={t('auth.signup.closeAria')}
-                className="rounded-sm p-1 text-[#1a1a1a] hover:bg-[#f5f5f5]"
+                className="rounded-sm p-1 text-gray-950 hover:bg-[#f5f5f5]"
               >
                 <Icon name="close" size={16} />
               </button>
@@ -197,7 +197,7 @@ export function SignupModal() {
             </DialogDescription>
             {step === 'method' && (
               <>
-                <DialogTitle className="text-[26px] leading-[1.5] font-bold text-[#313131]">
+                <DialogTitle className="text-h1 text-gray-950">
                   {t('auth.signup.title')}
                 </DialogTitle>
 
@@ -242,11 +242,11 @@ export function SignupModal() {
                 </div>
 
                 <div className="flex w-full items-center gap-2.5 overflow-hidden">
-                  <div className="h-px flex-1 bg-[#b3b3b3]" />
-                  <span className="text-sm font-medium text-[#999]">
+                  <div className="h-px flex-1 bg-gray-300" />
+                  <span className="text-sm font-medium text-gray-400">
                     {t('common.or')}
                   </span>
-                  <div className="h-px flex-1 bg-[#b3b3b3]" />
+                  <div className="h-px flex-1 bg-gray-300" />
                 </div>
 
                 <SocialLs
@@ -269,7 +269,7 @@ export function SignupModal() {
 
             {step === 'form' && (
               <>
-                <DialogTitle className="text-[26px] leading-[1.5] font-bold text-[#313131]">
+                <DialogTitle className="text-h1 text-gray-950">
                   {t('auth.signup.title')}
                 </DialogTitle>
 
@@ -321,7 +321,7 @@ export function SignupModal() {
                               )}
                           </div>
                           {emailError && (
-                            <p className="flex items-center text-sm leading-[1.5] font-medium text-[#e50000]">
+                            <p className="flex items-center text-sm leading-[1.5] font-medium text-error">
                               <Icon
                                 name="error"
                                 size={24}
@@ -369,9 +369,7 @@ export function SignupModal() {
                               <p
                                 className={cn(
                                   'flex items-center text-sm leading-[1.5] font-medium',
-                                  passwordValid
-                                    ? 'text-[#00a600]'
-                                    : 'text-[#e50000]'
+                                  passwordValid ? 'text-success' : 'text-error'
                                 )}
                               >
                                 <Icon
@@ -395,7 +393,7 @@ export function SignupModal() {
                   </div>
 
                   <div className="flex w-full flex-col gap-[10px]">
-                    <label className="flex h-[24px] w-full cursor-pointer items-center gap-[5px] text-sm leading-[1.5] font-medium text-[#666]">
+                    <label className="flex h-[24px] w-full cursor-pointer items-center gap-[5px] text-sm leading-[1.5] font-medium text-gray-600">
                       <input
                         type="checkbox"
                         className="sr-only"
@@ -415,7 +413,7 @@ export function SignupModal() {
                     </label>
 
                     {formError && (
-                      <p className="flex items-center text-sm leading-[1.5] font-medium text-[#e50000]">
+                      <p className="flex items-center text-sm leading-[1.5] font-medium text-error">
                         <Icon
                           name="error"
                           size={24}
@@ -464,7 +462,7 @@ export function SignupModal() {
             {step === 'success' && (
               <div className="flex w-full flex-col items-center gap-10">
                 <div className="flex flex-col items-center gap-5">
-                  <div className="flex size-[150px] items-center justify-center rounded-full bg-[#ff6000]">
+                  <div className="flex size-[150px] items-center justify-center rounded-full bg-brand">
                     <span
                       aria-hidden
                       className="text-[72px] leading-none font-bold text-white"
@@ -472,11 +470,11 @@ export function SignupModal() {
                       ✓
                     </span>
                   </div>
-                  <DialogTitle className="text-[22px] leading-[1.5] font-bold text-black">
+                  <DialogTitle className="text-h2 text-black">
                     {t('auth.signup.successTitle')}
                   </DialogTitle>
                 </div>
-                <p className="text-center text-[20px] leading-[1.5] font-medium text-[#666]">
+                <p className="text-center text-h4 text-gray-600">
                   {t('auth.signup.successDescription')}
                 </p>
                 <Button

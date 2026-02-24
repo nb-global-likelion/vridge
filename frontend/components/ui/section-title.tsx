@@ -9,7 +9,7 @@ export function SectionTitle({ title, onAdd }: SectionTitleProps) {
   return (
     <div className="flex flex-col gap-[10px]">
       <div className="flex min-h-[32px] items-center justify-between">
-        <h2 className="text-[22px] font-bold text-[#1a1a1a]">{title}</h2>
+        <h2 className="text-h2 text-gray-950">{title}</h2>
         {onAdd && (
           <button
             type="button"
@@ -20,7 +20,7 @@ export function SectionTitle({ title, onAdd }: SectionTitleProps) {
           </button>
         )}
       </div>
-      <div className="h-px w-full bg-[#b3b3b3]" />
+      <div className="h-px w-full bg-gray-300" />
     </div>
   );
 }

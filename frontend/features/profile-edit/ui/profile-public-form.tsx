@@ -195,8 +195,8 @@ export function ProfilePublicForm({ initialData }: Props) {
 
       <form.Field name="isOpenToWork">
         {(field) => (
-          <div className="flex items-center justify-between rounded-[10px] bg-[#fbfbfb] px-[20px] py-[12px]">
-            <span className="text-sm text-[#333]">
+          <div className="flex items-center justify-between rounded-[10px] bg-bg px-[20px] py-[12px]">
+            <span className="text-sm text-gray-800">
               {t('profile.openToWork')}
             </span>
             <ToggleSwitch

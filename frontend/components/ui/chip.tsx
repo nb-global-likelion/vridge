@@ -12,14 +12,14 @@ type ChipProps = {
 };
 
 const VARIANT_CLASS: Record<ChipVariant, string> = {
-  displayed: 'border-[#b3b3b3]',
-  searched: 'border-[#b3b3b3] text-[#333] gap-[10px]',
-  selected: 'border-[#ff904c] text-[#333] gap-[10px]',
+  displayed: 'border-gray-300',
+  searched: 'border-gray-300 text-gray-800 gap-[10px]',
+  selected: 'border-orange-200 text-gray-800 gap-[10px]',
 };
 
 const SIZE_CLASS: Record<ChipSize, string> = {
-  sm: 'border-[0.5px] px-[8px] py-[6px] rounded-[5px] text-[14px] tracking-[-0.21px]',
-  md: 'border px-[10px] py-[8px] rounded-[8px] text-[16px]',
+  sm: 'border-[0.5px] px-[8px] py-[6px] rounded-[5px] text-caption-1',
+  md: 'border px-[10px] py-[8px] rounded-[8px] text-body-2',
 };
 
 export function Chip({
@@ -34,8 +34,8 @@ export function Chip({
   const displayedTextClass =
     variant === 'displayed'
       ? size === 'sm'
-        ? 'text-[#666]'
-        : 'text-[#4c4c4c]'
+        ? 'text-gray-600'
+        : 'text-gray-700'
       : '';
 
   return (

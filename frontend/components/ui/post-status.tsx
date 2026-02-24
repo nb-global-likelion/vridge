@@ -12,19 +12,19 @@ type PostStatusProps = {
 const CONFIG = {
   recruiting: {
     icon: 'status-recruiting',
-    color: 'text-[#00a600]',
+    color: 'text-success',
     defaultLabelKey: 'jobs.status.recruiting',
   },
   done: {
     icon: 'status-done',
-    color: 'text-[#e50000]',
+    color: 'text-error',
     defaultLabelKey: 'jobs.status.done',
   },
 } as const;
 
 const SIZE_CLASS = {
-  sm: 'text-[12px]',
-  md: 'text-[14px] tracking-[-0.21px]',
+  sm: 'text-caption-2',
+  md: 'text-caption-1',
 } as const;
 
 export function PostStatus({ status, size = 'sm', label }: PostStatusProps) {
@@ -35,9 +35,7 @@ export function PostStatus({ status, size = 'sm', label }: PostStatusProps) {
   return (
     <span className="inline-flex items-center justify-center gap-[2px]">
       <Icon name={config.icon} size={18} />
-      <span
-        className={`leading-[1.5] font-medium ${config.color} ${SIZE_CLASS[size]}`}
-      >
+      <span className={`${config.color} ${SIZE_CLASS[size]}`}>
         {displayLabel}
       </span>
     </span>

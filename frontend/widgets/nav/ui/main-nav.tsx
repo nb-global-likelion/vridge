@@ -76,8 +76,8 @@ export default function MainNav() {
                 key={href}
                 href={href}
                 className={[
-                  'text-[22px] leading-[1.5] font-bold transition-colors',
-                  isActive ? 'text-brand' : 'text-[#1a1a1a] hover:text-brand',
+                  'text-h2 transition-colors',
+                  isActive ? 'text-brand' : 'text-gray-950 hover:text-brand',
                 ].join(' ')}
               >
                 {label}
@@ -105,15 +105,15 @@ export default function MainNav() {
             <button
               type="button"
               onClick={handleOpenLogin}
-              className="text-[18px] leading-[1.5] font-medium text-[#1a1a1a] hover:text-brand"
+              className="text-body-1 text-gray-950 hover:text-brand"
             >
               {t('nav.login')}
             </button>
-            <span className="mx-[10px] h-[16px] w-px bg-[#b3b3b3]" />
+            <span className="mx-[10px] h-[16px] w-px bg-gray-300" />
             <button
               type="button"
               onClick={handleOpenSignup}
-              className="text-[18px] leading-[1.5] font-medium text-[#1a1a1a] hover:text-brand"
+              className="text-body-1 text-gray-950 hover:text-brand"
             >
               {t('nav.signup')}
             </button>
