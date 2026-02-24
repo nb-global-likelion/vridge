@@ -29,6 +29,7 @@ type Props = {
 };
 
 export function PostingListItem({
+  id,
   title,
   orgName,
   jobDisplayName,
@@ -52,7 +53,7 @@ export function PostingListItem({
     : getEmploymentTypeLabel(employmentType, t);
 
   return (
-    <Link href={href} className="block">
+    <Link key={id} href={href} className="block">
       <div className="rounded-[20px] border border-brand-sub bg-white px-[40px] py-[20px]">
         <div className="flex items-center gap-[20px]">
           <div className="flex shrink-0 items-center gap-[10px]">
