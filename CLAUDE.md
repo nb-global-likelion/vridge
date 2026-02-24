@@ -108,6 +108,8 @@ When multiple independent tasks exist, spawn them ALL in one message:
 - **Sonnet**: figma-researcher (needs reasoning for design interpretation)
 - **Inherit parent model**: Only when task genuinely requires coordinator-level reasoning
 
+## Plan and Task implementation
+
 ### Preflight 1: Feature Branch Creation (BEFORE implementing plan)
 
 - ALWAYS identify the remote default base branch (for example `origin/HEAD` -> `main` or `master`).
