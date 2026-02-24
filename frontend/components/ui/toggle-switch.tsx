@@ -36,7 +36,7 @@ export function ToggleSwitch({
       aria-checked={checked}
       onClick={() => onChange(!checked)}
       className={`relative rounded-[999px] transition-colors duration-150 outline-none focus-visible:ring-2 focus-visible:ring-[#ff6000]/40 ${config.track} ${
-        checked ? 'bg-[#00a600]' : 'bg-[#e6e6e6]'
+        checked ? 'bg-success' : 'bg-gray-100'
       }`}
     >
       <span

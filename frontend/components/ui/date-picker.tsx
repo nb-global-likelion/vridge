@@ -47,10 +47,10 @@ function ScrollColumn({
         <button
           key={item}
           type="button"
-          className={`flex h-[41px] w-full items-center justify-center rounded-[5px] px-[10px] text-center text-[14px] font-medium tracking-[-0.21px] ${
+          className={`flex h-[41px] w-full items-center justify-center rounded-[5px] px-[10px] text-center text-caption-1 ${
             item === selected
               ? 'font-medium text-brand'
-              : 'text-[#333] hover:bg-brand-sub hover:text-brand'
+              : 'text-gray-800 hover:bg-brand-sub hover:text-brand'
           }`}
           onClick={() => onSelect(item)}
         >
@@ -121,13 +121,13 @@ export function DatePicker({
         type="button"
         className={`flex h-[52px] items-center justify-between rounded-[10px] px-[20px] text-left ${triggerWidthClass} ${
           hasValue
-            ? 'border border-gray-300 bg-white text-[#333]'
-            : 'bg-bg text-[#666]'
+            ? 'border border-gray-300 bg-white text-gray-800'
+            : 'bg-bg text-gray-600'
         }`}
         onClick={() => setOpen(!open)}
         aria-expanded={open}
       >
-        <span className="text-[14px] font-medium tracking-[-0.21px]">
+        <span className="text-caption-1">
           {hasValue ? formatDate(value, type) : placeholder}
         </span>
         {required && <Icon name="required" size={24} />}
@@ -163,7 +163,7 @@ export function DatePicker({
           <div className="mt-[10px] flex justify-end">
             <button
               type="button"
-              className="rounded-[60px] bg-brand px-[10px] py-[5px] text-center text-[16px] font-medium text-white"
+              className="rounded-[60px] bg-brand px-[10px] py-[5px] text-center text-body-2 text-white"
               onClick={handleSelect}
             >
               {t('datePicker.select')}

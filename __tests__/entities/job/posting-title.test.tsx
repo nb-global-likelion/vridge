@@ -72,7 +72,7 @@ describe('PostingTitle', () => {
     expect(screen.getByText('Done')).toBeInTheDocument();
   });
 
-  it('타이틀 스타일: text-[30px] font-bold', () => {
+  it('타이틀 스타일: text-title', () => {
     renderWithI18n(
       <PostingTitle
         title="Test Title"
@@ -81,7 +81,6 @@ describe('PostingTitle', () => {
       />
     );
     const title = screen.getByText('Test Title');
-    expect(title).toHaveClass('text-[30px]');
-    expect(title).toHaveClass('font-bold');
+    expect(title).toHaveClass('text-title');
   });
 });

@@ -53,16 +53,16 @@ export function PostingListItem({
 
   return (
     <Link href={href} className="block">
-      <div className="rounded-[20px] border border-[#ffefe5] bg-white px-[40px] py-[20px]">
+      <div className="rounded-[20px] border border-brand-sub bg-white px-[40px] py-[20px]">
         <div className="flex items-center gap-[20px]">
           <div className="flex shrink-0 items-center gap-[10px]">
-            <div className="h-[40px] w-[40px] bg-[#eee]" />
+            <div className="h-[40px] w-[40px] bg-gray-100" />
             <div className="flex flex-col justify-center">
-              <span className="text-[16px] font-medium text-[#333]">
+              <span className="text-body-2 text-gray-800">
                 {orgName ?? '-'}
               </span>
               <div className="flex items-start gap-[5px]">
-                <span className="text-[12px] text-[#808080]">
+                <span className="text-caption-2 text-gray-500">
                   {formatDate(createdAt, locale)}
                 </span>
                 <PostStatus status={status} size="sm" />
@@ -72,9 +72,9 @@ export function PostingListItem({
 
           <div className="flex min-w-0 flex-1 items-center gap-[10px]">
             <div className="flex min-w-0 flex-1 flex-col gap-[20px] rounded-[20px] p-[20px]">
-              <h3 className="text-[20px] font-bold text-black">{title}</h3>
+              <h3 className="text-h3 text-black">{title}</h3>
 
-              <div className="flex flex-wrap items-center gap-[20px] text-[16px] text-[#333]">
+              <div className="flex flex-wrap items-center gap-[20px] text-body-2 text-gray-800">
                 <span className="inline-flex items-center gap-[5px]">
                   <Icon name="jobs" size={24} />
                   {jobDisplayName}

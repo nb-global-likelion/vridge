@@ -22,7 +22,7 @@ const SIZE_CLASS: Record<FormInputSize, string> = {
 };
 
 const baseClass =
-  'w-full rounded-[10px] text-[16px] text-[#333] placeholder:text-[14px] placeholder:tracking-[-0.21px] placeholder:text-[#666] outline-none';
+  'w-full rounded-[10px] text-body-2 text-gray-800 placeholder:text-caption-1 placeholder:text-gray-600 outline-none';
 
 export const FormInput = forwardRef<
   HTMLInputElement | HTMLTextAreaElement,
@@ -48,17 +48,15 @@ export const FormInput = forwardRef<
 
     return (
       <span
-        className={`inline-flex h-[52px] w-full items-center justify-center gap-[5px] rounded-[10px] bg-[#fbfbfb] px-[20px] ${className ?? ''}`}
+        className={`inline-flex h-[52px] w-full items-center justify-center gap-[5px] rounded-[10px] bg-bg px-[20px] ${className ?? ''}`}
       >
         <Icon name="plus" size={24} />
-        <span className="text-[14px] font-medium tracking-[-0.21px] text-[#666]">{fileText}</span>
+        <span className="text-caption-1 text-gray-600">{fileText}</span>
       </span>
     );
   }
 
-  const stateClass = filled
-    ? 'bg-white border border-[#b3b3b3]'
-    : 'bg-[#fbfbfb]';
+  const stateClass = filled ? 'bg-white border border-gray-300' : 'bg-bg';
 
   const combinedClass = `${baseClass} ${SIZE_CLASS[size]} ${stateClass} ${className ?? ''}`;
 

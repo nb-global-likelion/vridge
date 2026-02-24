@@ -112,7 +112,7 @@ export function LoginModal() {
       >
         <div className="flex flex-col items-center gap-10 px-5 pt-5 pb-20">
           <div className="flex w-full items-center justify-between">
-            <p className="text-sm text-[#666]">
+            <p className="text-sm text-gray-600">
               {t('auth.login.noAccount')}{' '}
               <button
                 type="button"
@@ -136,14 +136,14 @@ export function LoginModal() {
               type="button"
               onClick={closeAll}
               aria-label={t('auth.login.closeAria')}
-              className="rounded-sm p-1 text-[#1a1a1a] hover:bg-[#f5f5f5]"
+              className="rounded-sm p-1 text-gray-950 hover:bg-[#f5f5f5]"
             >
               <Icon name="close" size={16} />
             </button>
           </div>
 
           <div className="flex w-full max-w-[520px] flex-col items-center gap-10">
-            <DialogTitle className="text-[26px] leading-[1.5] font-bold text-[#313131]">
+            <DialogTitle className="text-h1 text-gray-950">
               {t('auth.login.title')}
             </DialogTitle>
             <DialogDescription className="sr-only">
@@ -190,11 +190,11 @@ export function LoginModal() {
             </div>
 
             <div className="flex w-full items-center gap-2.5 overflow-hidden">
-              <div className="h-px flex-1 bg-[#b3b3b3]" />
-              <span className="text-sm font-medium text-[#999]">
+              <div className="h-px flex-1 bg-gray-300" />
+              <span className="text-sm font-medium text-gray-400">
                 {t('common.or')}
               </span>
-              <div className="h-px flex-1 bg-[#b3b3b3]" />
+              <div className="h-px flex-1 bg-gray-300" />
             </div>
 
             <form
@@ -271,7 +271,7 @@ export function LoginModal() {
                           )}
                       </div>
                       {serverError && (
-                        <p className="flex items-center text-sm leading-[1.5] font-medium text-[#e50000]">
+                        <p className="flex items-center text-sm leading-[1.5] font-medium text-error">
                           <Icon
                             name="error"
                             size={24}
@@ -282,7 +282,7 @@ export function LoginModal() {
                       )}
                       <button
                         type="button"
-                        className="text-right text-sm font-medium text-[#666] hover:underline"
+                        className="text-right text-sm font-medium text-gray-600 hover:underline"
                       >
                         {t('auth.login.forgotPassword')}
                       </button>

@@ -14,7 +14,7 @@ describe('LoginField', () => {
     );
 
     expect(screen.getByPlaceholderText('Placeholder')).toHaveClass(
-      'text-[#999]'
+      'text-gray-400'
     );
   });
 
@@ -29,7 +29,7 @@ describe('LoginField', () => {
       />
     );
 
-    expect(screen.getByDisplayValue('filled')).toHaveClass('text-[#333]');
+    expect(screen.getByDisplayValue('filled')).toHaveClass('text-gray-800');
   });
 
   it('left icon과 right slot을 렌더링한다', () => {

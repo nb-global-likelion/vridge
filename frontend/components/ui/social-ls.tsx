@@ -42,7 +42,7 @@ export function SocialLs({
     <button
       type="button"
       className={cn(
-        'flex h-[52px] w-full items-center justify-center gap-[10px] overflow-hidden rounded-[10px] border border-[#b3b3b3] bg-white px-[90px] py-[20px] text-[#333]',
+        'flex h-[52px] w-full items-center justify-center gap-[10px] overflow-hidden rounded-[10px] border border-gray-300 bg-white px-[90px] py-[20px] text-gray-800',
         className
       )}
       {...props}
@@ -54,9 +54,7 @@ export function SocialLs({
       ) : (
         <Icon name={meta.iconName} size={meta.iconSize} alt={provider} />
       )}
-      <span className="text-center text-[16px] leading-[1.5] font-medium text-[#333]">
-        {label}
-      </span>
+      <span className="text-center text-body-2 text-gray-800">{label}</span>
     </button>
   );
 }

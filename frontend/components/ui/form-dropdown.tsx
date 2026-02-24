@@ -23,7 +23,7 @@ function DropdownMenu({
   return (
     <button
       type="button"
-      className="w-full rounded-[5px] px-[20px] py-[10px] text-left text-[14px] font-medium tracking-[-0.21px] text-[#333] hover:bg-[#ffefe5] hover:text-[#ff6000]"
+      className="w-full rounded-[5px] px-[20px] py-[10px] text-left text-caption-1 text-gray-800 hover:bg-brand-sub hover:text-brand"
       onClick={onSelect}
     >
       {label}
@@ -76,8 +76,8 @@ export function FormDropdown({
 
   const triggerClass = `flex h-[52px] w-full items-center justify-between rounded-[10px] px-[20px] text-left ${
     hasValue
-      ? 'bg-white border border-[#b3b3b3] text-[#333]'
-      : 'bg-[#fbfbfb] text-[#666]'
+      ? 'bg-white border border-gray-300 text-gray-800'
+      : 'bg-bg text-gray-600'
   }`;
 
   return (
@@ -88,11 +88,7 @@ export function FormDropdown({
         onClick={() => setOpen(!open)}
         aria-expanded={open}
       >
-        <span
-          className={
-            hasValue ? 'text-[16px] font-medium' : 'text-[14px] font-medium tracking-[-0.21px]'
-          }
-        >
+        <span className={hasValue ? 'text-body-2' : 'text-caption-1'}>
           {selected ? selected.label : placeholder}
         </span>
         <span className="flex items-center gap-[4px]">

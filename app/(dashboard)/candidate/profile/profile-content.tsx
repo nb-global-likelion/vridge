@@ -504,9 +504,7 @@ function PortfolioSection({ urls, t }: { urls: Url[]; t: Translator }) {
     <section className={`${CARD_CLASS} flex flex-col gap-[40px]`}>
       <SectionTitle title={t('profile.portfolio')} />
       {urls.length === 0 ? (
-        <p className="text-[16px] leading-[1.5] font-medium text-[#666]">
-          {t('profile.empty.urls')}
-        </p>
+        <p className="text-h3 text-text-body-2">{t('profile.empty.urls')}</p>
       ) : (
         <ul className="flex flex-col gap-[20px]">
           {urls.map((item) => (
@@ -515,7 +513,7 @@ function PortfolioSection({ urls, t }: { urls: Url[]; t: Translator }) {
                 href={item.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-[10px] text-[20px] leading-[1.5] font-bold text-[#333] hover:underline"
+                className="inline-flex items-center gap-[10px] text-body-1 text-text-body-1 hover:underline"
               >
                 <Icon name="file" size={24} />
                 <span>{resolvePortfolioLabel(item)}</span>

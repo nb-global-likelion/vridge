@@ -69,14 +69,14 @@ export function NumberedPagination({
           p === '...' ? (
             <span
               key={`dots-${i}`}
-              className="text-[20px] leading-none text-black"
+              className="text-h3 leading-none font-normal text-black"
             >
               ···
             </span>
           ) : p === currentPage ? (
             <span
               key={p}
-              className="flex h-[24px] w-[24px] items-center justify-center rounded-[60px] bg-[#ffefe5] text-[20px] leading-none font-normal text-[#ff6000]"
+              className="flex h-[24px] w-[24px] items-center justify-center rounded-[60px] bg-brand-sub text-h3 leading-none font-normal text-brand"
             >
               {p}
             </span>
@@ -84,7 +84,7 @@ export function NumberedPagination({
             <Link
               key={p}
               href={buildHref(p)}
-              className="flex items-center justify-center text-[20px] leading-none font-normal text-black"
+              className="flex items-center justify-center text-h3 leading-none font-normal text-black"
             >
               {p}
             </Link>

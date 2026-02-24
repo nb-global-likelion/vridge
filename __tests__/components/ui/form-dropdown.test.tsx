@@ -20,7 +20,7 @@ describe('FormDropdown', () => {
     expect(screen.getByText('Select')).toBeInTheDocument();
   });
 
-  it('기본 배경: bg-[#fbfbfb]', () => {
+  it('기본 배경: bg-bg', () => {
     render(
       <FormDropdown
         options={OPTIONS}
@@ -29,7 +29,7 @@ describe('FormDropdown', () => {
       />
     );
     const trigger = screen.getByRole('button');
-    expect(trigger).toHaveClass('bg-[#fbfbfb]');
+    expect(trigger).toHaveClass('bg-bg');
   });
 
   it('클릭 시 옵션 목록 표시', async () => {
@@ -74,7 +74,7 @@ describe('FormDropdown', () => {
     const trigger = screen.getByRole('button');
     expect(screen.getByText('React')).toBeInTheDocument();
     expect(trigger).toHaveClass('bg-white');
-    expect(trigger).toHaveClass('border-[#b3b3b3]');
+    expect(trigger).toHaveClass('border-gray-300');
   });
 
   it('chevron-down 아이콘 렌더링', () => {
@@ -132,7 +132,7 @@ describe('FormDropdown', () => {
     await user.click(screen.getByRole('button'));
     const option = screen.getByRole('button', { name: 'React' });
 
-    expect(option).toHaveClass('hover:bg-[#ffefe5]');
-    expect(option).toHaveClass('hover:text-[#ff6000]');
+    expect(option).toHaveClass('hover:bg-brand-sub');
+    expect(option).toHaveClass('hover:text-brand');
   });
 });

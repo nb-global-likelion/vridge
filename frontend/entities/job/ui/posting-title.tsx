@@ -67,13 +67,11 @@ export function PostingTitle({
       </div>
 
       <div className="flex min-w-0 flex-1 items-center gap-[20px]">
-        <div className="h-[97px] w-[97px] shrink-0 bg-[#ff6000]" />
+        <div className="h-[97px] w-[97px] shrink-0 bg-brand" />
         <div className="flex min-w-0 flex-1 flex-col gap-[10px]">
-          <h1 className="truncate text-[30px] font-bold text-black">
-            {displayTitle}
-          </h1>
+          <h1 className="truncate text-title text-black">{displayTitle}</h1>
           <div className="flex items-center gap-[5px]">
-            <span className="text-[14px] text-[#808080]">
+            <span className="text-caption-1 text-gray-500">
               {formatDate(createdAt, locale)}
             </span>
             <PostStatus status={status} size="md" />

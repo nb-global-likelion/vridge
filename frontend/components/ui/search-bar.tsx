@@ -8,8 +8,8 @@ type SearchBarProps = {
 };
 
 const VARIANT_CLASS = {
-  main: 'h-[50px] rounded-[60px] border border-[#b3b3b3] bg-white px-[20px]',
-  skills: 'h-[52px] rounded-[999px] bg-[#fbfbfb] px-[20px] pl-[54px]',
+  main: 'h-[50px] rounded-[60px] border border-gray-300 bg-white px-[20px]',
+  skills: 'h-[52px] rounded-[999px] bg-bg px-[20px] pl-[54px]',
 } as const;
 
 export function SearchBar({
@@ -31,11 +31,11 @@ export function SearchBar({
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         className={[
-          'w-full bg-transparent outline-none placeholder:text-[#999]',
+          'w-full bg-transparent outline-none placeholder:text-gray-400',
           variant === 'skills'
-            ? 'text-[14px] leading-[1.5] font-bold tracking-[0.4354px]'
-            : 'text-[16px] leading-normal font-normal',
-          value ? 'text-[#333]' : 'text-[#999]',
+            ? 'text-caption-1 font-bold tracking-[0.4354px]'
+            : 'text-body-2 font-normal',
+          value ? 'text-gray-800' : 'text-gray-400',
           VARIANT_CLASS[variant],
         ].join(' ')}
       />

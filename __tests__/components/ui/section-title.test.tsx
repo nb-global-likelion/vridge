@@ -8,18 +8,17 @@ describe('SectionTitle', () => {
     expect(screen.getByText('Experience')).toBeInTheDocument();
   });
 
-  it('제목 스타일: text-[22px] font-bold', () => {
+  it('제목 스타일: text-h2', () => {
     render(<SectionTitle title="Experience" />);
     const title = screen.getByText('Experience');
-    expect(title).toHaveClass('text-[22px]');
-    expect(title).toHaveClass('font-bold');
+    expect(title).toHaveClass('text-h2');
   });
 
   it('하단 구분선 렌더링', () => {
     const { container } = render(<SectionTitle title="Experience" />);
     const divider = container.querySelector('.h-px');
     expect(divider).toBeInTheDocument();
-    expect(divider).toHaveClass('bg-[#b3b3b3]');
+    expect(divider).toHaveClass('bg-gray-300');
   });
 
   it('onAdd 없을 때 추가 버튼 미표시', () => {
