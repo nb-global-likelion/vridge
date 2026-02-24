@@ -31,7 +31,7 @@ export const LoginField = forwardRef<HTMLInputElement, LoginFieldProps>(
     return (
       <div
         className={cn(
-          'flex h-[52px] w-full items-center justify-between overflow-hidden rounded-[10px] border border-[#b3b3b3] bg-white px-[20px] py-[10px]',
+          'flex h-[52px] w-full items-center justify-between overflow-hidden rounded-[10px] border border-gray-300 bg-white px-[20px] py-[10px]',
           className
         )}
       >
@@ -49,9 +49,9 @@ export const LoginField = forwardRef<HTMLInputElement, LoginFieldProps>(
             ref={ref}
             {...props}
             className={cn(
-              'w-full bg-transparent text-[16px] leading-[1.5] font-medium outline-none',
-              hasValue ? 'text-[#333]' : 'text-[#999]',
-              'placeholder:text-[16px] placeholder:leading-[1.5] placeholder:font-medium placeholder:text-[#999]'
+              'w-full bg-transparent text-body-2 outline-none',
+              hasValue ? 'text-gray-800' : 'text-gray-400',
+              'placeholder:text-body-2 placeholder:text-gray-400'
             )}
           />
         </div>

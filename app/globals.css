@@ -85,77 +85,46 @@
   --color-text-sub-2: var(--color-gray-500);
   --color-text-info: var(--color-gray-400);
 
-  --typography-label-normal-font-family: var(--font-inter);
-  --typography-label-normal-font-size: 1rem;
-  --typography-label-normal-font-weight: 500;
-  --typography-label-normal-line-height: 1.5;
-  --typography-label-normal-letter-spacing: 0;
+  --text-title: 1.875rem;
+  --text-title--line-height: 1.5;
+  --text-title--font-weight: 700;
 
-  --typography-title-font-family: var(--font-inter);
-  --typography-title-font-size: 1.875rem;
-  --typography-title-font-weight: 700;
-  --typography-title-line-height: 1.5;
-  --typography-title-letter-spacing: 0;
+  --text-h1: 1.625rem;
+  --text-h1--line-height: 1.5;
+  --text-h1--font-weight: 700;
 
-  --typography-h1-font-family: var(--font-inter);
-  --typography-h1-font-size: 1.625rem;
-  --typography-h1-font-weight: 700;
-  --typography-h1-line-height: 1.5;
-  --typography-h1-letter-spacing: 0;
+  --text-h2: 1.375rem;
+  --text-h2--line-height: 1.5;
+  --text-h2--font-weight: 700;
 
-  --typography-h2-font-family: var(--font-inter);
-  --typography-h2-font-size: 1.375rem;
-  --typography-h2-font-weight: 700;
-  --typography-h2-line-height: 1.5;
-  --typography-h2-letter-spacing: 0;
+  --text-h3: 1.25rem;
+  --text-h3--line-height: 1.5;
+  --text-h3--font-weight: 700;
 
-  --typography-h3-font-family: var(--font-inter);
-  --typography-h3-font-size: 1.25rem;
-  --typography-h3-font-weight: 700;
-  --typography-h3-line-height: 1.5;
-  --typography-h3-letter-spacing: 0;
+  --text-h4: 1.25rem;
+  --text-h4--line-height: 1.5;
+  --text-h4--font-weight: 500;
 
-  --typography-h4-font-family: var(--font-inter);
-  --typography-h4-font-size: 1.25rem;
-  --typography-h4-font-weight: 500;
-  --typography-h4-line-height: 1.5;
-  --typography-h4-letter-spacing: 0;
+  --text-body-1: 1.125rem;
+  --text-body-1--line-height: 1.5;
+  --text-body-1--font-weight: 500;
 
-  --typography-body-1-font-family: var(--font-inter);
-  --typography-body-1-font-size: 1.125rem;
-  --typography-body-1-font-weight: 500;
-  --typography-body-1-line-height: 1.5;
-  --typography-body-1-letter-spacing: 0;
+  --text-body-2: 1rem;
+  --text-body-2--line-height: 1.5;
+  --text-body-2--font-weight: 500;
 
-  --typography-body-2-strong-font-family: var(--font-inter);
-  --typography-body-2-strong-font-size: 1rem;
-  --typography-body-2-strong-font-weight: 700;
-  --typography-body-2-strong-line-height: 1.5;
-  --typography-body-2-strong-letter-spacing: 0;
+  --text-body-3: 1rem;
+  --text-body-3--line-height: 1.5;
+  --text-body-3--font-weight: 500;
 
-  --typography-body-2-font-family: var(--font-inter);
-  --typography-body-2-font-size: 1rem;
-  --typography-body-2-font-weight: 500;
-  --typography-body-2-line-height: 1.5;
-  --typography-body-2-letter-spacing: 0;
+  --text-caption-1: 0.875rem;
+  --text-caption-1--line-height: 1.5;
+  --text-caption-1--font-weight: 500;
+  --text-caption-1--letter-spacing: -0.21px;
 
-  --typography-body-3-font-family: var(--font-inter);
-  --typography-body-3-font-size: 1rem;
-  --typography-body-3-font-weight: 500;
-  --typography-body-3-line-height: 1.5;
-  --typography-body-3-letter-spacing: 0;
-
-  --typography-caption-1-font-family: var(--font-inter);
-  --typography-caption-1-font-size: 0.875rem;
-  --typography-caption-1-font-weight: 500;
-  --typography-caption-1-line-height: 1.5;
-  --typography-caption-1-letter-spacing: 0;
-
-  --typography-caption-2-font-family: var(--font-inter);
-  --typography-caption-2-font-size: 0.75rem;
-  --typography-caption-2-font-weight: 500;
-  --typography-caption-2-line-height: 1.5;
-  --typography-caption-2-letter-spacing: 0;
+  --text-caption-2: 0.75rem;
+  --text-caption-2--line-height: 1.5;
+  --text-caption-2--font-weight: 500;
 }
 
 @custom-variant dark (&:is(.dark *));

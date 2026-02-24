@@ -37,7 +37,7 @@ describe('NumberedPagination', () => {
     }
   });
 
-  it('현재 페이지 활성 스타일: bg-[#ffefe5] text-[#ff6000]', () => {
+  it('현재 페이지 활성 스타일: bg-brand-sub text-brand', () => {
     render(
       <NumberedPagination
         currentPage={3}
@@ -48,8 +48,8 @@ describe('NumberedPagination', () => {
       />
     );
     const active = screen.getByText('3');
-    expect(active).toHaveClass('bg-[#ffefe5]');
-    expect(active).toHaveClass('text-[#ff6000]');
+    expect(active).toHaveClass('bg-brand-sub');
+    expect(active).toHaveClass('text-brand');
     expect(active).toHaveClass('h-[24px]');
     expect(active).toHaveClass('w-[24px]');
   });

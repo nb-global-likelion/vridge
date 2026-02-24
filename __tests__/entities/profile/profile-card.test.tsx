@@ -30,7 +30,7 @@ describe('ProfileCard', () => {
     renderWithI18n(<ProfileCard {...baseProps} />);
     const summary = screen.getByText('Building reliable web products');
     expect(summary).toBeInTheDocument();
-    expect(summary).toHaveClass('text-[18px]');
+    expect(summary).toHaveClass('text-body-1');
     expect(
       screen.queryByText('Experienced developer looking for new opportunities')
     ).not.toBeInTheDocument();

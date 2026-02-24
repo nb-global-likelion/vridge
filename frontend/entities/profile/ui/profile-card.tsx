@@ -61,20 +61,18 @@ export function ProfileCard({
   return (
     <div
       className={[
-        'rounded-[20px] bg-[#fbfbfb] px-[40px]',
+        'rounded-[20px] bg-bg px-[40px]',
         isMyProfile
           ? 'flex flex-col gap-[25px] pt-[20px] pb-[40px]'
           : 'py-[20px]',
       ].join(' ')}
     >
       {isMyProfile && (
-        <h2 className="text-[22px] leading-[1.5] font-bold text-[#1a1a1a]">
-          {t('profile.basicProfile')}
-        </h2>
+        <h2 className="text-h2 text-gray-950">{t('profile.basicProfile')}</h2>
       )}
       <div className="flex items-center gap-[25px]">
         <div className="flex flex-col items-center gap-[10px]">
-          <div className="flex h-[200px] w-[200px] items-center justify-center overflow-hidden rounded-full bg-[#e6e6e6]">
+          <div className="flex h-[200px] w-[200px] items-center justify-center overflow-hidden rounded-full bg-gray-100">
             {profileImageUrl ? (
               <Image
                 src={profileImageUrl}
@@ -106,17 +104,17 @@ export function ProfileCard({
 
         <div className="flex min-w-0 flex-1 flex-col gap-[20px]">
           <div className="flex flex-col pb-px">
-            <h2 className="text-[30px] leading-[1.5] font-bold text-[#1a1a1a]">
+            <h2 className="text-title text-gray-950">
               {firstName} {lastName}
             </h2>
             {dateOfBirth && (
-              <span className="text-[16px] leading-[1.5] font-medium text-[#666]">
+              <span className="text-body-2 text-gray-600">
                 {formatDob(dateOfBirth, locale)}
               </span>
             )}
           </div>
 
-          <div className="flex flex-col gap-[6px] text-[16px] leading-[1.5] font-medium text-[#333]">
+          <div className="flex flex-col gap-[6px] text-body-2 text-gray-800">
             <div className="flex flex-wrap items-center gap-[25px]">
               {phone && (
                 <span className="inline-flex items-center gap-[4px]">
@@ -140,9 +138,7 @@ export function ProfileCard({
           </div>
 
           <div className="rounded-[10px] bg-white p-[20px]">
-            <p className="text-[18px] leading-[1.5] font-medium text-[#333]">
-              {summary ?? ''}
-            </p>
+            <p className="text-body-1 text-gray-800">{summary ?? ''}</p>
           </div>
         </div>
       </div>

@@ -13,10 +13,10 @@ export function TabItem({ label, isActive, href, onClick }: TabItemProps) {
     <Link
       href={href}
       onClick={onClick}
-      className={`inline-flex items-center justify-center border-b px-[10px] py-[5px] text-[16px] leading-[1.5] font-medium transition-colors ${
+      className={`inline-flex items-center justify-center border-b px-[10px] py-[5px] text-body-2 transition-colors ${
         isActive
           ? 'border-brand font-bold text-brand'
-          : 'border-gray-100 text-[#333] hover:rounded-[130px] hover:bg-brand-sub hover:text-[#1a1a1a]'
+          : 'border-gray-100 text-gray-800 hover:rounded-[130px] hover:bg-brand-sub hover:text-gray-950'
       }`}
     >
       {label}

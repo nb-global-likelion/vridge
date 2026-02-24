@@ -16,7 +16,7 @@ describe('TabItem', () => {
   it('비활성 상태: 기본 스타일', () => {
     render(<TabItem label="Jobs" isActive={false} href="/jobs" />);
     const link = screen.getByRole('link', { name: 'Jobs' });
-    expect(link).toHaveClass('text-[16px]');
+    expect(link).toHaveClass('text-body-2');
     expect(link).toHaveClass('border-gray-100');
     expect(link).not.toHaveClass('text-brand');
   });
@@ -28,6 +28,6 @@ describe('TabItem', () => {
     expect(link).toHaveClass('border-b');
     expect(link).toHaveClass('border-brand');
     expect(link).toHaveClass('font-bold');
-    expect(link).toHaveClass('text-[16px]');
+    expect(link).toHaveClass('text-body-2');
   });
 });

@@ -7,11 +7,9 @@ describe('Chip', () => {
     it('기본 스타일: 흰 배경 + 회색 테두리', () => {
       render(<Chip label="React" variant="displayed" />);
       const chip = screen.getByText('React');
-      expect(chip.closest('[data-slot="chip"]')).toHaveClass(
-        'border-[#b3b3b3]'
-      );
+      expect(chip.closest('[data-slot="chip"]')).toHaveClass('border-gray-300');
       expect(chip.closest('[data-slot="chip"]')).toHaveClass('bg-white');
-      expect(chip.closest('[data-slot="chip"]')).toHaveClass('text-[#666]');
+      expect(chip.closest('[data-slot="chip"]')).toHaveClass('text-gray-600');
     });
 
     it('close 아이콘 없음', () => {
@@ -46,7 +44,7 @@ describe('Chip', () => {
     it('오렌지 테두리', () => {
       render(<Chip label="React" variant="selected" />);
       const chip = screen.getByText('React').closest('[data-slot="chip"]');
-      expect(chip).toHaveClass('border-[#ff904c]');
+      expect(chip).toHaveClass('border-orange-200');
     });
 
     it('체크 아이콘 표시', () => {
@@ -77,8 +75,8 @@ describe('Chip', () => {
       expect(chip).toHaveClass('border-[0.5px]');
       expect(chip).toHaveClass('px-[8px]');
       expect(chip).toHaveClass('py-[6px]');
-      expect(chip).toHaveClass('text-[14px]');
-      expect(chip).toHaveClass('text-[#666]');
+      expect(chip).toHaveClass('text-caption-1');
+      expect(chip).toHaveClass('text-gray-600');
     });
 
     it('md: 중간 사이즈', () => {
@@ -87,8 +85,8 @@ describe('Chip', () => {
       expect(chip).toHaveClass('border');
       expect(chip).toHaveClass('px-[10px]');
       expect(chip).toHaveClass('py-[8px]');
-      expect(chip).toHaveClass('text-[16px]');
-      expect(chip).toHaveClass('text-[#4c4c4c]');
+      expect(chip).toHaveClass('text-body-2');
+      expect(chip).toHaveClass('text-gray-700');
     });
   });
 });

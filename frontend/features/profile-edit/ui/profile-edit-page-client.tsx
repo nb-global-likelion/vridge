@@ -192,7 +192,7 @@ const EMPTY_URL: Omit<DraftUrl, 'id'> = {
 };
 
 const BASE_SECTION_CLASS = 'w-full rounded-[20px] px-[40px] py-[20px]';
-const BASIC_SECTION_CLASS = `${BASE_SECTION_CLASS} border-2 border-[#ffefe5] bg-white`;
+const BASIC_SECTION_CLASS = `${BASE_SECTION_CLASS} border-2 border-brand-sub bg-white`;
 
 const CORE_EDUCATION_ORDER = [
   'vet_elementary',
@@ -223,9 +223,7 @@ function SectionHeader({
   return (
     <div className="flex flex-col gap-[10px]">
       <div className="flex items-start justify-between">
-        <h2 className="text-[22px] leading-[1.5] font-bold text-[#1a1a1a]">
-          {title}
-        </h2>
+        <h2 className="text-h2 text-gray-950">{title}</h2>
         {onAdd && (
           <button
             type="button"
@@ -233,11 +231,11 @@ function SectionHeader({
             className="flex size-[42px] items-center justify-center"
             aria-label={addAriaLabel ?? title}
           >
-            <span className="text-[30px] leading-[1.5] text-[#1a1a1a]">+</span>
+            <span className="text-title text-gray-950">+</span>
           </button>
         )}
       </div>
-      <div className="h-px w-full bg-[#e6e6e6]" />
+      <div className="h-px w-full bg-gray-100" />
     </div>
   );
 }
@@ -702,13 +700,11 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
     <>
       <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-[40px] px-6 py-10 pb-[140px]">
         <section className={BASIC_SECTION_CLASS}>
-          <h2 className="text-[22px] leading-[1.5] font-bold text-[#1a1a1a]">
-            {t('profile.basicProfile')}
-          </h2>
+          <h2 className="text-h2 text-gray-950">{t('profile.basicProfile')}</h2>
 
           <div className="mt-[25px] flex flex-col gap-6 lg:flex-row lg:items-start">
             <div className="flex flex-col items-center gap-4">
-              <div className="flex h-48 w-48 items-center justify-center rounded-full bg-[#ffefe5]">
+              <div className="flex h-48 w-48 items-center justify-center rounded-full bg-brand-sub">
                 <Icon
                   name="profile"
                   size={96}
@@ -716,7 +712,7 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
                 />
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-sm font-medium text-[#1a1a1a]">
+                <span className="text-sm font-medium text-gray-950">
                   {t('profile.hiringStatus')}
                 </span>
                 <ToggleSwitch
@@ -751,7 +747,7 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
               </div>
 
               <div className="flex items-center gap-3">
-                <span className="text-sm font-medium text-[#1a1a1a]">
+                <span className="text-sm font-medium text-gray-950">
                   {t('form.dateOfBirth')}
                 </span>
                 <DatePicker
@@ -774,7 +770,7 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
               </div>
 
               <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
-                <div className="flex items-center gap-2 rounded-[10px] bg-[#fbfbfb] px-3 py-2">
+                <div className="flex items-center gap-2 rounded-[10px] bg-bg px-3 py-2">
                   <Icon name="mobile" size={20} />
                   <DialcodePicker
                     value={draft.contact.dialCode}
@@ -792,7 +788,7 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
                   />
                 </div>
 
-                <div className="flex items-center gap-2 rounded-[10px] bg-[#fbfbfb] px-3 py-2">
+                <div className="flex items-center gap-2 rounded-[10px] bg-bg px-3 py-2">
                   <Icon name="mail" size={20} />
                   <FormInput
                     className="h-11 bg-transparent"
@@ -805,7 +801,7 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 rounded-[10px] bg-[#fbfbfb] px-3 py-2">
+              <div className="flex items-center gap-2 rounded-[10px] bg-bg px-3 py-2">
                 <Icon name="location" size={20} />
                 <FormInput
                   required
@@ -1197,7 +1193,7 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
                       }))
                     }
                   >
-                    <SelectTrigger className="h-[52px] rounded-[10px] bg-[#fbfbfb]">
+                    <SelectTrigger className="h-[52px] rounded-[10px] bg-bg">
                       <SelectValue placeholder={t('form.field')} />
                     </SelectTrigger>
                     <SelectContent>
@@ -1527,18 +1523,16 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
           <div className="mt-[25px] flex flex-col gap-[25px]">
             <button
               type="button"
-              className="flex h-[52px] w-full items-center justify-center gap-1 rounded-[10px] bg-[#f8f8f8] px-[20px] text-[14px] font-medium text-[#666]"
+              className="flex h-[52px] w-full items-center justify-center gap-1 rounded-[10px] bg-[#f8f8f8] px-[20px] text-caption-1 text-gray-600"
             >
               <Icon name="plus" size={16} />
               {t('profile.upload.file')}
             </button>
             <div className="flex items-center justify-between">
-              <p className="text-[18px] leading-[1.5] font-medium text-[#333]">
+              <p className="text-body-1 text-gray-800">
                 {t('profile.upload.uploadedFile')}
               </p>
-              <p className="text-[16px] leading-[1.5] font-medium text-[#808080]">
-                -
-              </p>
+              <p className="text-body-2 text-gray-500">-</p>
             </div>
           </div>
         </section>

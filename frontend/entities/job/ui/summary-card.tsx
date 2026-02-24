@@ -43,10 +43,10 @@ export function SummaryCard({
     : getEmploymentTypeLabel(employmentType, t);
 
   return (
-    <div className="w-[300px] rounded-[20px] border border-[#b3b3b3] bg-white px-[20px] py-[40px]">
+    <div className="w-[300px] rounded-[20px] border border-gray-300 bg-white px-[20px] py-[40px]">
       <div className="flex flex-col gap-[40px]">
         <div className="flex flex-col gap-[20px]">
-          <div className="flex flex-col gap-[10px] text-[18px] text-[#333]">
+          <div className="flex flex-col gap-[10px] text-body-1 text-gray-800">
             <span className="inline-flex items-center gap-[10px]">
               <Icon name="jobs" size={24} />
               {jobDisplayName}
@@ -96,7 +96,7 @@ export function SummaryCard({
             <button
               type="button"
               aria-label={t('jobs.apply')}
-              className="inline-flex h-[60px] w-[60px] items-center justify-center rounded-full border border-[#ff6000] bg-white text-[#ff6000]"
+              className="inline-flex h-[60px] w-[60px] items-center justify-center rounded-full border border-brand bg-white text-brand"
             >
               <Icon name="chevron-right" size={24} />
             </button>

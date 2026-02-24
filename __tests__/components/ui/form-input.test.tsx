@@ -22,17 +22,17 @@ describe('FormInput', () => {
     expect(textarea).toHaveClass('h-[130px]');
   });
 
-  it('기본 상태: bg-[#fbfbfb] 배경', () => {
+  it('기본 상태: bg-bg 배경', () => {
     renderWithI18n(<FormInput placeholder="Test" />);
     const input = screen.getByPlaceholderText('Test');
-    expect(input).toHaveClass('bg-[#fbfbfb]');
+    expect(input).toHaveClass('bg-bg');
   });
 
   it('filled 상태: bg-white + border', () => {
     renderWithI18n(<FormInput placeholder="Test" filled />);
     const input = screen.getByPlaceholderText('Test');
     expect(input).toHaveClass('bg-white');
-    expect(input).toHaveClass('border-[#b3b3b3]');
+    expect(input).toHaveClass('border-gray-300');
   });
 
   it('모든 사이즈 rounded-[10px]', () => {

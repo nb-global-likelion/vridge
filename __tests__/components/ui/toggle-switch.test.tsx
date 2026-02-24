@@ -5,13 +5,13 @@ describe('ToggleSwitch', () => {
   it('unchecked 상태: 회색 트랙', () => {
     render(<ToggleSwitch checked={false} onChange={() => {}} />);
     const track = screen.getByRole('switch');
-    expect(track).toHaveClass('bg-[#e6e6e6]');
+    expect(track).toHaveClass('bg-gray-100');
   });
 
   it('checked 상태: 초록색 트랙', () => {
     render(<ToggleSwitch checked={true} onChange={() => {}} />);
     const track = screen.getByRole('switch');
-    expect(track).toHaveClass('bg-[#00a600]');
+    expect(track).toHaveClass('bg-success');
   });
 
   it('aria-checked 속성 반영', () => {

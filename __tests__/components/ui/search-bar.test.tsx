@@ -14,7 +14,7 @@ describe('SearchBar', () => {
     );
     const input = screen.getByPlaceholderText('Search');
     expect(input).toHaveClass('rounded-[60px]');
-    expect(input).toHaveClass('border-[#b3b3b3]');
+    expect(input).toHaveClass('border-gray-300');
   });
 
   it('skills variant: bg-[#fbfbfb] 스타일', () => {
@@ -27,9 +27,9 @@ describe('SearchBar', () => {
       />
     );
     const input = screen.getByPlaceholderText('Search skills');
-    expect(input).toHaveClass('bg-[#fbfbfb]');
+    expect(input).toHaveClass('bg-bg');
     expect(input).toHaveClass('rounded-[999px]');
-    expect(input).toHaveClass('text-[14px]');
+    expect(input).toHaveClass('text-caption-1');
   });
 
   it('skills variant: search 아이콘 렌더링', () => {
@@ -81,6 +81,6 @@ describe('SearchBar', () => {
       />
     );
 
-    expect(screen.getByDisplayValue('Frontend')).toHaveClass('text-[#333]');
+    expect(screen.getByDisplayValue('Frontend')).toHaveClass('text-gray-800');
   });
 });

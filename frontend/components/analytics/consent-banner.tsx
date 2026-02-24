@@ -14,24 +14,24 @@ export function ConsentBanner({ onAccept, onReject, privacyPolicyUrl }: Props) {
   const { t } = useI18n();
 
   return (
-    <div className="fixed right-4 bottom-4 left-4 z-50 rounded-xl border border-[#e6e6e6] bg-white p-4 shadow-[0_12px_28px_rgba(0,0,0,0.12)]">
+    <div className="fixed right-4 bottom-4 left-4 z-50 rounded-xl border border-gray-100 bg-white p-4 shadow-[0_12px_28px_rgba(0,0,0,0.12)]">
       <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
         <div className="max-w-[760px] space-y-2">
-          <p className="text-sm font-semibold text-[#1a1a1a]">
+          <p className="text-sm font-semibold text-gray-950">
             {t('analytics.consent.title')}
           </p>
-          <p className="text-sm text-[#4c4c4c]">
+          <p className="text-sm text-gray-700">
             {t('analytics.consent.message')}
           </p>
           {privacyPolicyUrl ? (
             <Link
               href={privacyPolicyUrl}
-              className="text-sm text-[#ff6000] underline underline-offset-2"
+              className="text-sm text-brand underline underline-offset-2"
             >
               {t('analytics.consent.privacyLink')}
             </Link>
           ) : (
-            <p className="text-xs text-[#666]">
+            <p className="text-xs text-gray-600">
               {t('analytics.consent.privacyText')}
             </p>
           )}
