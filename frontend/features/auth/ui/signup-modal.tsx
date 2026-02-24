@@ -191,7 +191,7 @@ export function SignupModal() {
             </div>
           )}
 
-          <div className="flex max-w-[240px] grow-0 flex-col items-center gap-10">
+          <div className="flex w-full max-w-[440px] flex-col items-center gap-10">
             <DialogDescription className="sr-only">
               {t('auth.signup.description')}
             </DialogDescription>

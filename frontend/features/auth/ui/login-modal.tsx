@@ -142,7 +142,7 @@ export function LoginModal() {
             </button>
           </div>
 
-          <div className="flex max-w-[240px] grow-0 flex-col items-center gap-10">
+          <div className="flex w-full max-w-[440px] flex-col items-center gap-10">
             <DialogTitle className="text-h1 text-text-title-2">
               {t('auth.login.title')}
             </DialogTitle>
