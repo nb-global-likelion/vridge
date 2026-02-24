@@ -10,7 +10,7 @@ export default function AnnouncementDetailLoading() {
         <Skeleton className="h-5 w-48" />
       </div>
 
-      <div className="rounded-[20px] bg-[#fbfbfb] px-[20px] pt-[20px] pb-[40px]">
+      <div className="rounded-[20px] bg-bg px-[20px] pt-[20px] pb-[40px]">
         <div className="flex flex-col gap-3">
           <Skeleton className="h-4 w-full" />
           <Skeleton className="h-4 w-[95%]" />

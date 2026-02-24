@@ -44,7 +44,7 @@ export default async function AnnouncementsPage({
   return (
     <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-6 px-6 py-10">
       <div className="flex flex-col gap-[25px]">
-        <h2 className="text-[22px] font-bold text-[#1a1a1a]">
+        <h2 className="text-h2 text-text-title-2">
           {t('announcements.title')}
         </h2>
 
@@ -60,7 +60,7 @@ export default async function AnnouncementsPage({
             return (
               <div
                 key={item.id}
-                className="grid grid-cols-[96px_1fr_192px] items-center gap-[30px] border-b border-black py-5 text-lg font-medium text-[#333]"
+                className="grid grid-cols-[96px_1fr_192px] items-center gap-[30px] border-b border-black py-5 text-lg font-medium text-text-body-1"
               >
                 <span className="text-center">
                   {item.isPinned ? '📍' : rowNumber}

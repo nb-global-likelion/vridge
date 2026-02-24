@@ -44,7 +44,7 @@ describe('DashboardSidebar', () => {
     const inactive = screen.getByRole('link', { name: 'My Jobs' });
 
     expect(active.className).toContain('text-brand');
-    expect(inactive.className).toContain('text-[#666]');
+    expect(inactive.className).toContain('text-text-sub-1');
   });
 
   it('Logout 클릭 시 signOut을 호출한다', () => {

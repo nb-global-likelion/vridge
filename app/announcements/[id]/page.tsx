@@ -52,29 +52,27 @@ export default async function AnnouncementDetailPage({
       <Link
         href="/announcements"
         aria-label={t('announcements.backAria')}
-        className="inline-flex w-fit items-center text-black hover:text-brand"
+        className="inline-flex w-fit items-center text-text-title-1 hover:text-brand"
       >
         <Icon name="chevron-left" size={24} />
       </Link>
 
       <div className="flex flex-col gap-2">
-        <h1 className="text-[30px] leading-[1.5] font-bold text-black">
-          {announcement.title}
-        </h1>
-        <div className="inline-flex items-center gap-[5px] text-[14px] leading-[1.5] font-medium text-[#808080]">
+        <h1 className="text-title text-text-title-1">{announcement.title}</h1>
+        <div className="inline-flex items-center gap-[5px] text-caption-1 text-text-sub-2">
           {announcement.isPinned && <span>({t('announcements.pinned')})</span>}
           <span>{formatDate(announcement.createdAt)}</span>
         </div>
       </div>
 
-      <div className="rounded-[20px] bg-[#fbfbfb] px-[20px] pt-[20px] pb-[40px]">
-        <div className="text-[18px] leading-[1.5] font-medium text-[#4c4c4c] [&_h2]:mb-[40px] [&_h2]:border-b [&_h2]:border-[#d7d7d7] [&_h2]:pb-[10px] [&_h2]:text-[22px] [&_h2]:leading-[1.5] [&_h2]:font-bold [&_h2]:text-[#1a1a1a] [&_h2:not(:first-of-type)]:mt-[80px] [&_li]:mb-[4px] [&_li:last-child]:mb-0 [&_p]:m-0 [&_ul]:m-0 [&_ul]:list-disc [&_ul]:pl-[27px]">
+      <div className="rounded-[20px] bg-bg px-[20px] pt-[20px] pb-[40px]">
+        <div className="text-body-1 text-text-body-2 [&_h2]:mb-[40px] [&_h2]:border-b [&_h2]:border-gray-200 [&_h2]:pb-[10px] [&_h2]:text-h2 [&_h2]:text-text-title-2 [&_h2:not(:first-of-type)]:mt-[80px] [&_li]:mb-[4px] [&_li:last-child]:mb-0 [&_p]:m-0 [&_ul]:m-0 [&_ul]:list-disc [&_ul]:pl-[27px]">
           <ReactMarkdown>{announcement.content}</ReactMarkdown>
         </div>
       </div>
 
       <div className="flex flex-col">
-        <div className="grid grid-cols-[94px_1fr_193px] items-center gap-[30px] border-y border-black py-5 text-[14px] leading-[1.5] font-medium text-[#4c4c4c]">
+        <div className="grid grid-cols-[94px_1fr_193px] items-center gap-[30px] border-y border-black py-5 text-caption-1 text-text-body-2">
           <span className="text-center">{t('announcements.next')}</span>
           {neighbors.next ? (
             <Link
@@ -84,14 +82,16 @@ export default async function AnnouncementDetailPage({
               {neighbors.next.title}
             </Link>
           ) : (
-            <span className="text-[#999]">{t('announcements.noneNext')}</span>
+            <span className="text-text-info">
+              {t('announcements.noneNext')}
+            </span>
           )}
           <span className="text-center">
             {neighbors.next ? formatDate(neighbors.next.createdAt) : '-'}
           </span>
         </div>
 
-        <div className="grid grid-cols-[94px_1fr_193px] items-center gap-[30px] border-b border-black py-5 text-[14px] leading-[1.5] font-medium text-[#4c4c4c]">
+        <div className="grid grid-cols-[94px_1fr_193px] items-center gap-[30px] border-b border-black py-5 text-caption-1 text-text-body-2">
           <span className="text-center">{t('announcements.before')}</span>
           {neighbors.before ? (
             <Link
@@ -101,7 +101,9 @@ export default async function AnnouncementDetailPage({
               {neighbors.before.title}
             </Link>
           ) : (
-            <span className="text-[#999]">{t('announcements.noneBefore')}</span>
+            <span className="text-text-info">
+              {t('announcements.noneBefore')}
+            </span>
           )}
           <span className="text-center">
             {neighbors.before ? formatDate(neighbors.before.createdAt) : '-'}

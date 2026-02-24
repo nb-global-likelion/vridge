@@ -91,14 +91,14 @@ describe('AnnouncementDetailPage', () => {
       level: 1,
     });
     expect(heading).toBeInTheDocument();
-    expect(heading).toHaveClass('text-[30px]', 'leading-[1.5]');
+    expect(heading).toHaveClass('text-title', 'text-text-title-1');
     expect(screen.getByText('(Pinned)')).toBeInTheDocument();
 
     const markdownText = screen.getByText(/## About Us/);
     const markdownWrapper = markdownText.closest('div')?.parentElement;
     expect(markdownWrapper).toHaveClass(
-      'text-[18px]',
-      '[&_h2]:text-[22px]',
+      'text-body-1',
+      '[&_h2]:text-h2',
       '[&_ul]:list-disc',
       '[&_ul]:pl-[27px]',
       '[&_li]:mb-[4px]'
@@ -106,7 +106,7 @@ describe('AnnouncementDetailPage', () => {
 
     const contentCard = markdownWrapper?.parentElement;
     expect(contentCard).toHaveClass(
-      'bg-[#fbfbfb]',
+      'bg-bg',
       'rounded-[20px]',
       'px-[20px]',
       'pt-[20px]',
@@ -124,7 +124,7 @@ describe('AnnouncementDetailPage', () => {
     expect(screen.getByText('Next').parentElement).toHaveClass(
       'grid-cols-[94px_1fr_193px]',
       'gap-[30px]',
-      'text-[#4c4c4c]'
+      'text-text-body-2'
     );
     expect(
       screen.getByRole('link', { name: /back to announcement list/i })

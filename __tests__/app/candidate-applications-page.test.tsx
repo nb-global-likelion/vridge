@@ -163,20 +163,20 @@ describe('MyApplicationsPage', () => {
       name: 'My Jobs',
       level: 1,
     });
-    expect(jobsHeading).toHaveClass('text-[26px]');
+    expect(jobsHeading).toHaveClass('text-h1');
 
     const listHeading = screen.getByRole('heading', {
       name: 'List',
       level: 2,
     });
-    expect(listHeading).toHaveClass('text-[26px]');
+    expect(listHeading).toHaveClass('text-h1');
 
     const appliedCard = screen.getByText('Applied').parentElement;
     const inProgressCard = screen.getByText('In progress').parentElement;
 
     expect(appliedCard).toHaveClass('rounded-[20px]');
-    expect(appliedCard).toHaveClass('bg-[#fbfbfb]');
+    expect(appliedCard).toHaveClass('bg-bg');
     expect(inProgressCard).toHaveClass('rounded-[20px]');
-    expect(inProgressCard).toHaveClass('bg-[#fbfbfb]');
+    expect(inProgressCard).toHaveClass('bg-bg');
   });
 });

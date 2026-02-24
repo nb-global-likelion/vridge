@@ -45,9 +45,7 @@ describe('Button brand variants', () => {
       expect(btn).toHaveClass('h-[34px]');
       expect(btn).toHaveClass('px-[10px]');
       expect(btn).toHaveClass('py-[5px]');
-      expect(btn).toHaveClass(
-        'text-[length:var(--typography-body-3-font-size)]'
-      );
+      expect(btn).toHaveClass('text-body-3');
       expect(btn).toHaveClass('gap-[5px]');
     });
 
@@ -61,9 +59,7 @@ describe('Button brand variants', () => {
       expect(btn).toHaveClass('h-[45px]');
       expect(btn).toHaveClass('px-[20px]');
       expect(btn).toHaveClass('py-[5px]');
-      expect(btn).toHaveClass(
-        'text-[length:var(--typography-body-3-font-size)]'
-      );
+      expect(btn).toHaveClass('text-body-3');
       expect(btn).toHaveClass('gap-[5px]');
     });
 
@@ -77,9 +73,7 @@ describe('Button brand variants', () => {
       expect(btn).toHaveClass('h-[54px]');
       expect(btn).toHaveClass('px-[40px]');
       expect(btn).toHaveClass('py-[15px]');
-      expect(btn).toHaveClass(
-        'text-[length:var(--typography-body-2-font-size)]'
-      );
+      expect(btn).toHaveClass('text-body-2');
       expect(btn).toHaveClass('font-bold');
       expect(btn).toHaveClass('gap-[5px]');
     });

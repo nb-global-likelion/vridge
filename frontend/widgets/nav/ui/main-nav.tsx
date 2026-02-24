@@ -63,7 +63,7 @@ export default function MainNav() {
       <div className="flex items-center gap-[40px]">
         <Link
           href="/jobs"
-          className="flex h-[50px] items-center rounded-[80px] bg-white px-[20px] font-[Oswald] text-[32px] leading-none font-semibold tracking-tight shadow-[0_0_15px_rgba(255,149,84,0.2)]"
+          className="flex h-[50px] items-center rounded-[80px] bg-white px-[20px] font-[Oswald] text-title leading-none font-semibold tracking-tight shadow-[0_0_15px_rgba(255,149,84,0.2)]"
         >
           VRIDGE<span className="text-brand">.</span>
         </Link>
@@ -77,7 +77,9 @@ export default function MainNav() {
                 href={href}
                 className={[
                   'text-h2 transition-colors',
-                  isActive ? 'text-brand' : 'text-gray-950 hover:text-brand',
+                  isActive
+                    ? 'text-brand'
+                    : 'text-text-title-2 hover:text-brand',
                 ].join(' ')}
               >
                 {label}
@@ -105,7 +107,7 @@ export default function MainNav() {
             <button
               type="button"
               onClick={handleOpenLogin}
-              className="text-body-1 text-gray-950 hover:text-brand"
+              className="text-body-1 text-text-title-2 hover:text-brand"
             >
               {t('nav.login')}
             </button>
@@ -113,7 +115,7 @@ export default function MainNav() {
             <button
               type="button"
               onClick={handleOpenSignup}
-              className="text-body-1 text-gray-950 hover:text-brand"
+              className="text-body-1 text-text-title-2 hover:text-brand"
             >
               {t('nav.signup')}
             </button>

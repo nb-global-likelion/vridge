@@ -6,8 +6,8 @@ export default function CandidateApplicationsLoading() {
       <Skeleton className="h-10 w-48" />
 
       <div className="grid grid-cols-1 gap-[10px] md:grid-cols-2">
-        <Skeleton className="h-[166px] rounded-[20px] bg-[#fbfbfb]" />
-        <Skeleton className="h-[166px] rounded-[20px] bg-[#fbfbfb]" />
+        <Skeleton className="h-[166px] rounded-[20px] bg-bg" />
+        <Skeleton className="h-[166px] rounded-[20px] bg-bg" />
       </div>
 
       <div className="flex flex-col gap-[20px] rounded-[20px] bg-white py-[20px]">
@@ -16,7 +16,7 @@ export default function CandidateApplicationsLoading() {
           {Array.from({ length: 3 }).map((_, index) => (
             <div
               key={`candidate-applications-loading-item-${index}`}
-              className="rounded-[20px] border border-[#ffefe5] bg-white px-[40px] py-[20px]"
+              className="rounded-[20px] border border-brand-sub bg-white px-[40px] py-[20px]"
             >
               <div className="flex items-start gap-4">
                 <Skeleton className="h-[40px] w-[40px]" />

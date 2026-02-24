@@ -160,15 +160,16 @@ describe('JobDetailPage', () => {
     const markdownText = screen.getByText(/## About Us/);
     const markdownWrapper = markdownText.closest('div')?.parentElement;
     expect(markdownWrapper).toHaveClass(
-      'text-[18px]',
-      '[&_h2]:text-[22px]',
+      'text-body-1',
+      '[&_h2]:text-h2',
+      '[&_h2]:text-text-title-2',
       '[&_ul]:list-disc',
       '[&_ul]:pl-[27px]',
       '[&_li]:mb-[4px]'
     );
     const markdownCard = markdownWrapper?.parentElement;
     expect(markdownCard).toHaveClass(
-      'bg-[#fbfbfb]',
+      'bg-bg',
       'rounded-[20px]',
       'px-[40px]',
       'pt-[20px]',

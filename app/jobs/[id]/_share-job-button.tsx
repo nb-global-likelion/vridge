@@ -36,7 +36,7 @@ export function ShareJobButton({ title }: Props) {
     <button
       type="button"
       aria-label={t('jobs.share')}
-      className="inline-flex h-[60px] w-[60px] items-center justify-center rounded-full border border-[#f2f2f2] bg-white"
+      className="inline-flex h-[60px] w-[60px] items-center justify-center rounded-full border border-gray-50 bg-white"
       onClick={() => {
         void handleShare();
       }}

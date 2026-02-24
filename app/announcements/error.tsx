@@ -20,10 +20,10 @@ export default function AnnouncementsError({
 
   return (
     <div className="mx-auto flex w-full max-w-[1200px] flex-col items-center gap-3 px-6 py-10 text-center">
-      <h1 className="text-2xl font-semibold text-[#1a1a1a]">
+      <h1 className="text-h2 font-semibold text-text-title-2">
         {t('announcements.error.title')}
       </h1>
-      <p className="text-sm text-[#666]">
+      <p className="text-sm text-text-sub-1">
         {t('announcements.error.description')}
       </p>
       <div className="flex items-center gap-2">

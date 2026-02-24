@@ -20,7 +20,7 @@ export default function JobDetailLoading() {
       </div>
 
       <div className="hidden w-[300px] shrink-0 lg:block">
-        <div className="rounded-[20px] border border-[#b3b3b3] bg-white px-[20px] py-[40px]">
+        <div className="rounded-[20px] border border-gray-300 bg-white px-[20px] py-[40px]">
           <div className="flex flex-col gap-4">
             <Skeleton className="h-4 w-48" />
             <Skeleton className="h-4 w-40" />
