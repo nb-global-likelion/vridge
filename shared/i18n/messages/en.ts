@@ -20,6 +20,8 @@ export const enMessages = {
   'common.actions.clear': 'Clear',
   'common.actions.close': 'Close',
   'common.actions.retry': 'Retry',
+  'common.actions.warnDirty':
+    'Any unsaved changes would be lost. Are you sure you want to quit?',
   'common.status.loading': 'Loading...',
 
   'analytics.consent.title': 'Help us improve your job search experience',

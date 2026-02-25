@@ -18,6 +18,8 @@ export const viMessages: Record<MessageKey, string> = {
   'common.actions.clear': 'Xóa',
   'common.actions.close': 'Đóng',
   'common.actions.retry': 'Thử lại',
+  'common.actions.warnDirty':
+    'Có những thay đổi chưa được lưu. Bạn có chắc chắn muốn rời khỏi trang này không?',
   'common.status.loading': 'Đang tải...',
 
   'analytics.consent.title': 'Giúp chúng tôi cải thiện trải nghiệm tìm việc',

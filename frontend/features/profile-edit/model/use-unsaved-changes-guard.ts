@@ -1,11 +1,10 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-
-const LEAVE_MESSAGE =
-  '저장되지 않은 변경사항이 있습니다. 페이지를 벗어나시겠어요?';
+import { useI18n } from '@/shared/i18n/client';
 
 export function useUnsavedChangesGuard(isDirty: boolean) {
+  const { t } = useI18n();
   const dirtyRef = useRef(isDirty);
 
   useEffect(() => {
@@ -18,13 +17,12 @@ export function useUnsavedChangesGuard(isDirty: boolean) {
     }
 
     function confirmLeave() {
-      return window.confirm(LEAVE_MESSAGE);
+      return window.confirm(t('common.actions.warnDirty'));
     }
 
     function handleBeforeUnload(event: BeforeUnloadEvent) {
       if (!shouldBlock()) return;
       event.preventDefault();
-      event.returnValue = '';
     }
 
     function handleClickCapture(event: MouseEvent) {
@@ -64,5 +62,5 @@ export function useUnsavedChangesGuard(isDirty: boolean) {
       document.removeEventListener('click', handleClickCapture, true);
       window.removeEventListener('popstate', handlePopState);
     };
-  }, []);
+  }, [t]);
 }

@@ -17,6 +17,8 @@ export const koMessages: Record<MessageKey, string> = {
   'common.actions.clear': '비우기',
   'common.actions.close': '닫기',
   'common.actions.retry': '다시 시도',
+  'common.actions.warnDirty':
+    '저장되지 않은 변경사항이 있습니다. 페이지를 벗어나시겠습니까?',
   'common.status.loading': '로딩 중...',
 
   'analytics.consent.title': '더 나은 구직 경험을 위해 동의가 필요해요',
