@@ -152,6 +152,7 @@ export function LanguageForm({
               onChange={(e) => field.handleChange(e.target.value || undefined)}
               onBlur={field.handleBlur}
               filled={Boolean(field.state.value)}
+              theme="bg"
             />
           </div>
         )}
@@ -167,6 +168,7 @@ export function LanguageForm({
               onChange={(e) => field.handleChange(e.target.value || undefined)}
               onBlur={field.handleBlur}
               filled={Boolean(field.state.value)}
+              theme="bg"
             />
           </div>
         )}

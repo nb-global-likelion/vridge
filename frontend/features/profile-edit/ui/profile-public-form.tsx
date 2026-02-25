@@ -87,6 +87,7 @@ export function ProfilePublicForm({ initialData }: Props) {
                 onChange={(e) => field.handleChange(e.target.value)}
                 onBlur={field.handleBlur}
                 filled={field.state.value.length > 0}
+                theme="bg"
               />
               {field.state.meta.isTouched &&
                 field.state.meta.errors.length > 0 && (
@@ -108,6 +109,7 @@ export function ProfilePublicForm({ initialData }: Props) {
                 onChange={(e) => field.handleChange(e.target.value)}
                 onBlur={field.handleBlur}
                 filled={field.state.value.length > 0}
+                theme="bg"
               />
               {field.state.meta.isTouched &&
                 field.state.meta.errors.length > 0 && (
@@ -156,6 +158,7 @@ export function ProfilePublicForm({ initialData }: Props) {
                 onChange={(e) => field.handleChange(e.target.value)}
                 onBlur={field.handleBlur}
                 filled={Boolean(field.state.value)}
+                theme="bg"
               />
             </div>
           )}
@@ -172,6 +175,7 @@ export function ProfilePublicForm({ initialData }: Props) {
               onChange={(e) => field.handleChange(e.target.value)}
               onBlur={field.handleBlur}
               filled={Boolean(field.state.value)}
+              theme="bg"
             />
           </div>
         )}
@@ -188,6 +192,7 @@ export function ProfilePublicForm({ initialData }: Props) {
               onChange={(e) => field.handleChange(e.target.value)}
               onBlur={field.handleBlur}
               filled={Boolean(field.state.value)}
+              theme="bg"
             />
           </div>
         )}
