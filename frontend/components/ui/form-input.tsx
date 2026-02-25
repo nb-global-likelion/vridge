@@ -6,12 +6,14 @@ import { useI18n } from '@/shared/i18n/client';
 
 type FormInputSize = 'sm' | 'md' | 'lg';
 type FormInputVariant = 'default' | 'file';
+type FormThemeVariant = 'white' | 'bg';
 
 type FormInputProps = {
   size?: FormInputSize;
   filled?: boolean;
   required?: boolean;
   variant?: FormInputVariant;
+  theme?: FormThemeVariant;
 } & Omit<ComponentPropsWithoutRef<'input'>, 'size'> &
   Omit<ComponentPropsWithoutRef<'textarea'>, 'size'>;
 
@@ -33,6 +35,7 @@ export const FormInput = forwardRef<
     filled = false,
     required = false,
     variant = 'default',
+    theme = 'white',
     className,
     ...props
   },
@@ -56,9 +59,10 @@ export const FormInput = forwardRef<
     );
   }
 
-  const stateClass = filled ? 'bg-white border border-gray-300' : 'bg-bg';
+  const stateClass = filled ? 'border border-gray-300' : '';
+  const themeClass = `bg-${theme}`;
 
-  const combinedClass = `${baseClass} ${SIZE_CLASS[size]} ${stateClass} ${className ?? ''}`;
+  const combinedClass = `${baseClass} ${SIZE_CLASS[size]} ${stateClass} ${themeClass} ${className ?? ''}`;
 
   return (
     <span className="relative inline-flex w-full items-center">
