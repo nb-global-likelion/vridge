@@ -192,7 +192,7 @@ const EMPTY_URL: Omit<DraftUrl, 'id'> = {
 };
 
 const BASE_SECTION_CLASS = 'w-full rounded-[20px] px-[40px] py-[20px]';
-const BASIC_SECTION_CLASS = `${BASE_SECTION_CLASS} border-2 border-brand-sub bg-white`;
+const BASIC_SECTION_CLASS = `${BASE_SECTION_CLASS} bg-white`;
 
 const CORE_EDUCATION_ORDER = [
   'vet_elementary',
@@ -736,6 +736,7 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
                     updateDraftPublic('firstName', event.target.value)
                   }
                   filled={draft.public.firstName.length > 0}
+                  theme="bg"
                 />
                 <FormInput
                   required
@@ -745,6 +746,7 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
                     updateDraftPublic('lastName', event.target.value)
                   }
                   filled={draft.public.lastName.length > 0}
+                  theme="bg"
                 />
               </div>
 
@@ -779,7 +781,7 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
                     onChange={(code) => updateDraftContact('dialCode', code)}
                   />
                   <FormInput
-                    className="h-11 bg-transparent"
+                    className="h-11"
                     required
                     placeholder={t('form.phoneNumber')}
                     value={draft.contact.phoneNumber}
@@ -787,18 +789,20 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
                       updateDraftContact('phoneNumber', event.target.value)
                     }
                     filled={draft.contact.phoneNumber.length > 0}
+                    theme="bg"
                   />
                 </div>
 
                 <div className="flex items-center gap-2 rounded-[10px] bg-bg px-3 py-2">
                   <Icon name="mail" size={20} />
                   <FormInput
-                    className="h-11 bg-transparent"
+                    className="h-11"
                     placeholder={t('form.email')}
                     value={draft.contact.email}
                     filled
                     disabled
                     readOnly
+                    theme="bg"
                   />
                 </div>
               </div>
@@ -807,13 +811,14 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
                 <Icon name="location" size={20} />
                 <FormInput
                   required
-                  className="h-11 bg-transparent"
+                  className="h-11"
                   placeholder={t('form.location')}
                   value={draft.public.location}
                   onChange={(event) =>
                     updateDraftPublic('location', event.target.value)
                   }
                   filled={draft.public.location.length > 0}
+                  theme="bg"
                 />
               </div>
 
@@ -826,6 +831,7 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
                   updateDraftPublic('headline', event.target.value)
                 }
                 filled={draft.public.headline.length > 0}
+                theme="bg"
               />
 
               <FormInput
@@ -836,6 +842,7 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
                   updateDraftPublic('aboutMe', event.target.value)
                 }
                 filled={draft.public.aboutMe.length > 0}
+                theme="bg"
               />
             </div>
           </div>
@@ -875,7 +882,7 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
                       }))
                     }
                   >
-                    {t('common.actions.delete')}
+                    <Icon name="close" size={24} />
                   </Button>
                 </div>
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -894,6 +901,7 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
                       }))
                     }
                     filled={education.institutionName.length > 0}
+                    theme="bg"
                   />
                   <FormDropdown
                     value={education.educationType}
@@ -930,6 +938,7 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
                       }))
                     }
                     filled={Boolean(education.field)}
+                    theme="bg"
                   />
                 </div>
 
@@ -1113,7 +1122,7 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
                       }))
                     }
                   >
-                    {t('common.actions.delete')}
+                    <Icon name="close" size={24} />
                   </Button>
                 </div>
 
@@ -1132,6 +1141,7 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
                       }))
                     }
                     filled={career.companyName.length > 0}
+                    theme="bg"
                   />
                   <div className="flex items-center gap-2">
                     <DatePicker
@@ -1180,6 +1190,7 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
                       }))
                     }
                     filled={career.positionTitle.length > 0}
+                    theme="bg"
                   />
 
                   <Select
@@ -1283,6 +1294,7 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
                       }))
                     }
                     filled={Boolean(career.description)}
+                    theme="bg"
                   />
                 </div>
               </div>
@@ -1323,7 +1335,7 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
                       }))
                     }
                   >
-                    {t('common.actions.delete')}
+                    <Icon name="close" size={24} />
                   </Button>
                 </div>
 
@@ -1342,6 +1354,7 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
                       }))
                     }
                     filled={certification.name.length > 0}
+                    theme="bg"
                   />
                   <DatePicker
                     type="month"
@@ -1378,6 +1391,7 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
                       }))
                     }
                     filled={Boolean(certification.institutionName)}
+                    theme="bg"
                   />
                 </div>
 
@@ -1400,6 +1414,7 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
                       }))
                     }
                     filled={Boolean(certification.description)}
+                    theme="bg"
                   />
                 </div>
               </div>
@@ -1440,7 +1455,7 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
                       }))
                     }
                   >
-                    {t('common.actions.delete')}
+                    <Icon name="close" size={24} />
                   </Button>
                 </div>
 
@@ -1459,6 +1474,7 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
                       }))
                     }
                     filled={language.language.length > 0}
+                    theme="bg"
                   />
                   <FormDropdown
                     value={language.proficiency}
@@ -1495,6 +1511,7 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
                       }))
                     }
                     filled={Boolean(language.testName)}
+                    theme="bg"
                   />
                   <FormInput
                     placeholder={t('form.scoreOptional')}
@@ -1513,6 +1530,7 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
                       }))
                     }
                     filled={Boolean(language.testScore)}
+                    theme="bg"
                   />
                 </div>
               </div>
@@ -1567,7 +1585,7 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
                       }))
                     }
                   >
-                    {t('common.actions.delete')}
+                    <Icon name="close" size={24} />
                   </Button>
                 </div>
 
@@ -1586,6 +1604,7 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
                       }))
                     }
                     filled={url.label.length > 0}
+                    theme="bg"
                   />
                   <FormInput
                     placeholder={t('form.url')}
@@ -1601,6 +1620,7 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
                       }))
                     }
                     filled={url.url.length > 0}
+                    theme="bg"
                   />
                 </div>
               </div>
