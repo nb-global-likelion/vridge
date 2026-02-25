@@ -191,8 +191,10 @@ const EMPTY_URL: Omit<DraftUrl, 'id'> = {
   url: '',
 };
 
-const BASE_SECTION_CLASS = 'w-full rounded-[20px] px-[40px] py-[20px]';
-const BASIC_SECTION_CLASS = `${BASE_SECTION_CLASS} bg-white`;
+const BASE_SECTION_CLASS = 'w-full rounded-[20px] px-[20px]';
+const BASIC_SECTION_CLASS =
+  'w-full rounded-[20px] bg-white px-[40px] py-[20px]';
+const TOP_PADDED_SECTION_CLASS = `${BASE_SECTION_CLASS} pt-[20px]`;
 
 const CORE_EDUCATION_ORDER = [
   'vet_elementary',
@@ -221,17 +223,19 @@ function SectionHeader({
   addAriaLabel?: string;
 }) {
   return (
-    <div className="flex flex-col gap-[10px]">
-      <div className="flex items-start justify-between">
+    <div className="flex h-[43px] flex-col justify-center gap-[10px]">
+      <div className="flex items-center justify-between">
         <h2 className="text-h2 text-text-title-2">{title}</h2>
         {onAdd && (
           <button
             type="button"
             onClick={onAdd}
-            className="flex size-[42px] items-center justify-center"
+            className="flex size-[32px] items-center justify-center"
             aria-label={addAriaLabel ?? title}
           >
-            <span className="text-title text-text-title-2">+</span>
+            <span className="text-[30px] leading-[1.5] text-text-title-2">
+              +
+            </span>
           </button>
         )}
       </div>
@@ -698,23 +702,26 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
 
   return (
     <>
-      <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-[40px] px-6 py-10 pb-[140px]">
+      <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-[40px] px-4 pt-[80px] pb-[120px] md:px-6 lg:px-0">
         <section className={BASIC_SECTION_CLASS}>
           <h2 className="text-h2 text-text-title-2">
             {t('profile.basicProfile')}
           </h2>
 
-          <div className="mt-[25px] flex flex-col gap-6 lg:flex-row lg:items-start">
-            <div className="flex flex-col items-center gap-4">
-              <div className="flex h-48 w-48 items-center justify-center rounded-full bg-brand-sub">
+          <div className="mt-[25px] flex flex-col gap-[25px] lg:flex-row lg:items-center">
+            <div className="flex shrink-0 items-center justify-center">
+              <div className="flex h-[200px] w-[200px] items-center justify-center rounded-full bg-brand-sub">
                 <Icon
                   name="profile"
                   size={96}
                   alt={t('profile.image.placeholderAlt')}
                 />
               </div>
-              <div className="flex items-center gap-2">
-                <span className="text-sm font-medium text-text-title-2">
+            </div>
+
+            <div className="flex flex-1 flex-col gap-[20px]">
+              <div className="flex items-center justify-start gap-[7px]">
+                <span className="text-caption-1 text-text-title-2">
                   {t('profile.hiringStatus')}
                 </span>
                 <ToggleSwitch
@@ -724,10 +731,8 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
                   }
                 />
               </div>
-            </div>
 
-            <div className="flex flex-1 flex-col gap-5">
-              <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+              <div className="grid grid-cols-1 gap-[20px] md:grid-cols-2">
                 <FormInput
                   required
                   placeholder={t('form.firstName')}
@@ -750,8 +755,8 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
                 />
               </div>
 
-              <div className="flex items-center gap-3">
-                <span className="text-sm font-medium text-text-title-2">
+              <div className="flex items-center gap-[10px]">
+                <span className="text-caption-1 text-text-title-2">
                   {t('form.dateOfBirth')}
                 </span>
                 <DatePicker
@@ -773,8 +778,8 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
                 )}
               </div>
 
-              <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
-                <div className="flex items-center gap-2 rounded-[10px] bg-bg px-3 py-2">
+              <div className="grid grid-cols-1 gap-[20px] md:grid-cols-2">
+                <div className="flex items-center gap-[10px]">
                   <Icon name="mobile" size={20} />
                   <DialcodePicker
                     value={draft.contact.dialCode}
@@ -793,7 +798,7 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
                   />
                 </div>
 
-                <div className="flex items-center gap-2 rounded-[10px] bg-bg px-3 py-2">
+                <div className="flex items-center gap-[10px]">
                   <Icon name="mail" size={20} />
                   <FormInput
                     className="h-11"
@@ -807,7 +812,7 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 rounded-[10px] bg-bg px-3 py-2">
+              <div className="flex items-center gap-[10px]">
                 <Icon name="location" size={20} />
                 <FormInput
                   required
@@ -865,44 +870,48 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
             }
           />
 
-          <div className="mt-[25px] flex flex-col gap-6">
+          <div className="mt-[25px] flex flex-col gap-[25px]">
             {draft.educations.map((education) => (
-              <div key={education.id} className="rounded-[10px] border p-4">
-                <div className="mb-3 flex justify-end">
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    onClick={() =>
-                      setDraft((prev) => ({
-                        ...prev,
-                        educations: prev.educations.filter(
-                          (item) => item.id !== education.id
-                        ),
-                      }))
-                    }
-                  >
-                    <Icon name="close" size={24} />
-                  </Button>
-                </div>
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                  <FormInput
-                    required
-                    placeholder={t('form.schoolName')}
-                    value={education.institutionName}
-                    onChange={(event) =>
-                      setDraft((prev) => ({
-                        ...prev,
-                        educations: prev.educations.map((item) =>
-                          item.id === education.id
-                            ? { ...item, institutionName: event.target.value }
-                            : item
-                        ),
-                      }))
-                    }
-                    filled={education.institutionName.length > 0}
-                    theme="bg"
-                  />
+              <div
+                key={education.id}
+                className="relative rounded-[20px] border-2 border-brand-sub p-[20px]"
+              >
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="absolute top-[18px] right-[20px]"
+                  onClick={() =>
+                    setDraft((prev) => ({
+                      ...prev,
+                      educations: prev.educations.filter(
+                        (item) => item.id !== education.id
+                      ),
+                    }))
+                  }
+                >
+                  <Icon name="close" size={24} />
+                </Button>
+
+                <FormInput
+                  required
+                  placeholder={t('form.schoolName')}
+                  value={education.institutionName}
+                  onChange={(event) =>
+                    setDraft((prev) => ({
+                      ...prev,
+                      educations: prev.educations.map((item) =>
+                        item.id === education.id
+                          ? { ...item, institutionName: event.target.value }
+                          : item
+                      ),
+                    }))
+                  }
+                  filled={education.institutionName.length > 0}
+                  theme="bg"
+                />
+
+                <div className="mt-[25px] grid grid-cols-1 gap-[25px] lg:grid-cols-[400px_1fr]">
                   <FormDropdown
                     value={education.educationType}
                     placeholder={t('form.levelOfEducation')}
@@ -918,9 +927,6 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
                       }))
                     }
                   />
-                </div>
-
-                <div className="mt-4">
                   <FormInput
                     placeholder={t('form.fieldOfStudyOptional')}
                     value={education.field ?? ''}
@@ -942,76 +948,79 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
                   />
                 </div>
 
-                <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-[1fr_1fr_1fr]">
-                  <div className="flex items-center gap-2">
-                    <DatePicker
-                      type="month"
-                      value={fromDateString(education.startDate)}
-                      onChange={(date) =>
-                        setDraft((prev) => ({
-                          ...prev,
-                          educations: prev.educations.map((item) =>
-                            item.id === education.id
-                              ? { ...item, startDate: toDateString(date) }
-                              : item
-                          ),
-                        }))
-                      }
-                    />
-                    {education.startDate && (
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        onClick={() =>
+                <div className="mt-[25px] grid grid-cols-1 gap-[25px] xl:grid-cols-[430px_1fr]">
+                  <div className="flex items-center gap-[10px]">
+                    <div className="flex items-center gap-2">
+                      <DatePicker
+                        type="month"
+                        value={fromDateString(education.startDate)}
+                        onChange={(date) =>
                           setDraft((prev) => ({
                             ...prev,
                             educations: prev.educations.map((item) =>
                               item.id === education.id
-                                ? { ...item, startDate: '' }
+                                ? { ...item, startDate: toDateString(date) }
                                 : item
                             ),
                           }))
                         }
-                      >
-                        {t('common.actions.clear')}
-                      </Button>
-                    )}
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <DatePicker
-                      type="month"
-                      value={fromDateString(education.endDate)}
-                      onChange={(date) =>
-                        setDraft((prev) => ({
-                          ...prev,
-                          educations: prev.educations.map((item) =>
-                            item.id === education.id
-                              ? { ...item, endDate: toDateString(date) }
-                              : item
-                          ),
-                        }))
-                      }
-                    />
-                    {education.endDate && (
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        onClick={() =>
+                      />
+                      {education.startDate && (
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() =>
+                            setDraft((prev) => ({
+                              ...prev,
+                              educations: prev.educations.map((item) =>
+                                item.id === education.id
+                                  ? { ...item, startDate: '' }
+                                  : item
+                              ),
+                            }))
+                          }
+                        >
+                          {t('common.actions.clear')}
+                        </Button>
+                      )}
+                    </div>
+                    <span className="text-text-sub-2">-</span>
+                    <div className="flex items-center gap-2">
+                      <DatePicker
+                        type="month"
+                        value={fromDateString(education.endDate)}
+                        onChange={(date) =>
                           setDraft((prev) => ({
                             ...prev,
                             educations: prev.educations.map((item) =>
                               item.id === education.id
-                                ? { ...item, endDate: undefined }
+                                ? { ...item, endDate: toDateString(date) }
                                 : item
                             ),
                           }))
                         }
-                      >
-                        {t('common.actions.clear')}
-                      </Button>
-                    )}
+                      />
+                      {education.endDate && (
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() =>
+                            setDraft((prev) => ({
+                              ...prev,
+                              educations: prev.educations.map((item) =>
+                                item.id === education.id
+                                  ? { ...item, endDate: undefined }
+                                  : item
+                              ),
+                            }))
+                          }
+                        >
+                          {t('common.actions.clear')}
+                        </Button>
+                      )}
+                    </div>
                   </div>
                   <FormDropdown
                     value={education.graduationStatus}
@@ -1089,7 +1098,7 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
           </div>
         </section>
 
-        <section className={BASE_SECTION_CLASS}>
+        <section className={TOP_PADDED_SECTION_CLASS}>
           <SectionHeader
             title={t('profile.experience')}
             addAriaLabel={t('profile.actions.addAria', {
@@ -1105,28 +1114,27 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
               }))
             }
           />
-          <div className="mt-[25px] flex flex-col gap-6">
+          <div className="mt-[25px] flex flex-col gap-[25px]">
             {draft.careers.map((career) => (
-              <div key={career.id} className="rounded-[10px] border p-4">
-                <div className="mb-3 flex justify-end">
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    onClick={() =>
-                      setDraft((prev) => ({
-                        ...prev,
-                        careers: prev.careers.filter(
-                          (item) => item.id !== career.id
-                        ),
-                      }))
-                    }
-                  >
-                    <Icon name="close" size={24} />
-                  </Button>
-                </div>
+              <div key={career.id} className="relative rounded-[20px] p-[20px]">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="absolute top-[18px] right-[20px]"
+                  onClick={() =>
+                    setDraft((prev) => ({
+                      ...prev,
+                      careers: prev.careers.filter(
+                        (item) => item.id !== career.id
+                      ),
+                    }))
+                  }
+                >
+                  <Icon name="close" size={24} />
+                </Button>
 
-                <div className="grid grid-cols-1 gap-4 lg:grid-cols-[1fr_auto]">
+                <div className="grid grid-cols-1 gap-[25px]">
                   <FormInput
                     placeholder={t('form.companyName')}
                     value={career.companyName}
@@ -1143,7 +1151,7 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
                     filled={career.companyName.length > 0}
                     theme="bg"
                   />
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-[10px]">
                     <DatePicker
                       type="month"
                       value={fromDateString(career.startDate)}
@@ -1158,6 +1166,7 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
                         }))
                       }
                     />
+                    <span className="text-text-sub-2">-</span>
                     <DatePicker
                       type="month"
                       value={fromDateString(career.endDate)}
@@ -1172,10 +1181,27 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
                         }))
                       }
                     />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() =>
+                        setDraft((prev) => ({
+                          ...prev,
+                          careers: prev.careers.map((item) =>
+                            item.id === career.id
+                              ? { ...item, endDate: undefined }
+                              : item
+                          ),
+                        }))
+                      }
+                    >
+                      {t('profile.actions.clearEndDate')}
+                    </Button>
                   </div>
                 </div>
 
-                <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-3">
+                <div className="mt-[25px] grid grid-cols-1 gap-[20px] lg:grid-cols-3">
                   <FormInput
                     placeholder={t('form.jobRole')}
                     value={career.positionTitle}
@@ -1240,7 +1266,7 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
                   />
                 </div>
 
-                <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
+                <div className="mt-[25px] grid grid-cols-1 gap-[20px] lg:grid-cols-2">
                   <FormDropdown
                     value={career.employmentType}
                     placeholder={t('form.employmentType')}
@@ -1256,26 +1282,9 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
                       }))
                     }
                   />
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    onClick={() =>
-                      setDraft((prev) => ({
-                        ...prev,
-                        careers: prev.careers.map((item) =>
-                          item.id === career.id
-                            ? { ...item, endDate: undefined }
-                            : item
-                        ),
-                      }))
-                    }
-                  >
-                    {t('profile.actions.clearEndDate')}
-                  </Button>
                 </div>
 
-                <div className="mt-4">
+                <div className="mt-[25px]">
                   <FormInput
                     size="lg"
                     placeholder={t('form.descriptionOptional')}
@@ -1318,28 +1327,30 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
               }))
             }
           />
-          <div className="mt-[25px] flex flex-col gap-6">
+          <div className="mt-[25px] flex flex-col gap-[25px]">
             {draft.certifications.map((certification) => (
-              <div key={certification.id} className="rounded-[10px] border p-4">
-                <div className="mb-3 flex justify-end">
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    onClick={() =>
-                      setDraft((prev) => ({
-                        ...prev,
-                        certifications: prev.certifications.filter(
-                          (item) => item.id !== certification.id
-                        ),
-                      }))
-                    }
-                  >
-                    <Icon name="close" size={24} />
-                  </Button>
-                </div>
+              <div
+                key={certification.id}
+                className="relative rounded-[20px] p-[20px]"
+              >
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="absolute top-[18px] right-[20px]"
+                  onClick={() =>
+                    setDraft((prev) => ({
+                      ...prev,
+                      certifications: prev.certifications.filter(
+                        (item) => item.id !== certification.id
+                      ),
+                    }))
+                  }
+                >
+                  <Icon name="close" size={24} />
+                </Button>
 
-                <div className="grid grid-cols-1 gap-4 lg:grid-cols-[1fr_auto]">
+                <div className="grid grid-cols-1 gap-[20px] lg:grid-cols-[1fr_auto]">
                   <FormInput
                     placeholder={t('form.certification')}
                     value={certification.name}
@@ -1372,7 +1383,7 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
                   />
                 </div>
 
-                <div className="mt-4">
+                <div className="mt-[25px]">
                   <FormInput
                     placeholder={t('form.institutionOptional')}
                     value={certification.institutionName ?? ''}
@@ -1395,7 +1406,7 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
                   />
                 </div>
 
-                <div className="mt-4">
+                <div className="mt-[25px]">
                   <FormInput
                     size="lg"
                     placeholder={t('form.descriptionOptional')}
@@ -1438,28 +1449,30 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
               }))
             }
           />
-          <div className="mt-[25px] flex flex-col gap-6">
+          <div className="mt-[25px] flex flex-col gap-[25px]">
             {draft.languages.map((language) => (
-              <div key={language.id} className="rounded-[10px] border p-4">
-                <div className="mb-3 flex justify-end">
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    onClick={() =>
-                      setDraft((prev) => ({
-                        ...prev,
-                        languages: prev.languages.filter(
-                          (item) => item.id !== language.id
-                        ),
-                      }))
-                    }
-                  >
-                    <Icon name="close" size={24} />
-                  </Button>
-                </div>
+              <div
+                key={language.id}
+                className="relative rounded-[20px] p-[20px]"
+              >
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="absolute top-[18px] right-[20px]"
+                  onClick={() =>
+                    setDraft((prev) => ({
+                      ...prev,
+                      languages: prev.languages.filter(
+                        (item) => item.id !== language.id
+                      ),
+                    }))
+                  }
+                >
+                  <Icon name="close" size={24} />
+                </Button>
 
-                <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+                <div className="grid grid-cols-1 gap-[20px] lg:grid-cols-[1fr_300px]">
                   <FormInput
                     placeholder={t('form.language')}
                     value={language.language}
@@ -1493,7 +1506,7 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
                   />
                 </div>
 
-                <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
+                <div className="mt-[25px] grid grid-cols-1 gap-[20px] lg:grid-cols-2">
                   <FormInput
                     placeholder={t('form.testNameOptional')}
                     value={language.testName ?? ''}
@@ -1548,11 +1561,18 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
               <Icon name="plus" size={16} />
               {t('profile.upload.file')}
             </button>
-            <div className="flex items-center justify-between">
-              <p className="text-body-1 text-text-body-1">
-                {t('profile.upload.uploadedFile')}
-              </p>
-              <p className="text-body-2 text-text-sub-2">-</p>
+            <div className="flex items-center justify-between rounded-[20px] p-[20px]">
+              <div className="flex items-center gap-[10px]">
+                <Icon name="file" size={24} />
+                <p className="text-body-1 text-text-body-1">
+                  {t('profile.upload.uploadedFile')}
+                </p>
+                <div className="flex items-center gap-[10px]">
+                  <span className="h-[14px] w-px bg-text-sub-2" />
+                  <p className="text-body-3 text-text-sub-2">20MB</p>
+                </div>
+              </div>
+              <Icon name="close" size={24} />
             </div>
           </div>
         </section>
@@ -1570,26 +1590,25 @@ export function ProfileEditPageClient(props: ProfileEditPageClientProps) {
               }))
             }
           />
-          <div className="mt-[25px] flex flex-col gap-6">
+          <div className="mt-[25px] flex flex-col gap-[25px]">
             {draft.urls.map((url) => (
-              <div key={url.id} className="rounded-[10px] border p-4">
-                <div className="mb-3 flex justify-end">
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    onClick={() =>
-                      setDraft((prev) => ({
-                        ...prev,
-                        urls: prev.urls.filter((item) => item.id !== url.id),
-                      }))
-                    }
-                  >
-                    <Icon name="close" size={24} />
-                  </Button>
-                </div>
+              <div key={url.id} className="relative rounded-[20px] p-[20px]">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="absolute top-[18px] right-[20px]"
+                  onClick={() =>
+                    setDraft((prev) => ({
+                      ...prev,
+                      urls: prev.urls.filter((item) => item.id !== url.id),
+                    }))
+                  }
+                >
+                  <Icon name="close" size={24} />
+                </Button>
 
-                <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+                <div className="grid grid-cols-1 gap-[20px] lg:grid-cols-2">
                   <FormInput
                     placeholder={t('form.label')}
                     value={url.label}
