@@ -3,23 +3,23 @@ import { FormInput } from '@/frontend/components/ui/form-input';
 import { renderWithI18n } from '@/__tests__/test-utils/render-with-i18n';
 
 describe('FormInput', () => {
-  it('sm 사이즈: h-[41px]', () => {
+  it('sm 사이즈: h-input-h-sm', () => {
     renderWithI18n(<FormInput size="sm" placeholder="Name" />);
     const input = screen.getByPlaceholderText('Name');
-    expect(input).toHaveClass('h-[41px]');
+    expect(input).toHaveClass('h-input-h-sm');
   });
 
-  it('md 사이즈 (기본): h-[52px]', () => {
+  it('md 사이즈 (기본): h-input-h-md', () => {
     renderWithI18n(<FormInput placeholder="Email" />);
     const input = screen.getByPlaceholderText('Email');
-    expect(input).toHaveClass('h-[52px]');
+    expect(input).toHaveClass('h-input-h-md');
   });
 
   it('lg 사이즈: textarea 렌더링', () => {
     renderWithI18n(<FormInput size="lg" placeholder="Bio" />);
     const textarea = screen.getByPlaceholderText('Bio');
     expect(textarea.tagName).toBe('TEXTAREA');
-    expect(textarea).toHaveClass('h-[130px]');
+    expect(textarea).toHaveClass('h-input-h-lg');
   });
 
   it('기본 상태: white 배경', () => {

@@ -32,7 +32,7 @@ export function DialcodePicker({ value, onChange }: DialcodePickerProps) {
     <div ref={ref} className="relative">
       <button
         type="button"
-        className="flex h-[44px] items-center gap-[5px] rounded-[10px] bg-bg px-[15px] py-[10px]"
+        className="flex h-input-h-sm w-[92px] items-center justify-start gap-[5px] rounded-[10px] bg-bg px-3.5 py-2.5"
         onClick={() => setOpen(!open)}
         aria-expanded={open}
       >
@@ -45,7 +45,7 @@ export function DialcodePicker({ value, onChange }: DialcodePickerProps) {
         <Icon name={open ? 'chevron-up' : 'chevron-down'} size={18} />
       </button>
       {open && (
-        <div className="absolute top-[48px] left-0 z-10 w-[106px] rounded-[10px] bg-white px-[20px] py-[10px] shadow-[0_0_10px_rgba(0,0,0,0.05)]">
+        <div className="absolute top-[48px] left-0 z-10 w-[92px] rounded-[10px] bg-bg px-[20px] py-[10px] shadow-[0_0_10px_rgba(0,0,0,0.05)]">
           {DIAL_CODES.map((option) => (
             <button
               key={option.code}

@@ -13,7 +13,6 @@ type Props = {
   phone?: string | null;
   email?: string | null;
   location?: string | null;
-  headline?: string | null;
   aboutMe?: string | null;
   isOpenToWork?: boolean;
   profileImageUrl?: string | null;
@@ -44,7 +43,6 @@ export function ProfileCard({
   phone,
   email,
   location,
-  headline,
   aboutMe,
   isOpenToWork = false,
   profileImageUrl,
@@ -52,7 +50,7 @@ export function ProfileCard({
   statusAccessory,
 }: Props) {
   const { locale, t } = useI18n();
-  const summary = aboutMe?.trim() || headline?.trim();
+  const summary = aboutMe?.trim();
   const statusLabel = isOpenToWork
     ? t('profile.openToWork')
     : t('profile.notOpenToWork');

@@ -17,7 +17,6 @@ type ProfilePublic = {
   lastName: string;
   dateOfBirth: Date | null;
   location: string | null;
-  headline: string | null;
   aboutMe: string | null;
   isOpenToWork: boolean;
   profileImageUrl: string | null;
@@ -184,9 +183,7 @@ function BasicProfileCard({
 }) {
   const firstName = profilePublic?.firstName ?? '';
   const lastName = profilePublic?.lastName ?? '';
-  const summary =
-    normalizeText(profilePublic?.aboutMe) ??
-    normalizeText(profilePublic?.headline);
+  const summary = normalizeText(profilePublic?.aboutMe);
 
   return (
     <section className={`${CARD_CLASS} flex flex-col gap-[25px]`}>

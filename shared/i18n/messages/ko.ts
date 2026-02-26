@@ -194,7 +194,6 @@ export const koMessages: Record<MessageKey, string> = {
   'form.phoneNumber': '연락처',
   'form.email': '이메일',
   'form.location': '지역 (국가/도시)',
-  'form.headline': '헤드라인',
   'form.aboutMe': '소개',
   'form.schoolName': '학교/기관명',
   'form.levelOfEducation': '학력 유형',

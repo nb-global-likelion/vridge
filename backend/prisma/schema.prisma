@@ -230,7 +230,6 @@ model ProfilesPublic {
   publicSlug String  @unique @map("public_slug") @db.Text @default(dbgenerated("generate_profile_slug()"))
   dateOfBirth     DateTime? @map("date_of_birth") @db.Date
   location        String?
-  headline        String?
   isOpenToWork    Boolean   @default(false) @map("is_open_to_work")
   profileImageUrl String?   @map("profile_image_url")
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz

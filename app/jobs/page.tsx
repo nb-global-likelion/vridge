@@ -108,6 +108,7 @@ export default async function JobsPage({
               href={`/jobs/${jd.id}`}
               cta={
                 <JobsListApplyCta
+                  key={jd.id}
                   jdId={jd.id}
                   status={jd.status}
                   isAuthenticated={isAuthenticated}

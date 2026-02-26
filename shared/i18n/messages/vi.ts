@@ -202,7 +202,6 @@ export const viMessages: Record<MessageKey, string> = {
   'form.phoneNumber': 'Số điện thoại',
   'form.email': 'Email',
   'form.location': 'Địa điểm (Quốc gia/Khu vực Thành phố,Tỉnh)',
-  'form.headline': 'Tiêu đề',
   'form.aboutMe': 'Giới thiệu',
   'form.schoolName': 'Tên trường/tổ chức',
   'form.levelOfEducation': 'Trình độ học vấn',

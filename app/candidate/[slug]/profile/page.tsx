@@ -50,7 +50,6 @@ export default async function CandidatePublicProfilePage({
             dateOfBirth={profilePublic?.dateOfBirth ?? undefined}
             email={authUser?.email}
             location={profilePublic?.location}
-            headline={profilePublic?.headline}
             aboutMe={profilePublic?.aboutMe}
             isOpenToWork={profilePublic?.isOpenToWork ?? false}
             profileImageUrl={profilePublic?.profileImageUrl}

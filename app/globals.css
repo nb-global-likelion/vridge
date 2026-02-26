@@ -3,6 +3,7 @@
 @import 'shadcn/tailwind.css';
 
 @theme {
+  /* Color Themes */
   --color-*: initial;
 
   --color-orange-50: #ffdfcc;
@@ -74,7 +75,7 @@
   --color-error: var(--color-red-500);
   --color-success: var(--color-green-600);
   --color-info: var(--color-blue-500);
-  --color-bg: #fbfbfb;
+  --color-bg: #f7f7f7;
   --color-border: #b3b3b3;
 
   --color-text-title-1: var(--color-black);
@@ -85,6 +86,7 @@
   --color-text-sub-2: var(--color-gray-500);
   --color-text-info: var(--color-gray-400);
 
+  /* Text Themes */
   --text-title: 1.875rem;
   --text-title--line-height: 1.5;
   --text-title--font-weight: 700;
@@ -129,6 +131,11 @@
   --text-display: 4.5rem;
   --text-display--line-height: 1;
   --text-display--font-weight: 700;
+
+  /* Size Themes */
+  --spacing-input-h-sm: 44px;
+  --spacing-input-h-md: 52px;
+  --spacing-input-h-lg: 130px;
 }
 
 @custom-variant dark (&:is(.dark *));

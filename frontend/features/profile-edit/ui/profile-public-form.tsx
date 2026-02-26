@@ -20,7 +20,6 @@ type Props = {
     aboutMe?: string | null;
     dateOfBirth?: Date | string | null;
     location?: string | null;
-    headline?: string | null;
     isOpenToWork?: boolean;
   };
 };
@@ -52,7 +51,6 @@ export function ProfilePublicForm({ initialData }: Props) {
     aboutMe: initialData?.aboutMe ?? undefined,
     dateOfBirth: toDateString(initialData?.dateOfBirth),
     location: initialData?.location ?? undefined,
-    headline: initialData?.headline ?? undefined,
     isOpenToWork: initialData?.isOpenToWork ?? false,
   };
 
@@ -164,22 +162,6 @@ export function ProfilePublicForm({ initialData }: Props) {
           )}
         </form.Field>
       </div>
-
-      <form.Field name="headline">
-        {(field) => (
-          <div className="flex flex-col gap-1.5">
-            <Label htmlFor="pub-headline">{t('form.headline')}</Label>
-            <FormInput
-              id="pub-headline"
-              value={field.state.value ?? ''}
-              onChange={(e) => field.handleChange(e.target.value)}
-              onBlur={field.handleBlur}
-              filled={Boolean(field.state.value)}
-              theme="bg"
-            />
-          </div>
-        )}
-      </form.Field>
 
       <form.Field name="aboutMe">
         {(field) => (
