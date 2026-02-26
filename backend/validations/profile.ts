@@ -6,7 +6,6 @@ export const profilePublicSchema = z.object({
   aboutMe: z.string().max(2000).optional(),
   dateOfBirth: z.string().date().optional(),
   location: z.string().max(200).optional(),
-  headline: z.string().max(200).optional(),
   isOpenToWork: z.boolean().optional(),
 });
 

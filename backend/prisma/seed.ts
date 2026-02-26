@@ -558,7 +558,6 @@ async function seedSampleUsers(users: SampleUserSeed[]) {
           ? toDateOnlyUtc(user.profile.public.dateOfBirth)
           : null,
         location: user.profile.public.location ?? null,
-        headline: user.profile.public.headline ?? null,
         isOpenToWork: user.profile.public.isOpenToWork ?? false,
         profileImageUrl: user.profile.public.profileImageUrl ?? null,
       },
@@ -572,7 +571,6 @@ async function seedSampleUsers(users: SampleUserSeed[]) {
           ? toDateOnlyUtc(user.profile.public.dateOfBirth)
           : null,
         location: user.profile.public.location ?? null,
-        headline: user.profile.public.headline ?? null,
         isOpenToWork: user.profile.public.isOpenToWork ?? false,
         profileImageUrl: user.profile.public.profileImageUrl ?? null,
       },

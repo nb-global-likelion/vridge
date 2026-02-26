@@ -56,7 +56,6 @@ export interface SampleProfileSeed {
     isOpenToWork?: boolean;
     dateOfBirth?: string;
     location?: string;
-    headline?: string;
     profileImageUrl?: string;
   };
   private: {
@@ -207,7 +206,6 @@ export function buildCanonicalUsers(params: {
           isOpenToWork: true,
           dateOfBirth: '1996-03-07',
           location: 'Seoul',
-          headline: 'Frontend Engineer',
         },
         private: {
           phoneNumber: '+82-10-5555-0101',
@@ -419,7 +417,6 @@ export function buildGeneratedUsers(
               ? `199${index % 10}-0${(index % 8) + 1}-1${index % 9}`
               : undefined,
           location: index % 2 === 0 ? 'Seoul' : 'Ho Chi Minh City',
-          headline: `Candidate Track ${n}`,
         },
         private: {
           phoneNumber: `+84-90-55${phoneSuffix}`,

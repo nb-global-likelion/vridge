@@ -18,9 +18,9 @@ type FormInputProps = {
   Omit<ComponentPropsWithoutRef<'textarea'>, 'size'>;
 
 const SIZE_CLASS: Record<FormInputSize, string> = {
-  sm: 'h-[41px] px-[20px] py-[10px]',
-  md: 'h-[52px] px-[20px]',
-  lg: 'h-[130px] p-[20px]',
+  sm: 'h-input-h-sm px-[20px] py-[10px]',
+  md: 'h-input-h-md px-[20px]',
+  lg: 'h-input-h-lg p-[20px]',
 };
 
 const baseClass =

@@ -205,7 +205,6 @@ export const enMessages = {
   'form.phoneNumber': 'Phone Number',
   'form.email': 'E-mail',
   'form.location': 'Location (Country/Region City,State)',
-  'form.headline': 'Headline',
   'form.aboutMe': 'About Me',
   'form.schoolName': 'School Name',
   'form.levelOfEducation': 'Level of Education',
