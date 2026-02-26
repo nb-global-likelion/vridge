@@ -39,13 +39,40 @@ function ScrollColumn({
   widthClass: string;
   format?: (v: number) => string;
 }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const selectedItemRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    const selectedItem = selectedItemRef.current;
+
+    if (!container || !selectedItem) {
+      return;
+    }
+
+    const centeredScrollTop =
+      selectedItem.offsetTop -
+      container.clientHeight / 2 +
+      selectedItem.clientHeight / 2;
+    const nextScrollTop = Math.max(0, centeredScrollTop);
+
+    if (typeof container.scrollTo === 'function') {
+      container.scrollTo({ top: nextScrollTop });
+      return;
+    }
+
+    container.scrollTop = nextScrollTop;
+  }, [selected]);
+
   return (
     <div
+      ref={containerRef}
       className={`scroll scrollbar-thin flex h-[194px] flex-col gap-[10px] overflow-y-auto ${widthClass}`}
     >
       {items.map((item) => (
         <button
           key={item}
+          ref={item === selected ? selectedItemRef : null}
           type="button"
           className={`flex h-[41px] w-full items-center justify-center rounded-[5px] px-[10px] text-center text-caption-1 ${
             item === selected
