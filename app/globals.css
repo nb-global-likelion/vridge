@@ -133,9 +133,9 @@
   --text-display--font-weight: 700;
 
   /* Size Themes */
-  --container-input-h-sm: 44px;
-  --container-input-h-md: 52px;
-  --container-input-h-lg: 130px;
+  --spacing-input-h-sm: 44px;
+  --spacing-input-h-md: 52px;
+  --spacing-input-h-lg: 130px;
 }
 
 @custom-variant dark (&:is(.dark *));
