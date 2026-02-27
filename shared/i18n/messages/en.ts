@@ -20,6 +20,8 @@ export const enMessages = {
   'common.actions.clear': 'Clear',
   'common.actions.close': 'Close',
   'common.actions.retry': 'Retry',
+  'common.actions.warnDirty':
+    'Any unsaved changes would be lost. Are you sure you want to quit?',
   'common.status.loading': 'Loading...',
 
   'analytics.consent.title': 'Help us improve your job search experience',
@@ -203,7 +205,6 @@ export const enMessages = {
   'form.phoneNumber': 'Phone Number',
   'form.email': 'E-mail',
   'form.location': 'Location (Country/Region City,State)',
-  'form.headline': 'Headline',
   'form.aboutMe': 'About Me',
   'form.schoolName': 'School Name',
   'form.levelOfEducation': 'Level of Education',

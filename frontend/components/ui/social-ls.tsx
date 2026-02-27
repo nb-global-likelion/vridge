@@ -54,7 +54,7 @@ export function SocialLs({
       ) : (
         <Icon name={meta.iconName} size={meta.iconSize} alt={provider} />
       )}
-      <span className="text-center text-body-2 text-gray-800">{label}</span>
+      <span className="text-center text-[15px] text-gray-800">{label}</span>
     </button>
   );
 }

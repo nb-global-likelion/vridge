@@ -34,7 +34,6 @@ const profileData = {
     lastName: 'Park',
     dateOfBirth: new Date('2000-02-10T00:00:00.000Z'),
     location: 'Ho Chi Minh City',
-    headline: 'Product Designer',
     aboutMe: 'Designing intuitive products',
     isOpenToWork: true,
     profileImageUrl: null,

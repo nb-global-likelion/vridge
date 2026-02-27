@@ -9,7 +9,6 @@ const baseProps = {
   phone: '+82 10-1234-5678',
   email: 'john@example.com',
   location: 'Seoul',
-  headline: 'Experienced developer looking for new opportunities',
   aboutMe: 'Building reliable web products',
 };
 
@@ -31,16 +30,6 @@ describe('ProfileCard', () => {
     const summary = screen.getByText('Building reliable web products');
     expect(summary).toBeInTheDocument();
     expect(summary).toHaveClass('text-body-1');
-    expect(
-      screen.queryByText('Experienced developer looking for new opportunities')
-    ).not.toBeInTheDocument();
-  });
-
-  it('aboutMe가 없으면 headline을 요약으로 사용한다', () => {
-    renderWithI18n(<ProfileCard {...baseProps} aboutMe={null} />);
-    expect(
-      screen.getByText('Experienced developer looking for new opportunities')
-    ).toBeInTheDocument();
   });
 
   it('isOpenToWork=true 이면 recruiting 상태 표시', () => {

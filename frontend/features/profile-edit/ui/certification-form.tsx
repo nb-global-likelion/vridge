@@ -96,6 +96,7 @@ export function CertificationForm({
               onChange={(e) => field.handleChange(e.target.value)}
               onBlur={field.handleBlur}
               filled={field.state.value.length > 0}
+              theme="bg"
             />
             {field.state.meta.isTouched && (
               <FieldError errors={field.state.meta.errors} />
@@ -138,6 +139,7 @@ export function CertificationForm({
               onChange={(e) => field.handleChange(e.target.value || undefined)}
               onBlur={field.handleBlur}
               filled={Boolean(field.state.value)}
+              theme="bg"
             />
           </div>
         )}
@@ -156,6 +158,7 @@ export function CertificationForm({
               onChange={(e) => field.handleChange(e.target.value || undefined)}
               onBlur={field.handleBlur}
               filled={Boolean(field.state.value)}
+              theme="bg"
             />
           </div>
         )}

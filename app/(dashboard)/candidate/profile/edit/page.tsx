@@ -87,7 +87,6 @@ export default async function CandidateProfileEditPage() {
                 ? profilePublic.dateOfBirth.toISOString().split('T')[0]
                 : undefined,
               location: profilePublic.location,
-              headline: profilePublic.headline,
               isOpenToWork: profilePublic.isOpenToWork,
             }
           : undefined

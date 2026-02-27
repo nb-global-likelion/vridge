@@ -75,7 +75,7 @@ export function PostingListItem({
             <div className="flex min-w-0 flex-1 flex-col gap-[20px] rounded-[20px] p-[20px]">
               <h3 className="text-h3 text-black">{title}</h3>
 
-              <div className="flex flex-wrap items-center gap-[20px] text-body-2 text-gray-800">
+              <div className="flex flex-wrap items-center gap-[20px] text-body-3 text-gray-800">
                 <span className="inline-flex items-center gap-[5px]">
                   <Icon name="jobs" size={24} />
                   {jobDisplayName}

@@ -18,6 +18,8 @@ export const viMessages: Record<MessageKey, string> = {
   'common.actions.clear': 'Xóa',
   'common.actions.close': 'Đóng',
   'common.actions.retry': 'Thử lại',
+  'common.actions.warnDirty':
+    'Có những thay đổi chưa được lưu. Bạn có chắc chắn muốn rời khỏi trang này không?',
   'common.status.loading': 'Đang tải...',
 
   'analytics.consent.title': 'Giúp chúng tôi cải thiện trải nghiệm tìm việc',
@@ -200,7 +202,6 @@ export const viMessages: Record<MessageKey, string> = {
   'form.phoneNumber': 'Số điện thoại',
   'form.email': 'Email',
   'form.location': 'Địa điểm (Quốc gia/Khu vực Thành phố,Tỉnh)',
-  'form.headline': 'Tiêu đề',
   'form.aboutMe': 'Giới thiệu',
   'form.schoolName': 'Tên trường/tổ chức',
   'form.levelOfEducation': 'Trình độ học vấn',

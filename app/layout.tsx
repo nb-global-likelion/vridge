@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Inter, Geist_Mono } from 'next/font/google';
+import { Inter } from 'next/font/google';
 import { Suspense } from 'react';
 import './globals.css';
 import Providers from '@/frontend/components/providers';
@@ -14,11 +14,6 @@ import { getServerI18n } from '@/shared/i18n/server';
 
 const inter = Inter({
   variable: '--font-inter',
-  subsets: ['latin'],
-});
-
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
   subsets: ['latin'],
 });
 
@@ -40,7 +35,7 @@ export default async function RootLayout({
 
   return (
     <html lang={locale}>
-      <body className={`${inter.variable} ${geistMono.variable} antialiased`}>
+      <body className={`${inter.variable} antialiased`}>
         <Providers locale={locale} messages={messages}>
           <MainNav />
           {children}

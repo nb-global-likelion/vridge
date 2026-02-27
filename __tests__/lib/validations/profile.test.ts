@@ -65,15 +65,6 @@ describe('profilePublicSchema', () => {
       }).success
     ).toBe(false);
   });
-  it('headline 200자 초과 거부', () => {
-    expect(
-      profilePublicSchema.safeParse({
-        firstName: 'A',
-        lastName: 'B',
-        headline: 'x'.repeat(201),
-      }).success
-    ).toBe(false);
-  });
   it('isOpenToWork boolean 통과', () => {
     expect(
       profilePublicSchema.safeParse({

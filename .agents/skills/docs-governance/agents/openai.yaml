@@ -1,0 +1,4 @@
+interface:
+  display_name: "Docs Governance"
+  short_description: "Keep docs current and archive legacy safely"
+  default_prompt: "Use $docs-governance to update docs, archive legacy documents, and verify archive front matter rules."

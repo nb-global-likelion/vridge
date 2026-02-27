@@ -21,12 +21,12 @@ describe('DatePicker', () => {
     expect(trigger).toHaveClass('rounded-[10px]');
   });
 
-  it('값이 있을 때 filled 스타일: bg-white + border', () => {
+  it('값이 있을 때 filled 스타일: bg-bg + border', () => {
     renderWithI18n(
       <DatePicker value={new Date(Date.UTC(2024, 5, 15))} onChange={() => {}} />
     );
     const trigger = screen.getByRole('button');
-    expect(trigger).toHaveClass('bg-white');
+    expect(trigger).toHaveClass('bg-bg');
     expect(trigger).toHaveClass('border-gray-300');
   });
 

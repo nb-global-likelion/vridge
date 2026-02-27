@@ -76,7 +76,7 @@ Rule #1: If you want exception to ANY rule, YOU MUST STOP and get explicit permi
 
 ### Preflight 1: Feature Branch Creation (BEFORE implementing plan)
 
-- ALWAYS identify the remote default base branch (for example `origin/HEAD` -> `main` or `master`).
+- ALWAYS use `dev` as the base branch for preflight sync (do not infer from `origin/HEAD`).
 - ALWAYS update the base branch using fetch + fast-forward-only. If sync fails, STOP and ask Ori.
 - ALWAYS create a feature branch using `type/scope-topic` naming.
 - ALWAYS use `git worktree` by default. A normal branch checkout is allowed only when work is single-threaded or worktree setup is blocked.
@@ -151,12 +151,11 @@ YOU MUST follow this debugging framework for ANY technical issue:
 - Exceptions: `AGENTS.md` and `docs/agents/*` must be written in English. Files under `docs/legacy/*` may remain in their original language.
 - `docs/` and its subfolders (except `docs/legacy/`) MUST be kept current with the codebase; do not leave outdated content after related changes.
 - `docs/legacy/` contains archived historical documents that may be outdated by design.
-- Move a document to `docs/legacy/` when it is superseded by a newer document OR no longer operationally used.
-- In `docs/legacy/`, preserve original filenames and relative topic grouping (do not add date prefixes to filenames).
-- Every document in `docs/legacy/` MUST include YAML front matter with keys: `archived_on`, `archive_reason`, `replaced_by`.
-- Allowed `archive_reason` values are: `superseded`, `no_longer_operational`, `historical_reference`.
-- `replaced_by` is required when `archive_reason: superseded`, and optional otherwise.
 - `docs/agents/` contains prompt plans and LLM-facing operational documents, and these files should be written in English.
+- Archive to `docs/legacy/` only when superseded or no longer operational, while preserving original filenames and relative topic grouping.
+- Every `docs/legacy/` document MUST include YAML front matter keys `archived_on`, `archive_reason`, and `replaced_by`; allowed `archive_reason` values are `superseded`, `no_longer_operational`, `historical_reference`.
+- `replaced_by` is required when `archive_reason: superseded`, and optional otherwise.
+- Use `$docs-governance` for docs update/archive procedure and verification checks.
 
 ## Sandboxing
 

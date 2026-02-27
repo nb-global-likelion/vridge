@@ -33,7 +33,6 @@ describe('ProfilePublicForm', () => {
           aboutMe: '소개',
           dateOfBirth: '1990-01-15',
           location: 'Seoul',
-          headline: 'Frontend Engineer',
           isOpenToWork: true,
         }}
       />
@@ -42,7 +41,6 @@ describe('ProfilePublicForm', () => {
     expect(screen.getByLabelText(/First Name/i)).toHaveValue('길동');
     expect(screen.getByLabelText(/Last Name/i)).toHaveValue('홍');
     expect(screen.getByLabelText(/Location/i)).toHaveValue('Seoul');
-    expect(screen.getByLabelText(/Headline/i)).toHaveValue('Frontend Engineer');
     expect(screen.getByLabelText(/About Me/i)).toHaveValue('소개');
     expect(screen.getByRole('switch')).toHaveAttribute('aria-checked', 'true');
   });
